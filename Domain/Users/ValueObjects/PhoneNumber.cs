@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Domain.Users.ValueObjects
 {
-    public class PhoneNumber : ValueObject
+    public sealed class PhoneNumber : ValueObject
     {
         private static readonly Regex PhoneRegex = new(@"^(\+84|0)[0-9]{9}$", RegexOptions.Compiled);
 
