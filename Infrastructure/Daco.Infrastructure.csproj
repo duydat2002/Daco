@@ -10,15 +10,24 @@
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Integration\" />
     <Folder Include="EventBus\" />
-    <Folder Include="Persistence\Interceptors\" />
-    <Folder Include="Persistence\Seeders\" />
-    <Folder Include="Persistence\Repositories\" />
     <Folder Include="Services\Authentication\" />
     <Folder Include="Services\FileStorage\" />
     <Folder Include="Services\Email\" />
     <Folder Include="Services\Notifications\" />
     <Folder Include="Services\Shipping\" />
     <Folder Include="Services\Payment\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
+    <PackageReference Include="Npgsql" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Daco.Application.csproj" />
+    <ProjectReference Include="..\Domain\Daco.Domain.csproj" />
+    <ProjectReference Include="..\Shared\Daco.Shared.csproj" />
   </ItemGroup>
 
 </Project>

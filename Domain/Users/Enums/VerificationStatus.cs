@@ -1,4 +1,4 @@
-﻿namespace Domain.Users.Enums
+﻿namespace Daco.Domain.Users.Enums
 {
     public enum VerificationStatus
     {

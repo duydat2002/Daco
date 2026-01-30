@@ -1,8 +1,4 @@
-﻿using Domain.Common;
-using Shared.Common;
-using System.Text.RegularExpressions;
-
-namespace Domain.Users.ValueObjects
+﻿namespace Daco.Domain.Users.ValueObjects
 {
     public sealed class Email : ValueObject
     {

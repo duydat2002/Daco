@@ -1,4 +1,4 @@
-﻿namespace Domain.Common
+﻿namespace Daco.Domain.Common
 {
     public abstract class ValueObject
     {

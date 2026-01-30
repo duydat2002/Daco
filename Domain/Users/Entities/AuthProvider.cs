@@ -1,13 +1,9 @@
-﻿using Domain.Common;
-using Domain.Users.Enums;
-using Shared.Common;
-
-namespace Domain.Users.Entities
+﻿namespace Daco.Domain.Users.Entities
 {
     /// <summary>
     /// Auth Provider Entity - quản lý các phương thức đăng nhập
     /// </summary>
-    public class AuthProvider : BaseEntity
+    public class AuthProvider : Entity
     {
         public Guid UserId { get; private set; }
         public ProviderType ProviderType { get; private set; }

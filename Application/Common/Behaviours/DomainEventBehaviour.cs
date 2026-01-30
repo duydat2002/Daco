@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Common
+namespace Daco.Application.Common.Behaviours
 {
-    internal class AuditableEntity
+    internal class DomainEventBehaviour
     {
     }
 }

@@ -1,10 +1,6 @@
-﻿using Domain.Common;
-using Domain.Users.Enums;
-using Shared.Common;
-
-namespace Domain.Users.Entities
+﻿namespace Daco.Domain.Users.Entities
 {
-    public class LoginSession : BaseEntity
+    public class LoginSession : Entity
     {
         public Guid UserId { get; private set; }
         public ProviderType LoginProvider { get; private set; }

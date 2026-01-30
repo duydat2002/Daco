@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Persistence.Configurations.Users
+namespace Daco.Application.Common.Exceptions
 {
-    internal class UserConfiguration
+    internal class ValidationException
     {
     }
 }

@@ -1,9 +1,6 @@
-﻿using Domain.Common;
-using Shared.Common;
-
-namespace Domain.Users.Entities
+﻿namespace Daco.Domain.Users.Entities
 {
-    public class BankAccount : BaseEntity
+    public class BankAccount : Entity
     {
         public Guid UserId { get; private set; }
 

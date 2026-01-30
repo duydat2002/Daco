@@ -1,15 +1,11 @@
-﻿namespace Domain.Common
+﻿namespace Daco.Domain.Common
 {
-    public abstract class BaseEntity
+    public abstract class AggregateRoot : Entity
     {
-        public Guid Id { get; protected set; }
         private readonly List<DomainEvent> _domainEvents = new();
         public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-        protected BaseEntity()
-        {
-            Id = Guid.NewGuid();
-        }
+        protected AggregateRoot() { }
 
         protected void AddDomainEvent(DomainEvent domainEvent)
         {

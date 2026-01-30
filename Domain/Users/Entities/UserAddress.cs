@@ -1,9 +1,6 @@
-﻿using Domain.Common;
-using Shared.Common;
-
-namespace Domain.Users.Entities
+﻿namespace Daco.Domain.Users.Entities
 {
-    public class UserAddress : BaseEntity
+    public class UserAddress : Entity
     {
         public Guid UserId { get; private set; }
 

@@ -1,13 +1,9 @@
-﻿using Domain.Common;
-using Domain.Users.Enums;
-using Shared.Common;
-
-namespace Domain.Users.Entities
+﻿namespace Daco.Domain.Users.Entities
 {
     /// <summary>
     /// Token xác thực email/phone/reset password
     /// </summary>
-    public class VerificationToken : BaseEntity
+    public class VerificationToken : Entity
     {
         public Guid UserId { get; private set; }
         public string Token { get; private set; }

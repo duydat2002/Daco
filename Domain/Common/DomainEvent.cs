@@ -1,8 +1,6 @@
-﻿using MediatR;
-
-namespace Domain.Common
+﻿namespace Daco.Domain.Common
 {
-    public abstract record DomainEvent 
+    public abstract record DomainEvent : INotification
     {
         public Guid Id { get; init; }
         public DateTime OccurredOn { get; init; }

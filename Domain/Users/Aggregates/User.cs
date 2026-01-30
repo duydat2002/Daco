@@ -1,11 +1,6 @@
-﻿using Domain.Common;
-using Domain.Users.Enums;
-using Domain.Users.ValueObjects;
-using Shared.Common;
-
-namespace Domain.Users.Entities
+﻿namespace Daco.Domain.Users.Aggregates
 {
-    public class User : BaseEntity
+    public class User : AggregateRoot
     {
         private readonly List<AuthProvider> _authProviders = new();
         private readonly List<UserAddress> _addresses = new();
@@ -35,9 +30,7 @@ namespace Domain.Users.Entities
 
         private User() { }
 
-        /// <summary>
-        /// Thêm địa chỉ mới
-        /// </summary>
+        #region address
         public void AddAddress(
             string recipientName,
             string recipientPhone,
@@ -55,10 +48,8 @@ namespace Domain.Users.Entities
             Guard.Against(_addresses.Count(a => !a.IsDeleted) >= 10,
                 "Cannot have more than 10 active addresses");
 
-            // Nếu đây là địa chỉ đầu tiên hoặc được đánh dấu default
             if (!_addresses.Any(a => !a.IsDeleted) || isDefault)
             {
-                // Remove default từ tất cả addresses khác
                 foreach (var addr in _addresses.Where(a => !a.IsDeleted))
                 {
                     addr.RemoveDefault();
@@ -86,9 +77,6 @@ namespace Domain.Users.Entities
             //AddDomainEvent(new AddressAddedEvent(Id, address.Id));
         }
 
-        /// <summary>
-        /// Cập nhật địa chỉ
-        /// </summary>
         public void UpdateAddress(
             Guid addressId,
             string recipientName,
@@ -122,9 +110,6 @@ namespace Domain.Users.Entities
             //AddDomainEvent(new AddressUpdatedEvent(Id, addressId));
         }
 
-        /// <summary>
-        /// Xóa địa chỉ (soft delete)
-        /// </summary>
         public void RemoveAddress(Guid addressId)
         {
             Guard.Against(Status != UserStatus.Active, "Cannot remove address for inactive user");
@@ -135,7 +120,6 @@ namespace Domain.Users.Entities
             var wasDefault = address!.IsDefault;
             address.SoftDelete();
 
-            // Nếu xóa địa chỉ default, set địa chỉ khác làm default
             if (wasDefault)
             {
                 var nextDefault = _addresses.FirstOrDefault(a => !a.IsDeleted);
@@ -147,15 +131,11 @@ namespace Domain.Users.Entities
             //AddDomainEvent(new AddressRemovedEvent(Id, addressId));
         }
 
-        /// <summary>
-        /// Đặt địa chỉ làm mặc định
-        /// </summary>
         public void SetDefaultAddress(Guid addressId)
         {
             var address = _addresses.FirstOrDefault(a => a.Id == addressId && !a.IsDeleted);
             Guard.Against(address == null, "Address not found");
 
-            // Remove default từ tất cả addresses
             foreach (var addr in _addresses.Where(a => !a.IsDeleted))
             {
                 addr.RemoveDefault();
@@ -167,26 +147,18 @@ namespace Domain.Users.Entities
             //AddDomainEvent(new DefaultAddressChangedEvent(Id, addressId));
         }
 
-        /// <summary>
-        /// Lấy địa chỉ mặc định
-        /// </summary>
         public UserAddress? GetDefaultAddress()
         {
             return _addresses.FirstOrDefault(a => a.IsDefault && !a.IsDeleted);
         }
 
-        /// <summary>
-        /// Lấy tất cả địa chỉ active
-        /// </summary>
         public IEnumerable<UserAddress> GetActiveAddresses()
         {
             return _addresses.Where(a => !a.IsDeleted);
         }
+        #endregion
 
-        // ========================================================================
-        // BANK ACCOUNT MANAGEMENT (Corrected)
-        // ========================================================================
-
+        #region bacnk account
         public void AddBankAccount(
             string bankCode,
             string bankName,
@@ -277,5 +249,6 @@ namespace Domain.Users.Entities
         {
             return _bankAccounts.FirstOrDefault(b => b.IsDefault && !b.IsDeleted);
         }
+        #endregion
     }
 }

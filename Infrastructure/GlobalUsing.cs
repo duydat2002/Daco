@@ -1,0 +1,12 @@
+﻿global using System;
+global using Npgsql;
+global using System.Data;
+global using Daco.Domain.Common;
+global using Daco.Infrastructure.Persistence.Common;
+global using Microsoft.Extensions.Logging;
+global using Daco.Application.Common.Interfaces;
+global using Dapper;
+global using Daco.Infrastructure.Persistence.EventDispatching;
+global using Daco.Infrastructure.Persistence.UnitOfWork;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Configuration;

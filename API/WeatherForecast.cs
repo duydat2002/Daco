@@ -1,4 +1,4 @@
-namespace API
+namespace Daco.API
 {
     public class WeatherForecast
     {

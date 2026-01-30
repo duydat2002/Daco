@@ -1,4 +1,4 @@
-﻿namespace Shared.Common
+﻿namespace Daco.Domain.Common
 {
     public static class Guard
     {
@@ -24,6 +24,19 @@
         {
             if (value < 0)
                 throw new ArgumentException("Value cannot be negative", paramName);
+        }
+
+        public static void AgainstNegativeOrZero(decimal value, string paramName)
+        {
+            if (value <= 0)
+                throw new ArgumentException("Value must be greater than zero", paramName);
+        }
+
+        public static void AgainstOutOfRange(int value, int min, int max, string paramName)
+        {
+            if (value < min || value > max)
+                throw new ArgumentOutOfRangeException(paramName,
+                    $"Value must be between {min} and {max}");
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Persistence
+namespace Daco.Infrastructure.Persistence
 {
     internal class ApplicationDbContext
     {

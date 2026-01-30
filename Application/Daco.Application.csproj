@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Exceptions\" />
-    <Folder Include="Common\Models\" />
     <Folder Include="Common\Mappings\" />
+    <Folder Include="Common\Models\" />
     <Folder Include="Users\Commands\" />
+    <Folder Include="Users\EventHandlers\" />
+    <Folder Include="Users\Interfaces\" />
     <Folder Include="Users\Services\" />
     <Folder Include="Users\Queries\" />
   </ItemGroup>
@@ -18,6 +19,11 @@
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="MediatR" Version="14.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Daco.Domain.csproj" />
+    <ProjectReference Include="..\Shared\Daco.Shared.csproj" />
   </ItemGroup>
 
 </Project>
