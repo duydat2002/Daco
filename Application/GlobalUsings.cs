@@ -1,0 +1,18 @@
+﻿global using Daco.Domain.Common;
+global using MediatR;
+global using Microsoft.Extensions.Logging;
+global using Daco.Application.Common.Interfaces;
+global using FluentValidation;
+global using Daco.Application.Common.Validators;
+global using System.Linq.Expressions;
+global using Daco.Domain.Users.Aggregates;
+global using Daco.Domain.Users.Events;
+global using Daco.Domain.Users.Enums;
+global using Daco.Application.Common.DTOs;
+global using Daco.Application.Common.Constants;
+global using System.Diagnostics;
+global using System.Text.Json;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Reflection;
+global using Daco.Application.Common.Behaviours;
+

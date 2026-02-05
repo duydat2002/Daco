@@ -32,45 +32,37 @@
             if (!_trackedEntities.Contains(entity))
             {
                 _trackedEntities.Add(entity);
-                _logger.LogDebug("Tracking entity {EntityType} with Id {EntityId}",
-                    entity.GetType().Name, entity.Id);
+                _logger.LogDebug($"Tracking entity {entity.GetType().Name} with Id {entity.Id}");
             }
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Saving changes with {EntityCount} tracked entities",
-                _trackedEntities.Count);
+            _logger.LogDebug($"Saving changes with {_trackedEntities.Count} tracked entities");
 
-            // 1. Collect all domain events
             var domainEvents = _trackedEntities
                 .SelectMany(e => e.DomainEvents)
                 .ToList();
 
-            _logger.LogDebug("Collected {EventCount} domain events", domainEvents.Count);
+            _logger.LogDebug($"Collected {domainEvents.Count} domain events");
 
-            // 2. Clear events from entities
             foreach (var entity in _trackedEntities)
             {
                 entity.ClearDomainEvents();
             }
 
-            // 3. Commit transaction
             await _session.CommitAsync(cancellationToken);
             _logger.LogInformation("Transaction committed successfully");
 
-            // 4. Dispatch domain events AFTER commit
             foreach (var domainEvent in domainEvents)
             {
-                _logger.LogDebug("Dispatching domain event {EventType}",
-                    domainEvent.GetType().Name);
+                _logger.LogDebug($"Dispatching domain event {domainEvent.GetType().Name}");
 
                 await _eventDispatcher.DispatchAsync(domainEvent, cancellationToken);
             }
 
-            _logger.LogInformation("Dispatched {EventCount} domain events", domainEvents.Count);
+            _logger.LogInformation($"Dispatched {domainEvents.Count} domain events");
 
-            // 5. Clear tracked entities
             var count = _trackedEntities.Count;
             _trackedEntities.Clear();
 
@@ -90,6 +82,11 @@
             _trackedEntities.Clear();
 
             _logger.LogInformation("Transaction rolled back");
+        }
+
+        public IEnumerable<AggregateRoot> GetTrackedEntities()
+        {
+            return _trackedEntities.AsReadOnly();
         }
 
         public void Dispose()

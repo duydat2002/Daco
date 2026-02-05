@@ -21,7 +21,7 @@
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogInformation("Beginning transaction for {RequestName}", requestName);
+            _logger.LogInformation($"Beginning transaction for {requestName}");
 
             try
             {
@@ -31,13 +31,13 @@
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                _logger.LogInformation("Completed transaction for {RequestName}", requestName);
+                _logger.LogInformation($"Completed transaction for {requestName}");
 
                 return response;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in transaction for {RequestName}", requestName);
+                _logger.LogError(ex, $"Error in transaction for {requestName}");
 
                 await _unitOfWork.RollbackAsync(cancellationToken);
 

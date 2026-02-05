@@ -1,4 +1,6 @@
-﻿namespace Daco.Domain.Users.Aggregates
+﻿using Daco.Domain.Users.Events;
+
+namespace Daco.Domain.Users.Aggregates
 {
     public class User : AggregateRoot
     {
@@ -30,64 +32,204 @@
 
         private User() { }
 
-        #region address
-        public void AddAddress(
-            string recipientName,
-            string recipientPhone,
-            string city,
-            string district,
-            string ward,
-            string addressDetail,
-            string? label = null,
-            string addressType = "home",
-            double? latitude = null,
-            double? longitude = null,
-            bool isDefault = false)
+        #region user
+        #region auth
+        public static User CreateWithEmail(string username, string email, string passwordHash)
         {
+            var usernameVo = Username.Create(username);
+            var emailVo = Email.Create(email);
+
+            var user = new User
+            {
+                Username = usernameVo,
+                Email = emailVo,
+                Status = UserStatus.Active,
+                EmailVerified = false,
+                PhoneVerified = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var emailProvider = AuthProvider.CreateEmailProvider(emailVo.Value, passwordHash);
+            user._authProviders.Add(emailProvider);
+
+            user.AddDomainEvent(new UserRegisteredEvent(
+                user.Id,
+                emailVo.Value,
+                ProviderType.Email));
+
+            return user;
+        }
+
+        public static User CreateWithPhone(string username, string phone, string passwordHash)
+        {
+            var usernameVo = Username.Create(username);
+            var phoneVo = PhoneNumber.Create(phone);
+
+            var user = new User
+            {
+                Username = usernameVo,
+                Phone = phoneVo,
+                Status = UserStatus.Active,
+                EmailVerified = false,
+                PhoneVerified = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var phoneProvider = AuthProvider.CreatePhoneProvider(phoneVo.Value, passwordHash);
+            user._authProviders.Add(phoneProvider);
+
+            user.AddDomainEvent(new UserRegisteredEvent(
+                user.Id,
+                phoneVo.Value,
+                ProviderType.Phone));
+
+            return user;
+        }
+
+        public static User CreateWithSocial(
+            string username,
+            ProviderType providerType,
+            string providerUserId,
+            string? email,
+            string? name,
+            string? avatar)
+        {
+            var usernameVo = Username.Create(username);
+
+            var user = new User
+            {
+                Username = usernameVo,
+                Email = !string.IsNullOrEmpty(email) ? Email.Create(email) : null,
+                Name = name,
+                Status = UserStatus.Active,
+                EmailVerified = !string.IsNullOrEmpty(email),
+                PhoneVerified = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var socialProvider = AuthProvider.CreateSocialProvider(
+                providerType,
+                providerUserId,
+                email,
+                name,
+                avatar);
+
+            user._authProviders.Add(socialProvider);
+
+            user.AddDomainEvent(new UserRegisteredEvent(
+                user.Id,
+                email ?? providerUserId,
+                providerType));
+
+            return user;
+        }
+        #endregion
+
+        #region verification
+        public void VerifyEmail()
+        {
+            Guard.Against(Email == null, "User does not have an email");
+            Guard.Against(EmailVerified, "Email is already verified");
+            Guard.Against(Status != UserStatus.Active, "Cannot verify email for inactive user");
+
+            EmailVerified = true;
+            UpdatedAt = DateTime.UtcNow;
+
+            var emailProvider = _authProviders
+                .FirstOrDefault(p => p.ProviderType == ProviderType.Email);
+
+            emailProvider?.MarkAsVerified();
+
+            AddDomainEvent(new EmailVerifiedEvent(Id, Email!.Value));
+        }
+
+        public void VerifyPhone()
+        {
+            Guard.Against(Phone == null, "User does not have a phone");
+            Guard.Against(PhoneVerified, "Phone is already verified");
+            Guard.Against(Status != UserStatus.Active, "Cannot verify phone for inactive user");
+
+            PhoneVerified = true;
+            UpdatedAt = DateTime.UtcNow;
+
+            var phoneProvider = _authProviders
+                .FirstOrDefault(p => p.ProviderType == ProviderType.Phone);
+
+            phoneProvider?.MarkAsVerified();
+
+            AddDomainEvent(new PhoneVerifiedEvent(Id, Phone!.Value));
+        }
+        #endregion
+
+        #region profile management
+        public void UpdateProfile(string? name, DateTime? dateOfBirth, UserGender? gender)
+        {
+            Guard.Against(Status != UserStatus.Active, "Cannot update profile for inactive user");
+
+            if (dateOfBirth.HasValue)
+            {
+                var age = DateTime.UtcNow.Year - dateOfBirth.Value.Year;
+                Guard.Against(age < 13, "User must be at least 13 years old");
+                Guard.Against(age > 150, "Invalid date of birth");
+            }
+
+            Name = name;
+            DateOfBirth = dateOfBirth;
+            Gender = gender;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateAvatar(string avatarUrl)
+        {
+            Guard.AgainstNullOrEmpty(avatarUrl, nameof(avatarUrl));
+            Guard.Against(Status != UserStatus.Active, "Cannot update avatar for inactive user");
+
+            Avatar = avatarUrl;
+            UpdatedAt = DateTime.UtcNow;
+        }
+        #endregion
+
+        #region password management
+        public void ChangePassword(string currentPasswordHash, string newPasswordHash)
+        {
+            Guard.Against(Status != UserStatus.Active, "Cannot change password for inactive user");
+
+            var provider = _authProviders
+                .FirstOrDefault(p => p.ProviderType == ProviderType.Email || p.ProviderType == ProviderType.Phone);
+
+            Guard.Against(provider == null, "User does not have email/phone provider");
+            Guard.Against(provider!.PasswordHash != currentPasswordHash, "Current password is incorrect");
+
+            provider.UpdatePassword(newPasswordHash);
+            UpdatedAt = DateTime.UtcNow;
+
+            AddDomainEvent(new PasswordChangedEvent(Id));
+        }
+        #endregion
+
+        #region address management
+        public void AddAddress(UserAddress address)
+        {
+            Guard.AgainstNull(address, nameof(address));
             Guard.Against(Status != UserStatus.Active, "Cannot add address for inactive user");
             Guard.Against(_addresses.Count(a => !a.IsDeleted) >= 10,
                 "Cannot have more than 10 active addresses");
 
-            if (!_addresses.Any(a => !a.IsDeleted) || isDefault)
+            if (!_addresses.Any(a => !a.IsDeleted) || address.IsDefault)
             {
                 foreach (var addr in _addresses.Where(a => !a.IsDeleted))
                 {
                     addr.RemoveDefault();
                 }
-                isDefault = true;
             }
-
-            var address = UserAddress.Create(
-                Id,
-                recipientName,
-                recipientPhone,
-                city,
-                district,
-                ward,
-                addressDetail,
-                label,
-                addressType,
-                latitude,
-                longitude,
-                isDefault);
 
             _addresses.Add(address);
             UpdatedAt = DateTime.UtcNow;
 
-            //AddDomainEvent(new AddressAddedEvent(Id, address.Id));
+            AddDomainEvent(new AddressAddedEvent(Id, address.Id));
         }
 
-        public void UpdateAddress(
-            Guid addressId,
-            string recipientName,
-            string recipientPhone,
-            string city,
-            string district,
-            string ward,
-            string addressDetail,
-            string? label = null,
-            double? latitude = null,
-            double? longitude = null)
+        public void UpdateAddress(Guid addressId, UserAddress updatedAddress)
         {
             Guard.Against(Status != UserStatus.Active, "Cannot update address for inactive user");
 
@@ -95,25 +237,19 @@
             Guard.Against(address == null, "Address not found");
 
             address!.Update(
-                recipientName,
-                recipientPhone,
-                city,
-                district,
-                ward,
-                addressDetail,
-                label,
-                latitude,
-                longitude);
+                updatedAddress.RecipientName,
+                updatedAddress.RecipientPhone,
+                updatedAddress.City,
+                updatedAddress.District,
+                updatedAddress.Ward,
+                updatedAddress.AddressDetail,
+                updatedAddress.Label);
 
             UpdatedAt = DateTime.UtcNow;
-
-            //AddDomainEvent(new AddressUpdatedEvent(Id, addressId));
         }
 
         public void RemoveAddress(Guid addressId)
         {
-            Guard.Against(Status != UserStatus.Active, "Cannot remove address for inactive user");
-
             var address = _addresses.FirstOrDefault(a => a.Id == addressId && !a.IsDeleted);
             Guard.Against(address == null, "Address not found");
 
@@ -127,8 +263,6 @@
             }
 
             UpdatedAt = DateTime.UtcNow;
-
-            //AddDomainEvent(new AddressRemovedEvent(Id, addressId));
         }
 
         public void SetDefaultAddress(Guid addressId)
@@ -143,19 +277,45 @@
 
             address!.SetAsDefault();
             UpdatedAt = DateTime.UtcNow;
-
-            //AddDomainEvent(new DefaultAddressChangedEvent(Id, addressId));
         }
+        #endregion
 
-        public UserAddress? GetDefaultAddress()
+        #region status management
+        public void Suspend(string reason)
         {
-            return _addresses.FirstOrDefault(a => a.IsDefault && !a.IsDeleted);
+            Guard.Against(Status == UserStatus.Banned, "Cannot suspend a banned user");
+            Guard.Against(Status == UserStatus.Deleted, "Cannot suspend a deleted user");
+
+            Status = UserStatus.Suspended;
+            UpdatedAt = DateTime.UtcNow;
+
+            AddDomainEvent(new UserSuspendedEvent(Id, reason));
         }
 
-        public IEnumerable<UserAddress> GetActiveAddresses()
+        public void Ban(string reason)
         {
-            return _addresses.Where(a => !a.IsDeleted);
+            Guard.Against(Status == UserStatus.Deleted, "Cannot ban a deleted user");
+
+            Status = UserStatus.Banned;
+            UpdatedAt = DateTime.UtcNow;
         }
+
+        public void Activate()
+        {
+            Guard.Against(Status == UserStatus.Deleted, "Cannot activate a deleted user");
+
+            Status = UserStatus.Active;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Delete()
+        {
+            Status = UserStatus.Deleted;
+            DeletedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+        #endregion
+
         #endregion
 
         #region bacnk account
@@ -250,5 +410,25 @@
             return _bankAccounts.FirstOrDefault(b => b.IsDefault && !b.IsDeleted);
         }
         #endregion
+
+        public bool HasVerifiedContact()
+        {
+            return EmailVerified || PhoneVerified;
+        }
+
+        public bool CanLogin()
+        {
+            return Status == UserStatus.Active && HasVerifiedContact();
+        }
+
+        public UserAddress? GetDefaultAddress()
+        {
+            return _addresses.FirstOrDefault(a => a.IsDefault && !a.IsDeleted);
+        }
+
+        public IEnumerable<UserAddress> GetActiveAddresses()
+        {
+            return _addresses.Where(a => !a.IsDeleted);
+        }
     }
 }

@@ -7,5 +7,6 @@
         Task CommitAsync(CancellationToken cancellationToken = default);
         Task RollbackAsync(CancellationToken cancellationToken = default);
         void TrackEntity(AggregateRoot entity);
+        IEnumerable<AggregateRoot> GetTrackedEntities();
     }
 }
