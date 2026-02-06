@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Users.Events;
-
-namespace Daco.Domain.Users.Aggregates
+﻿namespace Daco.Domain.Users.Aggregates
 {
     public class User : AggregateRoot
     {
@@ -15,7 +13,7 @@ namespace Daco.Domain.Users.Aggregates
         public string? Name { get; private set; }
         public string? Avatar { get; private set; }
         public DateTime? DateOfBirth { get; private set; }
-        public UserGender? Gender { get; private set; }
+        public UserGender Gender { get; private set; }
         public UserStatus Status { get; private set; }
         public bool EmailVerified { get; private set; }
         public bool PhoneVerified { get; private set; }
@@ -31,6 +29,45 @@ namespace Daco.Domain.Users.Aggregates
 
 
         private User() { }
+
+        internal static User Reconstitute(
+            Guid id,
+            string username,
+            string? email,
+            string? phone,
+            string? name,
+            string? avatar,
+            DateTime? dateOfBirth,
+            UserGender gender,
+            UserStatus status,
+            bool emailVerified,
+            bool phoneVerified,
+            DateTime createdAt,
+            DateTime? updatedAt,
+            DateTime? deletedAt
+        )
+        {
+            var user = new User
+            {
+                Username = Username.Create(username),
+                Email = !string.IsNullOrEmpty(email) ? Email.Create(email) : null,
+                Phone = !string.IsNullOrEmpty(phone) ? PhoneNumber.Create(phone) : null,
+                Name = name,
+                Avatar = avatar,
+                DateOfBirth = dateOfBirth,
+                Gender = gender,
+                Status = status,
+                EmailVerified = emailVerified,
+                PhoneVerified = phoneVerified,
+                CreatedAt = createdAt,
+                UpdatedAt = updatedAt,
+                DeletedAt = deletedAt
+            };
+
+            user.SetId(id);
+
+            return user;
+        }
 
         #region user
         #region auth
@@ -162,7 +199,7 @@ namespace Daco.Domain.Users.Aggregates
         #endregion
 
         #region profile management
-        public void UpdateProfile(string? name, DateTime? dateOfBirth, UserGender? gender)
+        public void UpdateProfile(string? name, DateTime? dateOfBirth, UserGender gender)
         {
             Guard.Against(Status != UserStatus.Active, "Cannot update profile for inactive user");
 

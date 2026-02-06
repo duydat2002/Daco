@@ -30,4 +30,8 @@
     <ProjectReference Include="..\Shared\Daco.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+	<InternalsVisibleTo Include="Daco.Infrastructure" />
+  </ItemGroup>
+
 </Project>

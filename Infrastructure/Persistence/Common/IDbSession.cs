@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Daco.Infrastructure.Persistence.Common
+﻿namespace Daco.Infrastructure.Persistence.Common
 {
     public interface IDbSession : IDisposable
     {

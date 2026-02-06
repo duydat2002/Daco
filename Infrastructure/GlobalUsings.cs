@@ -1,4 +1,5 @@
 ﻿global using System;
+global using MediatR;
 global using Npgsql;
 global using System.Data;
 global using Daco.Domain.Common;
@@ -18,3 +19,7 @@ global using Daco.Infrastructure.Services.Authentication;
 global using Daco.Infrastructure.Services.Notifications;
 global using Daco.Infrastructure.Services.Security;
 global using static Daco.Infrastructure.Constants;
+global using Daco.Infrastructure.Persistence.Models.DTOs;
+global using Daco.Domain.Users.Enums;
+global using Daco.Infrastructure.Persistence.Mappings.Users;
+

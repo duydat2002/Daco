@@ -1,6 +1,4 @@
-﻿using MediatR;
-
-namespace Daco.Infrastructure.Persistence.EventDispatching
+﻿namespace Daco.Infrastructure.Persistence.EventDispatching
 {
     public class DomainEventDispatcher : IDomainEventDispatcher
     {

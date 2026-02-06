@@ -82,7 +82,7 @@
                 .Add("p_name", user.Name)
                 .Add("p_avatar", user.Avatar)
                 .Add("p_date_of_birth", user.DateOfBirth)
-                .Add("p_gender", user.Gender?.ToString())
+                .Add("p_gender", user.Gender.ToString())
                 .Add("p_status", user.Status.ToString())
                 .Add("p_email_verified", user.EmailVerified)
                 .Add("p_phone_verified", user.PhoneVerified)
@@ -111,7 +111,7 @@
                 .Add("p_name", user.Name)
                 .Add("p_avatar", user.Avatar)
                 .Add("p_date_of_birth", user.DateOfBirth)
-                .Add("p_gender", user.Gender?.ToString())
+                .Add("p_gender", user.Gender.ToString())
                 .Add("p_status", user.Status.ToString())
                 .Add("p_email_verified", user.EmailVerified)
                 .Add("p_phone_verified", user.PhoneVerified)
@@ -147,27 +147,26 @@
                 cancellationToken);
         }
 
-        private User MapToDomain(UserDto dto)
+        private User? MapToDomain(UserDto? dto)
         {
-            throw new NotImplementedException("Mapping from DTO to Domain not implemented yet");
-        }
+            if (dto == null) return null;
 
-        private class UserDto
-        {
-            public Guid Id { get; set; }
-            public string Username { get; set; } = null!;
-            public string? Email { get; set; }
-            public string? Phone { get; set; }
-            public string? Name { get; set; }
-            public string? Avatar { get; set; }
-            public DateTime? DateOfBirth { get; set; }
-            public string? Gender { get; set; }
-            public string Status { get; set; } = null!;
-            public bool EmailVerified { get; set; }
-            public bool PhoneVerified { get; set; }
-            public DateTime CreatedAt { get; set; }
-            public DateTime? UpdatedAt { get; set; }
-            public DateTime? DeletedAt { get; set; }
+            return User.Reconstitute(
+                dto.Id,
+                dto.Username,
+                dto.Email,
+                dto.Phone,
+                dto.Name,
+                dto.Avatar,
+                dto.DateOfBirth,
+                UserGenderMapper.FromDb(dto.Gender),
+                UserStatusMapper.FromDb(dto.Status),
+                dto.EmailVerified,
+                dto.PhoneVerified,
+                dto.CreatedAt,
+                dto.UpdatedAt,
+                dto.DeletedAt
+            );
         }
     }
 }

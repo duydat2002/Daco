@@ -10,6 +10,7 @@
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
     <Folder Include="Users\Interfaces\" />
+    <Folder Include="Users\DTOs\" />
     <Folder Include="Users\Services\" />
     <Folder Include="Users\Queries\" />
   </ItemGroup>
