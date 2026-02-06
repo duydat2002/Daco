@@ -11,17 +11,11 @@
 
         public async Task Handle(AddressAddedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(
-                "Handling AddressAddedEvent for User {UserId}, Address {AddressId}",
-                notification.UserId,
-                notification.AddressId);
+            _logger.LogInformation($"Handling AddressAddedEvent for User {notification.UserId}, Address {notification.AddressId}");
 
             try
             {
-                _logger.LogInformation(
-                    "User {UserId} added new address {AddressId}",
-                    notification.UserId,
-                    notification.AddressId);
+                _logger.LogInformation($"User {notification.UserId} added new address {notification.AddressId}");
 
                 // await _searchIndexService.UpdateUserAddressesAsync(notification.UserId);
 
@@ -31,9 +25,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Error handling AddressAddedEvent for User {UserId}",
-                    notification.UserId);
+                _logger.LogError(ex, $"Error handling AddressAddedEvent for User {notification.UserId}");
             }
         }
     }

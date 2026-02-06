@@ -9,7 +9,7 @@
             // Database Session
             services.AddScoped<IDbSession>(sp =>
             {
-                var connectionString = configuration.GetConnectionString("DefaultConnection")
+                var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
                     ?? throw new InvalidOperationException("Connection string not found");
 
                 return new NpgsqlDbSession(connectionString);
@@ -23,6 +23,15 @@
 
             // Domain Event Dispatcher
             services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+
+            // Repositories
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            // External Services
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISmsService, SmsService>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IVerificationTokenService, VerificationTokenService>();
 
             return services;
         }

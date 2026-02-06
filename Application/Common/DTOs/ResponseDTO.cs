@@ -18,12 +18,13 @@
             Message = message
         };
 
-        public static ResponseDTO Failure(string code, string message)
+        public static ResponseDTO Failure(string code, string message, object? data = null)
             => new()
             {
                 IsSuccess = false,
                 Code = code,
-                Message = message
+                Message = message,
+                Data = data
             };
 
         public bool IsFailure => !IsSuccess;

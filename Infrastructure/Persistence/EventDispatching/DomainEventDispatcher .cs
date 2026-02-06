@@ -22,24 +22,17 @@ namespace Daco.Infrastructure.Persistence.EventDispatching
             if (domainEvent == null)
                 throw new ArgumentNullException(nameof(domainEvent));
 
-            _logger.LogInformation(
-                "Dispatching domain event {EventType} with ID {EventId}",
-                domainEvent.GetType().Name,
-                domainEvent.Id);
+            _logger.LogInformation($"Dispatching domain event {domainEvent.GetType().Name} with ID {domainEvent.Id}");
 
             try
             {
                 await _mediator.Publish(domainEvent, cancellationToken);
 
-                _logger.LogInformation(
-                    "Successfully dispatched domain event {EventType}",
-                    domainEvent.GetType().Name);
+                _logger.LogInformation($"Successfully dispatched domain event {domainEvent.GetType().Name}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Error dispatching domain event {EventType}",
-                    domainEvent.GetType().Name);
+                _logger.LogError(ex, $"Error dispatching domain event {domainEvent.GetType().Name}");
                 throw;
             }
         }
@@ -53,9 +46,7 @@ namespace Daco.Infrastructure.Persistence.EventDispatching
 
             var events = domainEvents.ToList();
 
-            _logger.LogInformation(
-                "Dispatching {EventCount} domain events",
-                events.Count);
+            _logger.LogInformation($"Dispatching {events.Count} domain events");
 
             foreach (var domainEvent in events)
             {

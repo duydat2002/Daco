@@ -2,12 +2,17 @@
 {
     public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
+        where TResponse : ResponseDTO, new()
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
+        private readonly ILogger<ValidationBehaviour<TRequest, TResponse>> _logger;
 
-        public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
+        public ValidationBehaviour(
+            IEnumerable<IValidator<TRequest>> validators,
+            ILogger<ValidationBehaviour<TRequest, TResponse>> logger)
         {
             _validators = validators;
+            _logger = logger;
         }
 
         public async Task<TResponse> Handle(
@@ -29,7 +34,31 @@
                 .ToList();
 
             if (failures.Any())
-                throw new ValidationException(failures);
+            {
+                _logger.LogWarning(
+                    "Validation failed for {RequestName}. Errors: {Errors}",
+                    typeof(TRequest).Name,
+                    string.Join("; ", failures.Select(f => f.ErrorMessage))
+                );
+
+                var response = new TResponse
+                {
+                    IsSuccess = false,
+                    Code = ErrorCodes.Validation.Failed,
+                    Message = "Validation failed",
+                    Data = new
+                    {
+                        Errors = failures
+                            .GroupBy(f => f.PropertyName)
+                            .ToDictionary(
+                                g => g.Key,
+                                g => g.Select(f => f.ErrorMessage).ToArray()
+                            )
+                    }
+                };
+
+                return response;
+            }
 
             return await next();
         }

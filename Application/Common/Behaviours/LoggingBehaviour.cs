@@ -18,7 +18,12 @@
             var requestName = typeof(TRequest).Name;
             var requestId = Guid.NewGuid().ToString();
 
-            _logger.LogInformation($"[START] {requestName} - RequestId: {requestId} - Request: {JsonSerializer.Serialize(request)}");
+            _logger.LogInformation(
+                "[START] {RequestName} - RequestId: {RequestId} - Request: {Request}",
+                requestName,
+                requestId,
+                JsonSerializer.Serialize(request)
+            );
 
             var stopwatch = Stopwatch.StartNew();
 
@@ -28,11 +33,21 @@
 
                 stopwatch.Stop();
 
-                _logger.LogInformation($"[END] {requestName} - RequestId: {requestId} - Elapsed: {stopwatch.ElapsedMilliseconds}ms - Success: {IsSuccessResponse(response)}");
+                _logger.LogInformation(
+                    "[END] {RequestName} - RequestId: {RequestId} - Elapsed: {Elapsed}ms - Success: {Success}",
+                    requestName,
+                    requestId,
+                    stopwatch.ElapsedMilliseconds,
+                    IsSuccessResponse(response)
+                );
 
                 if (stopwatch.ElapsedMilliseconds > 3000)
                 {
-                    _logger.LogWarning($"[SLOW REQUEST] {requestName} took {stopwatch.ElapsedMilliseconds}ms");
+                    _logger.LogWarning(
+                        "[SLOW REQUEST] {RequestName} took {Elapsed}ms",
+                        requestName,
+                        stopwatch.ElapsedMilliseconds
+                    );
                 }
 
                 return response;
@@ -41,7 +56,14 @@
             {
                 stopwatch.Stop();
 
-                _logger.LogError(ex, $"[ERROR] {requestName} - RequestId: {requestId} - Elapsed: {stopwatch.ElapsedMilliseconds}ms - Error: {ex.Message}");
+                _logger.LogError(
+                    ex,
+                    "[ERROR] {RequestName} - RequestId: {RequestId} - Elapsed: {Elapsed}ms - Error: {Message}",
+                    requestName, 
+                    requestId,
+                    stopwatch.ElapsedMilliseconds,
+                    ex.Message
+                );
 
                 throw;
             }

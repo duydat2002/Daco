@@ -5,7 +5,7 @@
         protected ActionResult<ResponseDTO> HandleResult(ResponseDTO result)
         {
             if (result.IsFailure)
-                return BadRequest(ResponseDTO.Failure(result.Code, result.Message));
+                return BadRequest(ResponseDTO.Failure(result.Code, result.Message, result.Data));
 
             return Ok(ResponseDTO.Success(result.Data, result.Message));
         }

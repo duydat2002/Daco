@@ -16,7 +16,7 @@
             object? parameters = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Executing SP: {StoredProcedure}", storedProcedure);
+            _logger.LogDebug($"Executing SP: {storedProcedure}");
 
             try
             {
@@ -28,7 +28,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error executing SP: {StoredProcedure}", storedProcedure);
+                _logger.LogError(ex, $"Error executing SP: {storedProcedure}");
                 throw;
             }
         }
@@ -38,7 +38,7 @@
             object? parameters = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Executing SP: {StoredProcedure}", storedProcedure);
+            _logger.LogDebug($"Executing SP: {storedProcedure}");
 
             try
             {
@@ -50,7 +50,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error executing SP: {StoredProcedure}", storedProcedure);
+                _logger.LogError(ex, $"Error executing SP: {storedProcedure}");
                 throw;
             }
         }
@@ -60,7 +60,7 @@
             object? parameters = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Executing SP: {StoredProcedure}", storedProcedure);
+            _logger.LogDebug($"Executing SP: {storedProcedure}");
 
             try
             {
@@ -72,7 +72,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error executing SP: {StoredProcedure}", storedProcedure);
+                _logger.LogError(ex, $"Error executing SP: {storedProcedure}");
                 throw;
             }
         }
@@ -82,7 +82,7 @@
             object? parameters = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Executing SP: {StoredProcedure}", storedProcedure);
+            _logger.LogDebug($"Executing SP: {storedProcedure}");
 
             try
             {
@@ -94,7 +94,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error executing SP: {StoredProcedure}", storedProcedure);
+                _logger.LogError(ex, $"Error executing SP: {storedProcedure}");
                 throw;
             }
         }
@@ -104,7 +104,7 @@
             object? parameters = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Executing SP: {StoredProcedure}", storedProcedure);
+            _logger.LogDebug($"Executing SP: {storedProcedure}");
 
             try
             {
@@ -116,7 +116,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error executing SP: {StoredProcedure}", storedProcedure);
+                _logger.LogError(ex, $"Error executing SP: {storedProcedure}");
                 throw;
             }
         }
@@ -127,7 +127,7 @@
             object? parameters = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Executing SP with multiple results: {StoredProcedure}", storedProcedure);
+            _logger.LogDebug($"Executing SP with multiple results: {storedProcedure}");
 
             try
             {
@@ -144,7 +144,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error executing SP: {StoredProcedure}", storedProcedure);
+                _logger.LogError(ex, $"Error executing SP: {storedProcedure}");
                 throw;
             }
         }
@@ -154,7 +154,7 @@
             object? parameters = null,
             CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Executing SP with multiple results: {StoredProcedure}", storedProcedure);
+            _logger.LogDebug($"Executing SP with multiple results: {storedProcedure}");
 
             try
             {
@@ -172,7 +172,7 @@
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error executing SP: {StoredProcedure}", storedProcedure);
+                _logger.LogError(ex, $"Error executing SP: {storedProcedure}");
                 throw;
             }
         }

@@ -57,8 +57,7 @@
                     passwordHash);
             }
 
-            _logger.LogDebug("User domain model created with {EventCount} events",
-                user.DomainEvents.Count);
+            _logger.LogDebug($"User domain model created with {user.DomainEvents.Count} events");
 
             await _userRepository.AddAsync(user, cancellationToken);
 
@@ -66,7 +65,7 @@
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            _logger.LogInformation("User registered successfully: {UserId}", user.Id);
+            _logger.LogInformation($"User registered successfully: {user.Id}");
 
             return ResponseDTO.Success(
                 new {

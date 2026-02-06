@@ -21,10 +21,7 @@
 
         public async Task Handle(UserRegisteredEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(
-                "Handling UserRegisteredEvent for User {UserId} with provider {ProviderType}",
-                notification.UserId,
-                notification.ProviderType);
+            _logger.LogInformation($"Handling UserRegisteredEvent for User {notification.UserId} with provider {notification.ProviderType}");
 
             try
             {
@@ -33,7 +30,7 @@
                     notification.ProviderType == ProviderType.Email ? "email_verification" : "phone_verification",
                     cancellationToken);
 
-                _logger.LogDebug("Generated verification token: {Token}", verificationToken);
+                _logger.LogDebug($"Generated verification token: {verificationToken}");
 
                 if (notification.ProviderType == ProviderType.Email)
                 {
@@ -44,16 +41,11 @@
                     await SendPhoneVerification(notification.Identifier, verificationToken, cancellationToken);
                 }
 
-                _logger.LogInformation(
-                    "User {UserId} registered via {ProviderType}",
-                    notification.UserId,
-                    notification.ProviderType);
+                _logger.LogInformation($"User {notification.UserId} registered via {notification.ProviderType}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Error handling UserRegisteredEvent for User {UserId}",
-                    notification.UserId);
+                _logger.LogError(ex, $"Error handling UserRegisteredEvent for User {notification.UserId}");
             }
         }
 
@@ -69,7 +61,7 @@
 
             await _emailService.SendAsync(email, subject, body, cancellationToken);
 
-            _logger.LogInformation("Verification email sent to {Email}", email);
+            _logger.LogInformation($"Verification email sent to {email}");
         }
 
         private async Task SendPhoneVerification(string phone, string token, CancellationToken cancellationToken)
@@ -78,7 +70,7 @@
 
             await _smsService.SendAsync(phone, message, cancellationToken);
 
-            _logger.LogInformation("Verification SMS sent to {Phone}", phone);
+            _logger.LogInformation($"Verification SMS sent to {phone}");
         }
     }
 }

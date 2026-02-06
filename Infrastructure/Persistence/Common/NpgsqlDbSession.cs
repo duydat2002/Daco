@@ -101,5 +101,20 @@
 
             _disposed = true;
         }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_disposed)
+                return;
+
+            if (_transaction != null)
+                await _transaction.DisposeAsync();
+
+            if (_connection != null)
+                await _connection.DisposeAsync();
+
+            _disposed = true;
+            GC.SuppressFinalize(this);
+        }
     }
 }

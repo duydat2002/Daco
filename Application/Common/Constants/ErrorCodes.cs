@@ -9,8 +9,8 @@
             public const string InvalidCredentials = "AUTH.INVALID_CREDENTIALS";
             public const string EmailNotVerified   = "AUTH.EMAIL_NOT_VERIFIED";
             public const string PhoneNotVerified   = "AUTH.PHONE_NOT_VERIFIED";
-            public const string TokenExpired =     "AUTH.TOKEN_EXPIRED";
-            public const string TokenInvalid =     "AUTH.TOKEN_INVALID";
+            public const string TokenExpired       = "AUTH.TOKEN_EXPIRED";
+            public const string TokenInvalid       = "AUTH.TOKEN_INVALID";
             public const string PasswordTooWeak    = "AUTH.PASSWORD_TOO_WEAK";
             public const string AccountSuspended   = "AUTH.ACCOUNT_SUSPENDED";
             public const string AccountBanned      = "AUTH.ACCOUNT_BANNED";

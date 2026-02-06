@@ -10,15 +10,15 @@
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Integration\" />
     <Folder Include="EventBus\" />
-    <Folder Include="Services\Authentication\" />
+    <Folder Include="Persistence\Models\DTOs\" />
+    <Folder Include="Persistence\Models\Parameters\" />
     <Folder Include="Services\FileStorage\" />
-    <Folder Include="Services\Email\" />
-    <Folder Include="Services\Notifications\" />
     <Folder Include="Services\Shipping\" />
     <Folder Include="Services\Payment\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.2" />
     <PackageReference Include="Npgsql" Version="10.0.1" />

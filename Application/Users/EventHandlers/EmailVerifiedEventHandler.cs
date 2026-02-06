@@ -15,9 +15,7 @@
 
         public async Task Handle(EmailVerifiedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(
-                "Handling EmailVerifiedEvent for User {UserId}",
-                notification.UserId);
+            _logger.LogInformation($"Handling EmailVerifiedEvent for User {notification.UserId}");
 
             try
             {
@@ -36,15 +34,13 @@
 
                 await _emailService.SendAsync(notification.Email, subject, body, cancellationToken);
 
-                _logger.LogInformation("Welcome email sent to {Email}", notification.Email);
+                _logger.LogInformation($"Welcome email sent to {notification.Email}");
 
-                _logger.LogInformation("User {UserId} verified email successfully", notification.UserId);
+                _logger.LogInformation($"User {notification.UserId} verified email successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Error handling EmailVerifiedEvent for User {UserId}",
-                    notification.UserId);
+                _logger.LogError(ex, $"Error handling EmailVerifiedEvent for User {notification.UserId}");
             }
         }
     }

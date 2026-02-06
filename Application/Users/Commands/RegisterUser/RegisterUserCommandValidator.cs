@@ -13,6 +13,8 @@
             RuleForNotEmpty(x => x.Email, r => r.EmailAddress().WithMessage("Invalid email format"));
 
             RuleForNotEmpty(x => x.Phone, r => r.ValidPhoneNumber());
+
+            RuleForNotEmpty(x => x.Password, r => r.StrongPassword());
         }
     }
 }

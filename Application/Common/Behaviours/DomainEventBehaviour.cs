@@ -44,26 +44,38 @@
                 })
                 .ToList();
 
-            if (!domainEvents.Any())
-            {
-                return;
-            }
+            if (!domainEvents.Any())  return; 
 
-            _logger.LogInformation($"Publishing {domainEvents.Count} domain events");
+            _logger.LogInformation(
+                "Publishing {Count} domain events",
+                domainEvents.Count
+            );
 
             foreach (var domainEvent in domainEvents)
             {
-                _logger.LogDebug($"Publishing domain event: {domainEvent.GetType().Name} - {JsonSerializer.Serialize(domainEvent)}");
+                _logger.LogDebug(
+                    "Publishing domain event: {EventType} - {EventData}",
+                    domainEvent.GetType().Name,
+                    System.Text.Json.JsonSerializer.Serialize(domainEvent)
+                );
 
                 try
                 {
                     await _publisher.Publish(domainEvent, cancellationToken);
 
-                    _logger.LogInformation($"Domain event published successfully: {domainEvent.GetType().Name}");
+                    _logger.LogInformation(
+                        "Domain event published successfully: {EventType}",
+                        domainEvent.GetType().Name
+                    );
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Error publishing domain event: {domainEvent.GetType().Name} - {ex.Message}");
+                    _logger.LogError(
+                        ex,
+                        "Error publishing domain event: {EventType} - {ErrorMessage}",
+                        domainEvent.GetType().Name,
+                        ex.Message
+                    );
 
                     throw;
                 }

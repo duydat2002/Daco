@@ -18,9 +18,7 @@
 
         public async Task Handle(PasswordChangedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogInformation(
-                "Handling PasswordChangedEvent for User {UserId}",
-                notification.UserId);
+            _logger.LogInformation($"Handling PasswordChangedEvent for User {notification.UserId}");
 
             try
             {
@@ -37,18 +35,13 @@
 
                 await _emailService.SendAsync(user.Email.Value, subject, body, cancellationToken);
 
-                _logger.LogInformation("Password change alert sent to user {UserId}", notification.UserId);
+                _logger.LogInformation($"Password change alert sent to user {notification.UserId}");
 
-                _logger.LogWarning(
-                    "User {UserId} changed password at {Timestamp}",
-                    notification.UserId,
-                    DateTime.UtcNow);
+                _logger.LogWarning($"User {notification.UserId} changed password at {DateTime.UtcNow}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Error handling PasswordChangedEvent for User {UserId}",
-                    notification.UserId);
+                _logger.LogError(ex, $"Error handling PasswordChangedEvent for User {notification.UserId}");
             }
         }
     }

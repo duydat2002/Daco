@@ -18,10 +18,7 @@
 
         public async Task Handle(UserSuspendedEvent notification, CancellationToken cancellationToken)
         {
-            _logger.LogWarning(
-                "Handling UserSuspendedEvent for User {UserId}, Reason: {Reason}",
-                notification.UserId,
-                notification.Reason);
+            _logger.LogWarning($"Handling UserSuspendedEvent for User {notification.UserId}, Reason: {notification.Reason}");
 
             try
             {
@@ -43,17 +40,11 @@
 
                 // await _sessionService.RevokeAllSessionsAsync(notification.UserId);
 
-                _logger.LogWarning(
-                    "User {UserId} suspended at {Timestamp}, Reason: {Reason}",
-                    notification.UserId,
-                    DateTime.UtcNow,
-                    notification.Reason);
+                _logger.LogWarning($"User {notification.UserId} suspended at {DateTime.UtcNow}, Reason: {notification.Reason}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Error handling UserSuspendedEvent for User {UserId}",
-                    notification.UserId);
+                _logger.LogError(ex, $"Error handling UserSuspendedEvent for User {notification.UserId}");
             }
         }
     }
