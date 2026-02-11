@@ -1,12 +1,14 @@
-﻿namespace Daco.Domain.Users.Events
+﻿using Daco.Domain.Users.Constants;
+
+namespace Daco.Domain.Users.Events
 {
     public record UserRegisteredEvent : DomainEvent
     {
         public Guid UserId { get; init; }
         public string Identifier { get; init; }
-        public ProviderType ProviderType { get; init; }
+        public string ProviderType { get; init; }
 
-        public UserRegisteredEvent(Guid userId, string identifier, ProviderType providerType)
+        public UserRegisteredEvent(Guid userId, string identifier, string providerType)
         {
             UserId = userId;
             Identifier = identifier;

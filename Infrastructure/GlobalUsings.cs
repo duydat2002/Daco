@@ -14,12 +14,11 @@ global using Microsoft.Extensions.Configuration;
 global using Daco.Domain.Users.Aggregates;
 global using Daco.Domain.Users.Entities;
 global using Daco.Application.Common.Validators;
-global using Daco.Infrastructure.Persistence.Repositories;
 global using Daco.Infrastructure.Services.Authentication;
 global using Daco.Infrastructure.Services.Notifications;
 global using Daco.Infrastructure.Services.Security;
 global using static Daco.Infrastructure.Constants;
 global using Daco.Infrastructure.Persistence.Models.DTOs;
+global using System.Text.Json;
 global using Daco.Domain.Users.Enums;
 global using Daco.Infrastructure.Persistence.Mappings.Users;
-

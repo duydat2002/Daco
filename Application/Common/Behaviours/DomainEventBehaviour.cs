@@ -56,7 +56,7 @@
                 _logger.LogDebug(
                     "Publishing domain event: {EventType} - {EventData}",
                     domainEvent.GetType().Name,
-                    System.Text.Json.JsonSerializer.Serialize(domainEvent)
+                    JsonSerializer.Serialize(domainEvent)
                 );
 
                 try

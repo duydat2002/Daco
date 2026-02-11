@@ -1,9 +1,11 @@
-﻿namespace Daco.Domain.Users.Entities
+﻿using Daco.Domain.Users.Constants;
+
+namespace Daco.Domain.Users.Entities
 {
     public class LoginSession : Entity
     {
         public Guid UserId { get; private set; }
-        public ProviderType LoginProvider { get; private set; }
+        public string LoginProvider { get; private set; }
 
         // Session info
         public string Token { get; private set; }              // JWT token hash
@@ -28,7 +30,7 @@
 
         public static LoginSession Create(
             Guid userId,
-            ProviderType loginProvider,
+            string loginProvider,
             string token,
             string? refreshToken,
             string ipAddress,

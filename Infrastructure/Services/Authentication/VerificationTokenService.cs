@@ -28,7 +28,7 @@
                 .Add("p_token_type", tokenType)
                 .Build();
 
-            await _executor.ExecuteAsync(
+            await _executor.ExecuteProcedureAsync(
                 "sp_create_verification_token",
                 parameters,
                 cancellationToken);
@@ -48,7 +48,7 @@
                 .Add("p_token", token)
                 .Build();
 
-            var result = await _executor.ExecuteScalarAsync<bool>(
+            var result = await _executor.ExecuteFunctionScalarAsync<bool>(
                 "sp_validate_verification_token",
                 parameters,
                 cancellationToken);

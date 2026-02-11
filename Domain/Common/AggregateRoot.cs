@@ -6,6 +6,7 @@
         public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         protected AggregateRoot() { }
+        protected AggregateRoot(Guid id) : base(id) { }
 
         protected void AddDomainEvent(DomainEvent domainEvent)
         {

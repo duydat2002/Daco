@@ -15,4 +15,4 @@ global using System.Text.Json;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Reflection;
 global using Daco.Application.Common.Behaviours;
-
+global using Daco.Domain.Users.Constants;

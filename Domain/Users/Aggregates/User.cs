@@ -1,4 +1,6 @@
-﻿namespace Daco.Domain.Users.Aggregates
+﻿using Daco.Domain.Users.Constants;
+
+namespace Daco.Domain.Users.Aggregates
 {
     public class User : AggregateRoot
     {
@@ -49,6 +51,7 @@
         {
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Username = Username.Create(username),
                 Email = !string.IsNullOrEmpty(email) ? Email.Create(email) : null,
                 Phone = !string.IsNullOrEmpty(phone) ? PhoneNumber.Create(phone) : null,
@@ -64,8 +67,6 @@
                 DeletedAt = deletedAt
             };
 
-            user.SetId(id);
-
             return user;
         }
 
@@ -78,6 +79,7 @@
 
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Username = usernameVo,
                 Email = emailVo,
                 Status = UserStatus.Active,
@@ -86,13 +88,13 @@
                 CreatedAt = DateTime.UtcNow
             };
 
-            var emailProvider = AuthProvider.CreateEmailProvider(emailVo.Value, passwordHash);
+            var emailProvider = AuthProvider.CreateEmailProvider(user.Id, emailVo.Value, passwordHash);
             user._authProviders.Add(emailProvider);
 
             user.AddDomainEvent(new UserRegisteredEvent(
                 user.Id,
                 emailVo.Value,
-                ProviderType.Email));
+                ProviderTypes.Email));
 
             return user;
         }
@@ -104,6 +106,7 @@
 
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Username = usernameVo,
                 Phone = phoneVo,
                 Status = UserStatus.Active,
@@ -112,20 +115,20 @@
                 CreatedAt = DateTime.UtcNow
             };
 
-            var phoneProvider = AuthProvider.CreatePhoneProvider(phoneVo.Value, passwordHash);
+            var phoneProvider = AuthProvider.CreatePhoneProvider(user.Id, phoneVo.Value, passwordHash);
             user._authProviders.Add(phoneProvider);
 
             user.AddDomainEvent(new UserRegisteredEvent(
                 user.Id,
                 phoneVo.Value,
-                ProviderType.Phone));
+                ProviderTypes.Phone));
 
             return user;
         }
 
         public static User CreateWithSocial(
             string username,
-            ProviderType providerType,
+            string providerType,
             string providerUserId,
             string? email,
             string? name,
@@ -135,6 +138,7 @@
 
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Username = usernameVo,
                 Email = !string.IsNullOrEmpty(email) ? Email.Create(email) : null,
                 Name = name,
@@ -145,6 +149,7 @@
             };
 
             var socialProvider = AuthProvider.CreateSocialProvider(
+                user.Id,
                 providerType,
                 providerUserId,
                 email,
@@ -173,7 +178,7 @@
             UpdatedAt = DateTime.UtcNow;
 
             var emailProvider = _authProviders
-                .FirstOrDefault(p => p.ProviderType == ProviderType.Email);
+                .FirstOrDefault(p => p.ProviderType == ProviderTypes.Email);
 
             emailProvider?.MarkAsVerified();
 
@@ -190,7 +195,7 @@
             UpdatedAt = DateTime.UtcNow;
 
             var phoneProvider = _authProviders
-                .FirstOrDefault(p => p.ProviderType == ProviderType.Phone);
+                .FirstOrDefault(p => p.ProviderType == ProviderTypes.Phone);
 
             phoneProvider?.MarkAsVerified();
 
@@ -232,7 +237,7 @@
             Guard.Against(Status != UserStatus.Active, "Cannot change password for inactive user");
 
             var provider = _authProviders
-                .FirstOrDefault(p => p.ProviderType == ProviderType.Email || p.ProviderType == ProviderType.Phone);
+                .FirstOrDefault(p => p.ProviderType == ProviderTypes.Email || p.ProviderType == ProviderTypes.Phone);
 
             Guard.Against(provider == null, "User does not have email/phone provider");
             Guard.Against(provider!.PasswordHash != currentPasswordHash, "Current password is incorrect");

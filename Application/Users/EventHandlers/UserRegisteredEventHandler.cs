@@ -27,16 +27,16 @@
             {
                 var verificationToken = await _tokenService.GenerateTokenAsync(
                     notification.UserId,
-                    notification.ProviderType == ProviderType.Email ? "email_verification" : "phone_verification",
+                    notification.ProviderType == ProviderTypes.Email ? "email_verification" : "phone_verification",
                     cancellationToken);
 
                 _logger.LogDebug($"Generated verification token: {verificationToken}");
 
-                if (notification.ProviderType == ProviderType.Email)
+                if (notification.ProviderType == ProviderTypes.Email)
                 {
                     await SendEmailVerification(notification.Identifier, verificationToken, cancellationToken);
                 }
-                else if (notification.ProviderType == ProviderType.Phone)
+                else if (notification.ProviderType == ProviderTypes.Phone)
                 {
                     await SendPhoneVerification(notification.Identifier, verificationToken, cancellationToken);
                 }

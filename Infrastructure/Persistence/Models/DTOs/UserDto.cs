@@ -9,8 +9,8 @@
         public string? Name { get; set; }
         public string? Avatar { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public string Gender { get; set; } = null!;
-        public string Status { get; set; } = null!;
+        public int Gender { get; set; }
+        public int Status { get; set; }
         public bool EmailVerified { get; set; }
         public bool PhoneVerified { get; set; }
         public DateTime CreatedAt { get; set; }

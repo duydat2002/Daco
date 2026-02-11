@@ -1,4 +1,6 @@
-﻿namespace Daco.Infrastructure
+﻿using Daco.Infrastructure.Persistence.Repositories.Users;
+
+namespace Daco.Infrastructure
 {
     public static class DependencyInjection
     {

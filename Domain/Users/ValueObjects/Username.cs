@@ -2,7 +2,7 @@
 {
     public sealed class Username : ValueObject
     {
-        private static readonly Regex UsernameRegex = new(@"^[a-zA-Z0-9_]{3,50}$", RegexOptions.Compiled);
+        private static readonly Regex UsernameRegex = new(@"^[a-z0-9_]{3,50}$", RegexOptions.Compiled);
 
         public string Value { get; private set; }
 

@@ -10,6 +10,7 @@
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Integration\" />
     <Folder Include="EventBus\" />
+    <Folder Include="Persistence\Mappings\Users\" />
     <Folder Include="Persistence\Models\Parameters\" />
     <Folder Include="Services\FileStorage\" />
     <Folder Include="Services\Shipping\" />

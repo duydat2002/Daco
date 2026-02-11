@@ -1,4 +1,7 @@
-﻿namespace Daco.Domain.Users.Entities
+﻿using Daco.Domain.Users.Aggregates;
+using Daco.Domain.Users.Constants;
+
+namespace Daco.Domain.Users.Entities
 {
     /// <summary>
     /// Auth Provider Entity - quản lý các phương thức đăng nhập
@@ -6,7 +9,7 @@
     public class AuthProvider : Entity
     {
         public Guid UserId { get; private set; }
-        public ProviderType ProviderType { get; private set; }
+        public string ProviderType { get; private set; }
         public string ProviderKey { get; private set; }
 
         // Password (only for email/phone providers)
@@ -34,14 +37,16 @@
 
         private AuthProvider() { }
 
-        public static AuthProvider CreateEmailProvider(string email, string passwordHash)
+        public static AuthProvider CreateEmailProvider(Guid userId, string email, string passwordHash)
         {
             Guard.AgainstNullOrEmpty(email, nameof(email));
             Guard.AgainstNullOrEmpty(passwordHash, nameof(passwordHash));
 
             return new AuthProvider
             {
-                ProviderType = ProviderType.Email,
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                ProviderType = ProviderTypes.Email,
                 ProviderKey = email.ToLowerInvariant(),
                 PasswordHash = passwordHash,
                 PasswordUpdatedAt = DateTime.UtcNow,
@@ -50,14 +55,16 @@
             };
         }
 
-        public static AuthProvider CreatePhoneProvider(string phone, string passwordHash)
+        public static AuthProvider CreatePhoneProvider(Guid userId, string phone, string passwordHash)
         {
             Guard.AgainstNullOrEmpty(phone, nameof(phone));
             Guard.AgainstNullOrEmpty(passwordHash, nameof(passwordHash));
 
             return new AuthProvider
             {
-                ProviderType = ProviderType.Phone,
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                ProviderType = ProviderTypes.Phone,
                 ProviderKey = phone,
                 PasswordHash = passwordHash,
                 PasswordUpdatedAt = DateTime.UtcNow,
@@ -67,7 +74,8 @@
         }
 
         public static AuthProvider CreateSocialProvider(
-            ProviderType providerType,
+            Guid userId,
+            string providerType,
             string providerUserId,
             string? email,
             string? name,
@@ -78,13 +86,15 @@
         )
         {
             Guard.Against(
-                providerType != ProviderType.Google && providerType != ProviderType.Facebook,
+                providerType != ProviderTypes.Google && providerType != ProviderTypes.Facebook,
                 "Invalid social provider type");
 
             Guard.AgainstNullOrEmpty(providerUserId, nameof(providerUserId));
 
             return new AuthProvider
             {
+                Id = Guid.NewGuid(),
+                UserId = userId,
                 ProviderType = providerType,
                 ProviderKey = $"{providerType}:{providerUserId}",
                 ProviderUserId = providerUserId,
@@ -105,7 +115,7 @@
         {
             Guard.AgainstNullOrEmpty(newPasswordHash, nameof(newPasswordHash));
             Guard.Against(
-                ProviderType != ProviderType.Email && ProviderType != ProviderType.Phone,
+                ProviderType != ProviderTypes.Email && ProviderType != ProviderTypes.Phone,
                 "Cannot update password for social providers");
 
             PasswordHash = newPasswordHash;
@@ -123,7 +133,7 @@
         public void UpdateSocialTokens(string accessToken, string? refreshToken, DateTime expiresAt)
         {
             Guard.Against(
-                ProviderType == ProviderType.Email || ProviderType == ProviderType.Phone,
+                ProviderType == ProviderTypes.Email || ProviderType == ProviderTypes.Phone,
                 "Cannot update tokens for email/phone providers");
 
             AccessToken = accessToken;

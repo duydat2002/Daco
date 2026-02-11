@@ -20,8 +20,8 @@
         }
 
         public async Task<ResponseDTO> Handle(
-        RegisterUserCommand request,
-        CancellationToken cancellationToken)
+            RegisterUserCommand request,
+            CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Registering user with username: {request.Username}");
 
@@ -33,7 +33,7 @@
             }
 
             if (!string.IsNullOrEmpty(request.Phone))
-            {
+            {                      
                 var existingUser = await _userRepository.FindByPhoneAsync(request.Phone, cancellationToken);
                 if (existingUser != null)
                 return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "The phone number has already been used!");
@@ -62,8 +62,6 @@
             await _userRepository.AddAsync(user, cancellationToken);
 
             _unitOfWork.TrackEntity(user);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation($"User registered successfully: {user.Id}");
 
