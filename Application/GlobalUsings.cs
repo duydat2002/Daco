@@ -7,7 +7,6 @@ global using Daco.Application.Common.Validators;
 global using System.Linq.Expressions;
 global using Daco.Domain.Users.Aggregates;
 global using Daco.Domain.Users.Events;
-global using Daco.Domain.Users.Enums;
 global using Daco.Application.Common.DTOs;
 global using Daco.Application.Common.Constants;
 global using System.Diagnostics;

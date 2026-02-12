@@ -21,4 +21,5 @@ global using static Daco.Infrastructure.Constants;
 global using Daco.Infrastructure.Persistence.Models.DTOs;
 global using System.Text.Json;
 global using Daco.Domain.Users.Enums;
-global using Daco.Infrastructure.Persistence.Mappings.Users;
+global using Daco.Infrastructure.Persistence.Repositories.Users;
+global using Google.Apis.Auth;

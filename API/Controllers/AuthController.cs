@@ -21,5 +21,14 @@
             return HandleResult(result);
         }
 
+        [HttpPost("register/google")]
+        public async Task<ActionResult<ResponseDTO>> RegisterWitGoogle(
+            [FromBody] RegisterWithGoogleCommand command,
+            CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return HandleResult(result);
+        }
     }
 }

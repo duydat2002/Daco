@@ -1,6 +1,4 @@
-﻿using Daco.Infrastructure.Persistence.Repositories.Users;
-
-namespace Daco.Infrastructure
+﻿namespace Daco.Infrastructure
 {
     public static class DependencyInjection
     {
@@ -34,6 +32,7 @@ namespace Daco.Infrastructure
             services.AddScoped<ISmsService, SmsService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IVerificationTokenService, VerificationTokenService>();
+            services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 
             return services;
         }
