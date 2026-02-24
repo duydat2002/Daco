@@ -51,6 +51,7 @@
             var result = await _executor.ExecuteFunctionScalarAsync<bool>(
                 "sp_validate_verification_token",
                 parameters,
+                null,
                 cancellationToken);
 
             return result;

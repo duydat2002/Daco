@@ -142,12 +142,13 @@
         public async Task<T?> ExecuteFunctionScalarAsync<T>(
             string functionName,
             object? parameters = null,
+            Dictionary<string, string>? parameterCasts = null,
             CancellationToken cancellationToken = default)
         {
             _logger.LogDebug($"Executing Function (Scalar): {functionName} - input: {JsonSerializer.Serialize(parameters)}");
             try
             {
-                var sql = $"SELECT {functionName}({BuildParameterPlaceholders(parameters)})";
+                var sql = $"SELECT {functionName}({BuildParameterPlaceholders(parameters, parameterCasts)})";
                 return await _session.Connection.ExecuteScalarAsync<T>(
                     sql,
                     parameters,
@@ -167,7 +168,7 @@
             return $"SELECT * FROM {functionName}({BuildParameterPlaceholders(parameters)})";
         }
 
-        private string BuildParameterPlaceholders(object? parameters)
+        private string BuildParameterPlaceholders(object? parameters, Dictionary<string, string>? parameterCasts = null)
         {
             if (parameters == null) return string.Empty;
 
@@ -181,9 +182,18 @@
                 paramNames = parameters.GetType().GetProperties().Select(p => p.Name);
             }
 
-            var paramList = paramNames.Select(name => $"{name} => @{name}");
-            //var placeholders = properties.Select(p => $"@{p.Name}");
-            return string.Join(", ", paramList);
+            var placeholders = paramNames.Select(name =>
+            {
+                if (parameterCasts != null &&
+                    parameterCasts.TryGetValue(name, out var castType))
+                {
+                    return $"@{name}::{castType}";
+                }
+
+                return $"@{name}";
+            });
+
+            return string.Join(", ", placeholders);
         }
 
         /// <summary>

@@ -16,11 +16,9 @@
         {
             get
             {
-                if (_connection == null || _connection.State == ConnectionState.Closed)
-                {
-                    _connection = new NpgsqlConnection(_connectionString);
-                    _connection.Open();
-                }
+                if (_connection == null)
+                    throw new InvalidOperationException("Connection has not been initialized. Call OpenAsync first.");
+
                 return _connection;
             }
         }
@@ -42,10 +40,10 @@
 
         public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
         {
-            if (_connection == null || _connection.State != ConnectionState.Open)
-            {
-                await OpenAsync(cancellationToken);
-            }
+            await OpenAsync(cancellationToken);
+
+            if (_transaction != null)
+                return;
 
             _transaction = await _connection!.BeginTransactionAsync(cancellationToken);
         }

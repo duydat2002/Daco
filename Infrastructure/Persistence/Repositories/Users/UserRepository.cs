@@ -32,6 +32,25 @@
             return MapToDomain(userDto);
         }
 
+        public async Task<User?> FindByIdentifierAsync(string identifier, CancellationToken cancellationToken = default)
+        {
+            _logger.LogDebug($"Finding user by email: {identifier}");
+
+            var parameters = new DapperParameterBuilder()
+                .Add("p_identifier", identifier)
+                .Build();
+
+            var userDto = await _executor.ExecuteFunctionSingleOrDefaultAsync<UserDto>(
+                UserDbNames.FindUserByIdentifier,
+                parameters,
+                cancellationToken);
+
+            if (userDto == null)
+                return null;
+
+            return MapToDomain(userDto);
+        }
+
         public async Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
             _logger.LogDebug($"Finding user by email: {email}");
@@ -185,6 +204,30 @@
 
             _logger.LogInformation($"Auth provider created successfully for user {userId}");
 
+        }
+
+        public async Task<bool> CheckUserAuthProvider(
+            Guid userId,
+            string providerType,
+            CancellationToken cancellationToken)
+        {
+            var parameters = new DapperParameterBuilder()
+                .Add("p_user_id", userId)
+                .Add("p_provider_type", providerType)
+                .Build();
+
+            var result = await _executor.ExecuteFunctionScalarAsync<bool>(
+                UserDbNames.CheckUserAuthProvider,
+                parameters,
+                new Dictionary<string, string>
+                {
+                    { "p_provider_type", "provider_types" }
+                },
+                cancellationToken);
+
+            _logger.LogInformation($"CheckUserAuthProvider: \nOutput: {result}");
+
+            return result;
         }
 
         private User? MapToDomain(UserDto? dto)

@@ -51,7 +51,7 @@ namespace Daco.Domain.Users.Aggregates
         {
             var user = new User
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 Username = Username.Create(username),
                 Email = !string.IsNullOrEmpty(email) ? Email.Create(email) : null,
                 Phone = !string.IsNullOrEmpty(phone) ? PhoneNumber.Create(phone) : null,
@@ -72,6 +72,44 @@ namespace Daco.Domain.Users.Aggregates
 
         #region user
         #region auth
+        public void AddAuthProvider(
+            string providerType,
+            string providerUserId,
+            string? email = null,
+            string? name = null,
+            string? avatar = null)
+        {
+            Guard.AgainstNullOrEmpty(providerType, nameof(providerType));
+            Guard.AgainstNullOrEmpty(providerUserId, nameof(providerUserId));
+
+            Guard.Against(
+                providerType != ProviderTypes.Google && providerType != ProviderTypes.Facebook,
+                "Only social providers (Google, Facebook) can be added to existing user");
+
+            if (_authProviders.Any(p => p.ProviderType == providerType))
+            {
+                throw new InvalidOperationException(
+                    $"User already has {providerType} provider linked");
+            }
+
+            var provider = AuthProvider.CreateSocialProvider(
+                userId: this.Id,
+                providerType: providerType,
+                providerUserId: providerUserId,
+                email: email,
+                name: name,
+                avatar: avatar);
+
+            _authProviders.Add(provider);
+
+            UpdatedAt = DateTime.UtcNow;
+
+            //AddDomainEvent(new AuthProviderLinkedEvent(
+            //    userId: this.Id,
+            //    providerType: providerType,
+            //    providerUserId: providerUserId));
+        }
+
         public static User CreateWithEmail(string username, string email, string passwordHash)
         {
             var usernameVo = Username.Create(username);
@@ -142,6 +180,7 @@ namespace Daco.Domain.Users.Aggregates
                 Username = usernameVo,
                 Email = !string.IsNullOrEmpty(email) ? Email.Create(email) : null,
                 Name = name,
+                Avatar = avatar,
                 Status = UserStatus.Active,
                 EmailVerified = !string.IsNullOrEmpty(email),
                 PhoneVerified = false,

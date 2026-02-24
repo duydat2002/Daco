@@ -15,3 +15,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using System.Reflection;
 global using Daco.Application.Common.Behaviours;
 global using Daco.Domain.Users.Constants;
+global using System.Globalization;
+global using System.Text;
+global using System.Text.RegularExpressions;
+global using Daco.Application.Common.Utils;

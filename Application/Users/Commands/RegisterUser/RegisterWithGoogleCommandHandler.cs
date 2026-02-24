@@ -1,4 +1,5 @@
-﻿namespace Daco.Application.Users.Commands.RegisterUser
+﻿
+namespace Daco.Application.Users.Commands.RegisterUser
 {
     public class RegisterWithGoogleCommandHandler : IRequestHandler<RegisterWithGoogleCommand, ResponseDTO>
     {
@@ -42,43 +43,47 @@
                     "Google email is not verified");
             }
 
-            var email = googleUser.Email;
             var providerUserId = googleUser.Subject;
+            var email = googleUser.Email;
+            var name = googleUser.Name;
+            var avatar = googleUser.Picture;
 
             var user = await _userRepository
-                .FindByEmailAsync(email, cancellationToken);
+                .FindByIdentifierAsync(email, cancellationToken);
 
             if (user is null)
             {
-                var username = await GenerateUniqueUsernameAsync(
-                    googleUser,
-                    cancellationToken);
+                var username = UsernameGenerator.GenerateWithSuffix(name);
+                while((await _userRepository.FindByIdentifierAsync(username)) != null)
+                {
+                    username = UsernameGenerator.GenerateWithSuffix(name);
+                }
 
                 user = User.CreateWithSocial(
                     username: username,
                     providerType: ProviderTypes.Google,
                     providerUserId: providerUserId,
                     email: email,
-                    name: googleUser.Name,
-                    avatar: googleUser.Picture);
+                    name: name,
+                    avatar: avatar);
 
                 await _userRepository.AddAsync(user, cancellationToken);
             }
-            //else
-            //{
-            //    if (!user.HasProvider(ProviderTypes.Google))
-            //    {
-            //        user.AddAuthProvider(
-            //            ProviderTypes.Google,
-            //            providerUserId);
-            //    }
-            //}
+            else
+            {
+                if (!(await _userRepository.CheckUserAuthProvider(user.Id, ProviderTypes.Google, cancellationToken)))
+                {
+                    user.AddAuthProvider(
+                        ProviderTypes.Google,
+                        providerUserId,
+                        email,
+                        googleUser.Name,
+                        googleUser.Picture
+                    );
+                }
+            }
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            _logger.LogInformation(
-                "Google login successful. UserId: {UserId}",
-                user.Id);
+            _logger.LogInformation($"Google login successful. UserId: {user.Id}");
 
             return ResponseDTO.Success(
                 new
@@ -91,38 +96,6 @@
                     Provider = ProviderTypes.Google
                 },
                 "Login successful with Google");
-        }
-
-        private async Task<string> GenerateUniqueUsernameAsync(
-            GoogleUserInfo googleUser,
-            CancellationToken cancellationToken)
-        {
-            var source = !string.IsNullOrWhiteSpace(googleUser.Name)
-                ? googleUser.Name
-                : googleUser.Email.Split('@')[0];
-
-            var baseUsername = new string(
-                source.ToLowerInvariant()
-                      .Select(c => char.IsLetterOrDigit(c) ? c : '_')
-                      .ToArray())
-                .Trim('_');
-
-            if (baseUsername.Length < 3)
-                baseUsername = "user";
-
-            if (baseUsername.Length > 40)
-                baseUsername = baseUsername[..40];
-
-            var username = baseUsername;
-            var suffix = 1;
-
-            //while (await _userRepository
-            //    .UsernameExistsAsync(username, cancellationToken))
-            //{
-            //    username = $"{baseUsername}_{suffix++}";
-            //}
-
-            return username;
         }
     }
 }
