@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Users.Constants;
-
-namespace Daco.Domain.Users.Entities
+﻿namespace Daco.Domain.Users.Entities
 {
     public class LoginSession : Entity
     {

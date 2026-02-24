@@ -1,7 +1,4 @@
-﻿using Daco.Domain.Users.Aggregates;
-using Daco.Domain.Users.Constants;
-
-namespace Daco.Domain.Users.Entities
+﻿namespace Daco.Domain.Users.Entities
 {
     /// <summary>
     /// Auth Provider Entity - quản lý các phương thức đăng nhập

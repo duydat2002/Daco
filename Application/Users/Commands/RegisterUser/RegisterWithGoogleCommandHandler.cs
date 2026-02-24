@@ -1,5 +1,4 @@
-﻿
-namespace Daco.Application.Users.Commands.RegisterUser
+﻿namespace Daco.Application.Users.Commands.RegisterUser
 {
     public class RegisterWithGoogleCommandHandler : IRequestHandler<RegisterWithGoogleCommand, ResponseDTO>
     {

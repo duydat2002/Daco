@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Users.Constants;
-
-namespace Daco.Domain.Users.Events
+﻿namespace Daco.Domain.Users.Events
 {
     public record UserRegisteredEvent : DomainEvent
     {

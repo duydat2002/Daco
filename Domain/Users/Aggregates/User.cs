@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Users.Constants;
-
-namespace Daco.Domain.Users.Aggregates
+﻿namespace Daco.Domain.Users.Aggregates
 {
     public class User : AggregateRoot
     {
