@@ -168,7 +168,7 @@
             _logger.LogInformation($"User {user.Id} updated successfully");
         }
 
-        private async Task AddAuthProviderAsync(
+        public async Task AddAuthProviderAsync(
             Guid userId,
             AuthProvider provider,
             CancellationToken cancellationToken)
@@ -219,10 +219,6 @@
             var result = await _executor.ExecuteFunctionScalarAsync<bool>(
                 UserDbNames.CheckUserAuthProvider,
                 parameters,
-                new Dictionary<string, string>
-                {
-                    { "p_provider_type", "provider_types" }
-                },
                 cancellationToken);
 
             _logger.LogInformation($"CheckUserAuthProvider: \nOutput: {result}");

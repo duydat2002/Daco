@@ -79,6 +79,9 @@
                         googleUser.Name,
                         googleUser.Picture
                     );
+
+                    var newProvider = user.AuthProviders.Last();
+                    await _userRepository.AddAuthProviderAsync(user.Id, newProvider, cancellationToken);
                 }
             }
 

@@ -7,13 +7,22 @@
             IConfiguration configuration)
         {
             // Database Session
-            services.AddScoped<IDbSession>(sp =>
-            {
-                var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
+            //services.AddScoped<IDbSession>(sp =>
+            //{
+            //    var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
+            //        ?? throw new InvalidOperationException("Connection string not found");
+
+            //    return new NpgsqlDbSession(connectionString);
+            //});
+
+
+            var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
                     ?? throw new InvalidOperationException("Connection string not found");
 
-                return new NpgsqlDbSession(connectionString);
-            });
+            services.AddNpgsqlDataSource(connectionString, builder =>  builder
+                .MapEnum<UserGender>("user_gender"));
+
+            services.AddScoped<IDbSession, NpgsqlDbSession>();
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();

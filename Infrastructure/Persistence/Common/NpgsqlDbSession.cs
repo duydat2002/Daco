@@ -2,23 +2,25 @@
 {
     public class NpgsqlDbSession : IDbSession
     {
-        private readonly string _connectionString;
+        private readonly NpgsqlDataSource _dataSource;
         private NpgsqlConnection? _connection;
         private NpgsqlTransaction? _transaction;
         private bool _disposed;
 
-        public NpgsqlDbSession(string connectionString)
+        public NpgsqlDbSession(NpgsqlDataSource dataSource)
         {
-            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+            _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
         }
 
         public IDbConnection Connection
         {
             get
             {
-                if (_connection == null)
-                    throw new InvalidOperationException("Connection has not been initialized. Call OpenAsync first.");
-
+                if (_connection == null || _connection.State == ConnectionState.Closed)
+                {
+                    _connection = _dataSource.CreateConnection();
+                    _connection.Open();
+                }
                 return _connection;
             }
         }
@@ -27,14 +29,9 @@
 
         public async Task OpenAsync(CancellationToken cancellationToken = default)
         {
-            if (_connection == null)
+            if (_connection == null || _connection.State == ConnectionState.Closed)
             {
-                _connection = new NpgsqlConnection(_connectionString);
-                await _connection.OpenAsync(cancellationToken);
-            }
-            else if (_connection.State == ConnectionState.Closed)
-            {
-                await _connection.OpenAsync(cancellationToken);
+                _connection = await _dataSource.OpenConnectionAsync(cancellationToken);
             }
         }
 

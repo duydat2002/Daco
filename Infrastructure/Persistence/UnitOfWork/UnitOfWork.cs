@@ -40,31 +40,31 @@
         {
             _logger.LogDebug($"Saving changes with {_trackedEntities.Count} tracked entities");
 
-            var domainEvents = _trackedEntities
-                .SelectMany(e => e.DomainEvents)
-                .ToList();
+            //var domainEvents = _trackedEntities
+            //    .SelectMany(e => e.DomainEvents)
+            //    .ToList();
 
-            _logger.LogDebug($"Collected {domainEvents.Count} domain events");
+            //_logger.LogDebug($"Collected {domainEvents.Count} domain events");
 
-            foreach (var entity in _trackedEntities)
-            {
-                entity.ClearDomainEvents();
-            }
+            //foreach (var entity in _trackedEntities)
+            //{
+            //    entity.ClearDomainEvents();
+            //}
 
             await _session.CommitAsync(cancellationToken);
             _logger.LogInformation("Transaction committed successfully");
 
-            foreach (var domainEvent in domainEvents)
-            {
-                _logger.LogDebug($"Dispatching domain event {domainEvent.GetType().Name}");
+            //foreach (var domainEvent in domainEvents)
+            //{
+            //    _logger.LogDebug($"Dispatching domain event {domainEvent.GetType().Name}");
 
-                await _eventDispatcher.DispatchAsync(domainEvent, cancellationToken);
-            }
+            //    await _eventDispatcher.DispatchAsync(domainEvent, cancellationToken);
+            //}
 
-            _logger.LogInformation($"Dispatched {domainEvents.Count} domain events");
+            //_logger.LogInformation($"Dispatched {domainEvents.Count} domain events");
 
             var count = _trackedEntities.Count;
-            _trackedEntities.Clear();
+            //_trackedEntities.Clear();
 
             return count;
         }
