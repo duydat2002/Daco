@@ -23,3 +23,7 @@ global using System.Text.Json;
 global using Daco.Domain.Users.Enums;
 global using Daco.Infrastructure.Persistence.Repositories.Users;
 global using Google.Apis.Auth;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using Daco.Domain.Users.ValueObjects;
+global using Humanizer;

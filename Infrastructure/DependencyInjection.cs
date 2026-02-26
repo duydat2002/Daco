@@ -1,4 +1,7 @@
-﻿namespace Daco.Infrastructure
+﻿using Daco.Domain.Users.Constants;
+using Daco.Infrastructure.Persistence;
+
+namespace Daco.Infrastructure
 {
     public static class DependencyInjection
     {
@@ -21,6 +24,16 @@
 
             services.AddNpgsqlDataSource(connectionString, builder =>  builder
                 .MapEnum<UserGender>("user_gender"));
+
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(connectionString)
+                //options.UseNpgsql(connectionString, o =>
+                    //o.MapEnum<UserStatus>("user_status")
+                    // .MapEnum<UserGender>("user_gender")
+                    // .MapEnum<VerificationStatus>("verification_status")
+                    // .MapEnum<VerificationTokenType>("token_types")
+                //)
+            );
 
             services.AddScoped<IDbSession, NpgsqlDbSession>();
 

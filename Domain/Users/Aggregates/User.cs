@@ -28,7 +28,7 @@
         public IReadOnlyCollection<LoginSession> LoginSessions => _loginSessions.AsReadOnly();
 
 
-        private User() { }
+        protected User() { }
 
         internal static User Reconstitute(
             Guid id,

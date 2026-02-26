@@ -2,6 +2,7 @@
 {
     public interface IUserRepository
     {
+        Task<User?> GetByIdAsync1(Guid id, CancellationToken cancellationToken = default);
         Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<User?> FindByIdentifierAsync(string identifier, CancellationToken cancellationToken = default);
         Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken = default);

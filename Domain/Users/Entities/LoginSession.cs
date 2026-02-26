@@ -24,7 +24,7 @@
         public DateTime LastActivityAt { get; private set; }
         public DateTime ExpiresAt { get; private set; }
 
-        private LoginSession() { } // For EF Core
+        protected LoginSession() { } // For EF Core
 
         public static LoginSession Create(
             Guid userId,

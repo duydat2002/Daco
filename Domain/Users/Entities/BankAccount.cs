@@ -19,7 +19,7 @@
         public DateTime? UpdatedAt { get; private set; }
         public DateTime? DeletedAt { get; private set; }
 
-        private BankAccount() { }
+        protected BankAccount() { }
 
         public static BankAccount Create(
             Guid userId,

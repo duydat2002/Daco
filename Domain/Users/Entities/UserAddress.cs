@@ -27,7 +27,7 @@
         public DateTime? UpdatedAt { get; private set; }
         public DateTime? DeletedAt { get; private set; }
 
-        private UserAddress() { }
+        protected UserAddress() { }
 
         public static UserAddress Create(
             Guid userId,

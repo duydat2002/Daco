@@ -15,7 +15,7 @@
         public DateTime? VerifiedAt { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
-        private VerificationToken() { } // For EF Core
+        protected VerificationToken() { } // For EF Core
 
         public static VerificationToken Create(
             Guid userId,

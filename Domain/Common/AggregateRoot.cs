@@ -2,7 +2,9 @@
 {
     public abstract class AggregateRoot : Entity
     {
+        [NotMapped]
         private readonly List<DomainEvent> _domainEvents = new();
+        [NotMapped]
         public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         protected AggregateRoot() { }

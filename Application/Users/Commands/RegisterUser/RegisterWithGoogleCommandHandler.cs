@@ -70,6 +70,8 @@
             }
             else
             {
+                var a = await _userRepository.GetByIdAsync1(user.Id);
+
                 if (!(await _userRepository.CheckUserAuthProvider(user.Id, ProviderTypes.Google, cancellationToken)))
                 {
                     user.AddAuthProvider(

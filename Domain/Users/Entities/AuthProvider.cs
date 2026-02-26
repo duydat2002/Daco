@@ -32,7 +32,7 @@
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
 
-        private AuthProvider() { }
+        protected AuthProvider() { }
 
         public static AuthProvider CreateEmailProvider(Guid userId, string email, string passwordHash)
         {

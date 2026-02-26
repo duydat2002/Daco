@@ -2,16 +2,25 @@
 {
     public class UserRepository : IUserRepository
     {
+        private readonly AppDbContext _context;
         private readonly DapperExecutor _executor;
         private readonly ILogger<UserRepository> _logger;
 
         public UserRepository(
+            AppDbContext context,
             DapperExecutor executor,
             ILogger<UserRepository> logger)
         {
+            _context = context;
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
+        public async Task<User?> GetByIdAsync1(Guid id, CancellationToken cancellationToken = default)
+            => await _context.Users
+                .Include(u => u.AuthProviders)
+                .Include(u => u.Addresses)
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
 
         public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
