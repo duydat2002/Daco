@@ -79,7 +79,7 @@
                 .HasFilter("is_active = true")
                 .HasDatabaseName("idx_sessions_token");
 
-            builder.HasIndex("user_id", nameof(LoginSession.IsActive))
+            builder.HasIndex(s => new { s.UserId, s.IsActive })
                 .HasDatabaseName("idx_sessions_user");
 
             builder.HasIndex(s => s.ExpiresAt)

@@ -102,7 +102,7 @@
             // Collections 
             builder.HasMany(a => a.AuthProviders)
                 .WithOne()
-                .HasForeignKey("user_id")
+                .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(a => a.AuthProviders)
@@ -111,7 +111,7 @@
 
             builder.HasMany(a => a.Addresses)
                 .WithOne()
-                .HasForeignKey("user_id")
+                .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(a => a.Addresses)
@@ -120,7 +120,7 @@
 
             builder.HasMany(a => a.BankAccounts)
                 .WithOne()
-                .HasForeignKey("user_id")
+                .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Navigation(a => a.BankAccounts)
