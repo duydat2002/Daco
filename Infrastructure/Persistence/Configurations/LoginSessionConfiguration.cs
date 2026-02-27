@@ -16,7 +16,7 @@
 
             builder.Property(a => a.LoginProvider)
                 .HasColumnName("login_provider")
-                .HasColumnType("provider_types")
+                .HasMaxLength(50)
                 .IsRequired();
 
             // Session info

@@ -27,3 +27,4 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Daco.Domain.Users.ValueObjects;
 global using Humanizer;
+global using System.Runtime.CompilerServices;

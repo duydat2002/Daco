@@ -28,10 +28,10 @@ namespace Daco.Infrastructure
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(connectionString)
                 //options.UseNpgsql(connectionString, o =>
-                    //o.MapEnum<UserStatus>("user_status")
-                    // .MapEnum<UserGender>("user_gender")
-                    // .MapEnum<VerificationStatus>("verification_status")
-                    // .MapEnum<VerificationTokenType>("token_types")
+                //    o.MapEnum<UserStatus>("user_status")
+                //        .MapEnum<UserGender>("user_gender")
+                //        .MapEnum<VerificationStatus>("verification_status")
+                //        .MapEnum<VerificationTokenType>("token_types")
                 //)
             );
 

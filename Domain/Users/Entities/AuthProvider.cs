@@ -10,6 +10,7 @@
         public string ProviderKey { get; private set; }
 
         // Password (only for email/phone providers)
+        [NotLogged]
         public string? PasswordHash { get; private set; }
         public DateTime? PasswordUpdatedAt { get; private set; }
 
@@ -31,6 +32,7 @@
         // Timestamps
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
+        public DateTime? DeletedAt { get; private set; }
 
         protected AuthProvider() { }
 

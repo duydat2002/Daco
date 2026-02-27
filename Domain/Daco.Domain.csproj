@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Destructurama.Attributed" Version="5.2.0" />
     <PackageReference Include="MediatR" Version="14.0.0" />
   </ItemGroup>
 

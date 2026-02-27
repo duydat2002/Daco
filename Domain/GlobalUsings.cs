@@ -8,3 +8,4 @@ global using Daco.Domain.Users.Events;
 global using Daco.Shared.Attributes;
 global using Daco.Domain.Users.Constants;
 global using System.ComponentModel.DataAnnotations.Schema;
+global using Destructurama.Attributed;

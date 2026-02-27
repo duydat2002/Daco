@@ -17,7 +17,7 @@
             // Provider Info
             builder.Property(a => a.ProviderType)
                 .HasColumnName("provider_type")
-                .HasColumnType("provider_types")
+                .HasMaxLength(50)
                 .IsRequired(); 
 
             builder.Property(a => a.ProviderKey)
@@ -82,6 +82,10 @@
 
             builder.Property(a => a.UpdatedAt)
                 .HasColumnName("updated_at")
+                .IsRequired(false);
+
+            builder.Property(a => a.DeletedAt)
+                .HasColumnName("deleted_at")
                 .IsRequired(false);
 
             // Indexes

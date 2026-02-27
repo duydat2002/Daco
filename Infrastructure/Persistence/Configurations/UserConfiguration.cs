@@ -12,29 +12,69 @@
                 .HasDefaultValueSql("gen_random_uuid()");
 
             // Value Objects
-            builder.Property(a => a.Username)
-                .HasColumnName("username")
-                .HasMaxLength(50)
-                .IsRequired()
-                .HasConversion(
-                    v => v.Value,
-                    v => Username.Create(v));
+            builder.OwnsOne(u => u.Username, ub =>
+            {
+                ub.Property(a => a.Value)
+                  .HasColumnName("username")
+                  .HasMaxLength(50)
+                  .IsRequired();
 
-            builder.Property(a => a.Email)
-                .HasColumnName("email")
-                .HasMaxLength(100)
-                .IsRequired(false)
-                .HasConversion(
-                    v => v == null ? null : v.Value,
-                    v => v == null ? null : Email.Create(v));
+                ub.HasIndex(a => a.Value)
+                    .IsUnique()
+                    .HasFilter("deleted_at IS NULL")
+                    .HasDatabaseName("idx_users_username");
+            });
 
-            builder.Property(a => a.Phone)
-                .HasColumnName("phone")
-                .HasMaxLength(20)
-                .IsRequired(false)
-                .HasConversion(
-                    v => v == null ? null : v.Value,
-                    v => v == null ? null : PhoneNumber.Create(v));
+            builder.OwnsOne(u => u.Email, eb =>
+            {
+                eb.Property(a => a.Value)
+                  .HasColumnName("email")
+                  .HasMaxLength(100)
+                  .IsRequired(false);
+
+                eb.HasIndex(a => a.Value)
+                    .IsUnique()
+                    .HasFilter("deleted_at IS NULL")
+                    .HasDatabaseName("idx_users_email");
+            });
+            
+
+            builder.OwnsOne(u => u.Phone, pb =>
+            {
+                pb.Property(a => a.Value)
+                  .HasColumnName("phone")
+                  .HasMaxLength(20)
+                  .IsRequired(false);
+
+                pb.HasIndex(a => a.Value)
+                    .IsUnique()
+                    .HasFilter("deleted_at IS NULL")
+                    .HasDatabaseName("idx_users_phone");
+            });
+
+            //builder.Property(a => a.Username)
+            //    .HasColumnName("username")
+            //    .HasMaxLength(50)
+            //    .IsRequired()
+            //    .HasConversion(
+            //        v => v.Value,
+            //        v => Username.Create(v));
+
+            //builder.Property(a => a.Email)
+            //    .HasColumnName("email")
+            //    .HasMaxLength(100)
+            //    .IsRequired(false)
+            //    .HasConversion(
+            //        v => v == null ? null : v.Value,
+            //        v => v == null ? null : Email.Create(v));
+
+            //builder.Property(a => a.Phone)
+            //    .HasColumnName("phone")
+            //    .HasMaxLength(20)
+            //    .IsRequired(false)
+            //    .HasConversion(
+            //        v => v == null ? null : v.Value,
+            //        v => v == null ? null : PhoneNumber.Create(v));
 
             // Primitive Properties
             builder.Property(a => a.Name)
@@ -81,20 +121,20 @@
                 .IsRequired(false);
 
             // Unique Indexes
-            builder.HasIndex(a => a.Username)
-                .IsUnique()
-                .HasFilter("deleted_at IS NULL")
-                .HasDatabaseName("idx_users_username");
+            //builder.HasIndex(a => a.Username)
+            //    .IsUnique()
+            //    .HasFilter("deleted_at IS NULL")
+            //    .HasDatabaseName("idx_users_username");
 
-            builder.HasIndex(a => a.Email)
-                .IsUnique()
-                .HasFilter("deleted_at IS NULL")
-                .HasDatabaseName("idx_users_email");
+            //builder.HasIndex(a => a.Email)
+            //    .IsUnique()
+            //    .HasFilter("deleted_at IS NULL")
+            //    .HasDatabaseName("idx_users_email");
 
-            builder.HasIndex(a => a.Phone)
-                .IsUnique()
-                .HasFilter("deleted_at IS NULL")
-                .HasDatabaseName("idx_users_phone");
+            //builder.HasIndex(a => a.Phone)
+            //    .IsUnique()
+            //    .HasFilter("deleted_at IS NULL")
+            //    .HasDatabaseName("idx_users_phone");
 
             builder.HasIndex(a => a.Status)
                 .HasDatabaseName("idx_users_status");
