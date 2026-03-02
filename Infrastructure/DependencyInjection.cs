@@ -9,33 +9,33 @@ namespace Daco.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            // Database Session
-            //services.AddScoped<IDbSession>(sp =>
-            //{
-            //    var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
-            //        ?? throw new InvalidOperationException("Connection string not found");
-
-            //    return new NpgsqlDbSession(connectionString);
-            //});
-
-
-            var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
+             var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
                     ?? throw new InvalidOperationException("Connection string not found");
 
             services.AddNpgsqlDataSource(connectionString, builder =>  builder
                 .MapEnum<UserGender>("user_gender"));
 
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(connectionString)
-                //options.UseNpgsql(connectionString, o =>
-                //    o.MapEnum<UserStatus>("user_status")
-                //        .MapEnum<UserGender>("user_gender")
-                //        .MapEnum<VerificationStatus>("verification_status")
-                //        .MapEnum<VerificationTokenType>("token_types")
-                //)
-            );
-
             services.AddScoped<IDbSession, NpgsqlDbSession>();
+
+            //services.AddDbContext<AppDbContext>(options =>
+            //    options.UseNpgsql(connectionString)
+            //    //options.UseNpgsql(connectionString, o =>
+            //    //    o.MapEnum<UserStatus>("user_status")
+            //    //        .MapEnum<UserGender>("user_gender")
+            //    //        .MapEnum<VerificationStatus>("verification_status")
+            //    //        .MapEnum<VerificationTokenType>("token_types")
+            //    //)
+            //);
+
+            services.AddScoped<AppDbContext>(sp =>
+            {
+                var session = sp.GetRequiredService<IDbSession>();
+                var connection = (NpgsqlConnection)session.Connection; // dùng chung connection
+                var options = new DbContextOptionsBuilder<AppDbContext>()
+                    .UseNpgsql(connection)
+                    .Options;
+                return new AppDbContext(options);
+            });
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();

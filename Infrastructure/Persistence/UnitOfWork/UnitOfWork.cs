@@ -3,6 +3,7 @@
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IDbSession _session;
+        private readonly AppDbContext _context;
         private readonly IDomainEventDispatcher _eventDispatcher;
         private readonly ILogger<UnitOfWork> _logger;
         private readonly List<AggregateRoot> _trackedEntities = new();
@@ -10,9 +11,11 @@
 
         public UnitOfWork(
             IDbSession session,
+            AppDbContext context,
             IDomainEventDispatcher eventDispatcher,
             ILogger<UnitOfWork> logger)
         {
+            _context = context ?? throw new ArgumentNullException(nameof(context)); 
             _session = session ?? throw new ArgumentNullException(nameof(session));
             _eventDispatcher = eventDispatcher ?? throw new ArgumentNullException(nameof(eventDispatcher));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -22,6 +25,11 @@
         {
             _logger.LogDebug("Beginning transaction");
             await _session.BeginTransactionAsync(cancellationToken);
+
+            if (_session.Transaction is NpgsqlTransaction npgsqlTx)
+            {
+                await _context.Database.UseTransactionAsync(npgsqlTx, cancellationToken);
+            }
         }
 
         public void TrackEntity(AggregateRoot entity)
@@ -40,31 +48,13 @@
         {
             _logger.LogDebug($"Saving changes with {_trackedEntities.Count} tracked entities");
 
-            //var domainEvents = _trackedEntities
-            //    .SelectMany(e => e.DomainEvents)
-            //    .ToList();
-
-            //_logger.LogDebug($"Collected {domainEvents.Count} domain events");
-
-            //foreach (var entity in _trackedEntities)
-            //{
-            //    entity.ClearDomainEvents();
-            //}
+            var efCount = await _context.SaveChangesAsync(cancellationToken);
+            _logger.LogDebug($"EF SaveChanges wrote {efCount} rows");
 
             await _session.CommitAsync(cancellationToken);
             _logger.LogInformation("Transaction committed successfully");
 
-            //foreach (var domainEvent in domainEvents)
-            //{
-            //    _logger.LogDebug($"Dispatching domain event {domainEvent.GetType().Name}");
-
-            //    await _eventDispatcher.DispatchAsync(domainEvent, cancellationToken);
-            //}
-
-            //_logger.LogInformation($"Dispatched {domainEvents.Count} domain events");
-
             var count = _trackedEntities.Count;
-            //_trackedEntities.Clear();
 
             return count;
         }

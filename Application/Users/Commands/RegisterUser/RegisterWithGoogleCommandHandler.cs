@@ -67,11 +67,10 @@
                     avatar: avatar);
 
                 await _userRepository.AddAsync(user, cancellationToken);
+                _unitOfWork.TrackEntity(user);
             }
             else
-            {
-                var a = await _userRepository.GetByIdAsync(user.Id);
-
+            {   
                 if (!(await _userRepository.CheckUserAuthProvider(user.Id, ProviderTypes.Google, cancellationToken)))
                 {
                     user.AddAuthProvider(
@@ -84,6 +83,7 @@
 
                     var newProvider = user.AuthProviders.Last();
                     await _userRepository.AddAuthProviderAsync(user.Id, newProvider, cancellationToken);
+                    _unitOfWork.TrackEntity(user);
                 }
             }
 
