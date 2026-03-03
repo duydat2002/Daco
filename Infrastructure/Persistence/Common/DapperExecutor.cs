@@ -2,13 +2,18 @@
 {
     public class DapperExecutor
     {
-        private readonly IDbSession _session;
+        private readonly NpgsqlDataSource _dataSource;
         private readonly ILogger<DapperExecutor> _logger;
 
-        public DapperExecutor(IDbSession session, ILogger<DapperExecutor> logger)
+        public DapperExecutor(NpgsqlDataSource dataSource, ILogger<DapperExecutor> logger)
         {
-            _session = session ?? throw new ArgumentNullException(nameof(session));
+            _dataSource = dataSource ?? throw new ArgumentNullException(nameof(dataSource));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        private async Task<NpgsqlConnection> OpenConnectionAsync(CancellationToken cancellationToken)
+        {
+            return await _dataSource.OpenConnectionAsync(cancellationToken);
         }
 
         #region Stored Procedure
@@ -26,10 +31,10 @@
             _logger.LogDebug("Executing Procedure: {Name}", procedureName);
             try
             {
-                await _session.Connection.ExecuteAsync(
+                await using var conn = await OpenConnectionAsync(cancellationToken);
+                await conn.ExecuteAsync(
                     procedureName,
                     parameters,
-                    _session.Transaction,
                     commandType: CommandType.StoredProcedure);
             }
             catch (Exception ex)
@@ -52,10 +57,10 @@
             _logger.LogDebug("Executing Procedure (SingleOrDefault): {Name}", procedureName);
             try
             {
-                return await _session.Connection.QuerySingleOrDefaultAsync<T>(
+                await using var conn = await OpenConnectionAsync(cancellationToken);
+                return await conn.QuerySingleOrDefaultAsync<T>(
                     procedureName,
                     parameters,
-                    _session.Transaction,
                     commandType: CommandType.StoredProcedure);
             }
             catch (Exception ex)
@@ -81,11 +86,11 @@
             _logger.LogDebug("Executing Function (Query): {Name}", functionName);
             try
             {
+                await using var conn = await OpenConnectionAsync(cancellationToken);
                 var sql = BuildFunctionSql(functionName, parameters);
-                return await _session.Connection.QueryAsync<T>(
+                return await conn.QueryAsync<T>(
                     sql,
                     parameters,
-                    _session.Transaction,
                     commandType: CommandType.Text);
             }
             catch (Exception ex)
@@ -107,11 +112,11 @@
             _logger.LogDebug("Executing Function (SingleOrDefault): {Name}", functionName);
             try
             {
+                await using var conn = await OpenConnectionAsync(cancellationToken);
                 var sql = BuildFunctionSql(functionName, parameters);
-                return await _session.Connection.QuerySingleOrDefaultAsync<T>(
+                return await conn.QuerySingleOrDefaultAsync<T>(
                     sql,
                     parameters,
-                    _session.Transaction,
                     commandType: CommandType.Text);
             }
             catch (Exception ex)
@@ -133,11 +138,11 @@
             _logger.LogDebug("Executing Function (Scalar): {Name}", functionName);
             try
             {
+                await using var conn = await OpenConnectionAsync(cancellationToken);
                 var sql = BuildFunctionScalarSql(functionName, parameters);
-                return await _session.Connection.ExecuteScalarAsync<T>(
+                return await conn.ExecuteScalarAsync<T>(
                     sql,
                     parameters,
-                    _session.Transaction,
                     commandType: CommandType.Text);
             }
             catch (Exception ex)
@@ -158,11 +163,11 @@
             _logger.LogDebug("Executing Function (Multiple): {Name}", functionName);
             try
             {
+                await using var conn = await OpenConnectionAsync(cancellationToken);
                 var sql = BuildFunctionSql(functionName, parameters);
-                using var multi = await _session.Connection.QueryMultipleAsync(
+                using var multi = await conn.QueryMultipleAsync(
                     sql,
                     parameters,
-                    _session.Transaction,
                     commandType: CommandType.Text);
 
                 var result1 = await multi.ReadAsync<T1>();

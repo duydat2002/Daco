@@ -21,20 +21,14 @@
 
             builder.Property(a => a.TokenType)
                 .HasColumnName("token_type")
-                .HasColumnType("token_types")
-                .HasConversion(
-                    v => v.ToString().ToLower(),
-                    v => Enum.Parse<VerificationTokenType>(v.Pascalize(), true))
+                .HasMaxLength(50)
                 .IsRequired();
 
             // Status
             builder.Property(a => a.Status)
                 .HasColumnName("status")
-                .HasColumnType("verification_status")
-                .HasConversion(
-                    v => v.ToString().ToLower(),
-                    v => Enum.Parse<VerificationStatus>(v, true))
-                .HasDefaultValue(VerificationStatus.Pending);
+                .HasDefaultValue(VerificationStatus.Pending)
+                .IsRequired();
 
             builder.Property(a => a.Attempts)
                 .HasColumnName("attempts")

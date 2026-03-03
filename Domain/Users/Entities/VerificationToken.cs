@@ -7,7 +7,7 @@
     {
         public Guid UserId { get; private set; }
         public string Token { get; private set; }
-        public VerificationTokenType TokenType { get; private set; } 
+        public string TokenType { get; private set; } 
         public VerificationStatus Status { get; private set; }
         public int Attempts { get; private set; }
         public int MaxAttempts { get; private set; }
@@ -19,7 +19,7 @@
 
         public static VerificationToken Create(
             Guid userId,
-            VerificationTokenType tokenType,
+            string tokenType,
             int expirationMinutes = 15,
             int maxAttempts = 5)
         {
@@ -38,7 +38,6 @@
 
         private static string GenerateToken()
         {
-            // Generate 6-digit OTP
             return Random.Shared.Next(100000, 999999).ToString();
         }
 
@@ -77,6 +76,12 @@
         public bool CanRetry()
         {
             return Attempts < MaxAttempts && Status == VerificationStatus.Pending && !IsExpired();
+        }
+
+        public void Invalidate()
+        {
+            if (Status == VerificationStatus.Pending)
+                Status = VerificationStatus.Expired;
         }
     }
 }

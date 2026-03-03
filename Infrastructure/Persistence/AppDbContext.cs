@@ -5,6 +5,12 @@
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<User> Users => Set<User>();
+        public DbSet<AuthProvider> AuthProviders => Set<AuthProvider>();
+        public DbSet<BankAccount> BankAccounts => Set<BankAccount>();
+        public DbSet<LoginSession> LoginSessions => Set<LoginSession>();
+        public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
+        public DbSet<VerificationToken> VerificationTokens => Set<VerificationToken>();
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -16,3 +22,4 @@
         }
     }
 }
+    

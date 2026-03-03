@@ -7,11 +7,4 @@
         Expired,
         Failed
     }
-
-    public enum VerificationTokenType
-    {
-        Email_verification,
-        Phone_verification,
-        Password_reset
-    }
 }

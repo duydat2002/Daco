@@ -20,4 +20,5 @@ global using System.Text;
 global using System.Text.RegularExpressions;
 global using Daco.Application.Common.Utils;
 global using Daco.Domain.Users.Entities;
-
+global using Daco.Application.Common.Interfaces.Repositories;
+global using Daco.Application.Common.Interfaces.Services;

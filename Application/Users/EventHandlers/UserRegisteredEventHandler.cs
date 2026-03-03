@@ -4,18 +4,18 @@
     {
         private readonly IEmailService _emailService;
         private readonly ISmsService _smsService;
-        private readonly IVerificationTokenService _tokenService;
+        private readonly IVerificationTokenRepository _verificationTokenRepository;
         private readonly ILogger<UserRegisteredEventHandler> _logger;
 
         public UserRegisteredEventHandler(
             IEmailService emailService,
             ISmsService smsService,
-            IVerificationTokenService tokenService,
+            IVerificationTokenRepository verificationTokenRepository,
             ILogger<UserRegisteredEventHandler> logger)
         {
             _emailService = emailService;
             _smsService = smsService;
-            _tokenService = tokenService;
+            _verificationTokenRepository = verificationTokenRepository;
             _logger = logger;
         }
 
@@ -25,9 +25,11 @@
 
             try
             {
-                var verificationToken = await _tokenService.GenerateTokenAsync(
+                var verificationToken = await _verificationTokenRepository.GenerateTokenAsync(
                     notification.UserId,
-                    notification.ProviderType == ProviderTypes.Email ? "email_verification" : "phone_verification",
+                    notification.ProviderType == ProviderTypes.Email ? 
+                        VerificationTokenType.EmailVerification : 
+                        VerificationTokenType.PhoneVerification,
                     cancellationToken);
 
                 _logger.LogDebug($"Generated verification token: {verificationToken}");
