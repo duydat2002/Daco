@@ -37,7 +37,6 @@
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            _logger.LogDebug("Saving changes via EF Core");
             var count = await _context.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Saved {Count} changes", count);
             return count;

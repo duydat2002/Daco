@@ -23,21 +23,9 @@
             try
             {
                 var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
-                if (user == null || user.Email == null)
-                    return;
+                if (user?.Email == null) return;
 
-                var subject = "Password Changed - Security Alert";
-                var body = $@"
-                    <h2>Password Changed</h2>
-                    <p>Your password was changed at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC</p>
-                    <p>If you did not make this change, please contact support immediately.</p>
-                ";
-
-                await _emailService.SendAsync(user.Email.Value, subject, body, cancellationToken);
-
-                _logger.LogInformation($"Password change alert sent to user {notification.UserId}");
-
-                _logger.LogWarning($"User {notification.UserId} changed password at {DateTime.UtcNow}");
+                await _emailService.SendPasswordChangedAsync(user.Email.Value, cancellationToken);
             }
             catch (Exception ex)
             {

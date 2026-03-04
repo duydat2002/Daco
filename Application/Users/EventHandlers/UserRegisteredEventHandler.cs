@@ -1,4 +1,6 @@
-﻿namespace Daco.Application.Users.EventHandlers
+﻿using System.Numerics;
+
+namespace Daco.Application.Users.EventHandlers
 {
     public class UserRegisteredEventHandler : INotificationHandler<UserRegisteredEvent>
     {
@@ -36,11 +38,11 @@
 
                 if (notification.ProviderType == ProviderTypes.Email)
                 {
-                    await SendEmailVerification(notification.Identifier, verificationToken, cancellationToken);
+                    await _emailService.SendOtpAsync(notification.Identifier, verificationToken, cancellationToken);
                 }
                 else if (notification.ProviderType == ProviderTypes.Phone)
                 {
-                    await SendPhoneVerification(notification.Identifier, verificationToken, cancellationToken);
+                    await _smsService.SendAsync(notification.Identifier, verificationToken, cancellationToken);
                 }
 
                 _logger.LogInformation($"User {notification.UserId} registered via {notification.ProviderType}");
@@ -49,30 +51,6 @@
             {
                 _logger.LogError(ex, $"Error handling UserRegisteredEvent for User {notification.UserId}");
             }
-        }
-
-        private async Task SendEmailVerification(string email, string token, CancellationToken cancellationToken)
-        {
-            var subject = "Verify your email";
-            var body = $@"
-                <h2>Welcome to ECommerce!</h2>
-                <p>Please verify your email by entering this code:</p>
-                <h1>{token}</h1>
-                <p>This code will expire in 15 minutes.</p>
-            ";
-
-            await _emailService.SendAsync(email, subject, body, cancellationToken);
-
-            _logger.LogInformation($"Verification email sent to {email}");
-        }
-
-        private async Task SendPhoneVerification(string phone, string token, CancellationToken cancellationToken)
-        {
-            var message = $"Your verification code is: {token}. Valid for 15 minutes.";
-
-            await _smsService.SendAsync(phone, message, cancellationToken);
-
-            _logger.LogInformation($"Verification SMS sent to {phone}");
         }
     }
 }

@@ -6,7 +6,9 @@
             this IServiceCollection services,
             IConfiguration configuration)
         {
-             var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
+            services.Configure<EmailSettings>(configuration.GetSection("Email"));
+
+            var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
                     ?? throw new InvalidOperationException("Connection string not found");
 
             services.AddNpgsqlDataSource(connectionString, builder =>  builder

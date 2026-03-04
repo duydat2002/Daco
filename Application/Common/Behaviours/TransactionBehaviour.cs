@@ -30,6 +30,7 @@
                 var response = await next();
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.CommitAsync(cancellationToken);
 
                 _logger.LogInformation("Completed transaction for {RequestName}", requestName);
 

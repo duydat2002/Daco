@@ -23,24 +23,9 @@
             try
             {
                 var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
-                if (user == null || user.Email == null)
-                    return;
+                if (user?.Email == null) return;
 
-                var subject = "Account Suspended";
-                var body = $@"
-                    <h2>Your Account Has Been Suspended</h2>
-                    <p><strong>Reason:</strong> {notification.Reason}</p>
-                    <p>Your account has been temporarily suspended.</p>
-                    <p>Please contact support if you believe this is a mistake.</p>
-                ";
-
-                await _emailService.SendAsync(user.Email.Value, subject, body, cancellationToken);
-
-                _logger.LogInformation("Suspension notification sent to user {UserId}", notification.UserId);
-
-                // await _sessionService.RevokeAllSessionsAsync(notification.UserId);
-
-                _logger.LogWarning($"User {notification.UserId} suspended at {DateTime.UtcNow}, Reason: {notification.Reason}");
+                await _emailService.SendAccountSuspendedAsync(user.Email.Value, notification.Reason, cancellationToken);
             }
             catch (Exception ex)
             {
