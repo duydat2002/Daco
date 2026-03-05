@@ -38,7 +38,7 @@ namespace Daco.Application.Users.EventHandlers
 
                 if (notification.ProviderType == ProviderTypes.Email)
                 {
-                    await _emailService.SendOtpAsync(notification.Identifier, verificationToken, cancellationToken);
+                    //await _emailService.SendOtpAsync(notification.Identifier, verificationToken, cancellationToken);
                 }
                 else if (notification.ProviderType == ProviderTypes.Phone)
                 {

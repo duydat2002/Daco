@@ -108,6 +108,35 @@
             //    providerUserId: providerUserId));
         }
 
+        public static User CreateWithEmailAndPhone(string username, string email, string phone, string passwordHash)
+        {
+            var usernameVo = Username.Create(username);
+            var emailVo = Email.Create(email);
+            var phoneVo = PhoneNumber.Create(phone);
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Username = usernameVo,
+                Email = emailVo,
+                Phone = phoneVo,
+                Status = UserStatus.Active,
+                EmailVerified = false,
+                PhoneVerified = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var emailProvider = AuthProvider.CreateEmailProvider(user.Id, emailVo.Value, passwordHash);
+            user._authProviders.Add(emailProvider);
+
+            user.AddDomainEvent(new UserRegisteredEvent(
+                user.Id,
+                emailVo.Value,
+                ProviderTypes.Email));
+
+            return user;
+        }
+
         public static User CreateWithEmail(string username, string email, string passwordHash)
         {
             var usernameVo = Username.Create(username);

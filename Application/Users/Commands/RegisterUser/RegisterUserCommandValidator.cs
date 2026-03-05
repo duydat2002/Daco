@@ -6,13 +6,13 @@
         {
             RuleFor(x => x.Username).ValidUsername();
 
-            RuleFor(x => x)
-                .Must(x => !string.IsNullOrEmpty(x.Email) || !string.IsNullOrEmpty(x.Phone))
-                .WithMessage("Either email or phone must be provided");
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email is required")
+                .EmailAddress().WithMessage("Invalid email format");
 
-            RuleForNotEmpty(x => x.Email, r => r.EmailAddress().WithMessage("Invalid email format"));
-
-            RuleForNotEmpty(x => x.Phone, r => r.ValidPhoneNumber());
+            RuleFor(x => x.Phone)
+                .NotEmpty().WithMessage("Phone is required")
+                .ValidPhoneNumber();
 
             RuleForNotEmpty(x => x.Password, r => r.StrongPassword());
         }

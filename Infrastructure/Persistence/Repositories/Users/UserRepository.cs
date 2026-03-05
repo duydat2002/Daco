@@ -63,6 +63,15 @@
                     .FirstOrDefaultAsync(cancellationToken));
         }
 
+        public async Task<User?> FindByEmailAndPhoneAsync(string email, string phone, CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { email },
+                () => _context.Users
+                    .Include(u => u.AuthProviders)
+                    .Where(u => u.DeletedAt == null && u.Email.Value == email && u.Phone.Value == phone)
+                    .FirstOrDefaultAsync(cancellationToken));
+        }
+
         public async Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
             return await RepositoryLogger.ExecuteAsync(_logger, new { email },
@@ -72,12 +81,12 @@
                     .FirstOrDefaultAsync(cancellationToken));
         }
 
-        public async Task<User?> FindByPhoneAsync(string email, CancellationToken cancellationToken = default)
+        public async Task<User?> FindByPhoneAsync(string phone, CancellationToken cancellationToken = default)
         {
-            return await RepositoryLogger.ExecuteAsync(_logger, new { email },
+            return await RepositoryLogger.ExecuteAsync(_logger, new { phone },
                 () => _context.Users
                     .Include(u => u.AuthProviders)
-                    .Where(u => u.DeletedAt == null && u.Phone.Value == email)
+                    .Where(u => u.DeletedAt == null && u.Phone.Value == phone)
                     .FirstOrDefaultAsync(cancellationToken));
         }
 

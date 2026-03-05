@@ -24,7 +24,7 @@
             CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Registering user with username: {request.Username}");
-
+            
             if (!string.IsNullOrEmpty(request.Email))
             {
                 var existingUser = await _userRepository.FindByEmailAsync(request.Email, cancellationToken);
@@ -33,29 +33,15 @@
             }
 
             if (!string.IsNullOrEmpty(request.Phone))
-            {                      
+            {
                 var existingUser = await _userRepository.FindByPhoneAsync(request.Phone, cancellationToken);
                 if (existingUser != null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "The phone number has already been used!");
+                    return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "The phone number has already been used!");
             }
 
             var passwordHash = _passwordHasher.HashPassword(request.Password);
 
-            User user;
-            if (!string.IsNullOrEmpty(request.Email))
-            {
-                user = User.CreateWithEmail(
-                    request.Username,
-                    request.Email,
-                    passwordHash);
-            }
-            else
-            {
-                user = User.CreateWithPhone(
-                    request.Username,
-                    request.Phone!,
-                    passwordHash);
-            }
+            User user = User.CreateWithEmailAndPhone(request.Username, request.Email, request.Phone, request.Password);
 
             _logger.LogDebug($"User domain model created with {user.DomainEvents.Count} events");
 

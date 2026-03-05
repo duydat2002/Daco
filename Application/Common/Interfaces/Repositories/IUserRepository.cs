@@ -1,9 +1,12 @@
-﻿namespace Daco.Application.Common.Interfaces.Repositories
+﻿using System.Threading.Tasks;
+
+namespace Daco.Application.Common.Interfaces.Repositories
 {
     public interface IUserRepository
     {
         Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<User?> FindByIdentifierAsync(string identifier, CancellationToken cancellationToken = default);
+        Task<User?> FindByEmailAndPhoneAsync(string email, string phone, CancellationToken cancellationToken = default);
         Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken = default);
         Task<User?> FindByPhoneAsync(string phone, CancellationToken cancellationToken = default);
         Task AddAsync(User user, CancellationToken cancellationToken = default);
