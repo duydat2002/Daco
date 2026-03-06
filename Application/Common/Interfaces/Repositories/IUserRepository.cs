@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Daco.Application.Common.Interfaces.Repositories
+﻿namespace Daco.Application.Common.Interfaces.Repositories
 {
     public interface IUserRepository
     {

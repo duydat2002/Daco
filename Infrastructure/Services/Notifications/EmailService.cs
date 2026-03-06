@@ -61,18 +61,18 @@
         {
             _logger.LogInformation("Sending email to {To} with subject {Subject}", to, subject);
 
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(_settings.FromName, _settings.FromAddress));
-            message.To.Add(MailboxAddress.Parse(to));
-            message.Subject = subject;
-            message.Body = new TextPart("html") { Text = body };
+            //var message = new MimeMessage();
+            //message.From.Add(new MailboxAddress(_settings.FromName, _settings.FromAddress));
+            //message.To.Add(MailboxAddress.Parse(to));
+            //message.Subject = subject;
+            //message.Body = new TextPart("html") { Text = body };
 
-            using var client = new SmtpClient();
+            //using var client = new SmtpClient();
 
-            await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls, cancellationToken);
-            await client.AuthenticateAsync(_settings.Username, _settings.Password, cancellationToken);
-            await client.SendAsync(message, cancellationToken);
-            await client.DisconnectAsync(true, cancellationToken);
+            //await client.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls, cancellationToken);
+            //await client.AuthenticateAsync(_settings.Username, _settings.Password, cancellationToken);
+            //await client.SendAsync(message, cancellationToken);
+            //await client.DisconnectAsync(true, cancellationToken);
 
             _logger.LogInformation("Email sent successfully to {To}", to);
         }

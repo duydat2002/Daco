@@ -21,4 +21,11 @@ global using System.Text.RegularExpressions;
 global using Daco.Application.Common.Utils;
 global using Daco.Domain.Users.Entities;
 global using Daco.Application.Common.Interfaces.Repositories;
-global using Daco.Application.Common.Interfaces.Services;
+global using Daco.Application.Common.Interfaces.Services.Security;
+global using Daco.Application.Common.Interfaces.Services.Authentication;
+global using Daco.Application.Common.Interfaces.Services.Notifications;
+global using System.Text.Json.Serialization;
+global using Microsoft.Extensions.Options;
+global using Daco.Application.Settings;
+global using Microsoft.Extensions.Configuration;
+

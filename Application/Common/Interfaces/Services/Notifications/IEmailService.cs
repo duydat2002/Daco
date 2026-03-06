@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Common.Interfaces
+﻿namespace Daco.Application.Common.Interfaces.Services.Notifications
 {
     public interface IEmailService
     {

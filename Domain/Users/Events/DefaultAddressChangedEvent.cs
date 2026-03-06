@@ -1,6 +1,6 @@
 ﻿namespace Daco.Domain.Users.Events
 {
-    public record DefaultAddressChangedEvent : DomainEvent
+    public class DefaultAddressChangedEvent : DomainEvent
     {
         public Guid UserId { get; init; }
         public Guid AddressId { get; init; }

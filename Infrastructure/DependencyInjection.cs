@@ -7,6 +7,7 @@
             IConfiguration configuration)
         {
             services.Configure<EmailSettings>(configuration.GetSection("Email"));
+            services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
             var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
                     ?? throw new InvalidOperationException("Connection string not found");
@@ -31,12 +32,14 @@
             // Repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IVerificationTokenRepository, VerificationTokenRepository>();
+            services.AddScoped<ILoginSessionRepository, LoginSessionRepository>();
 
             // External Services
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISmsService, SmsService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+            services.AddScoped<IJwtService, JwtService>();
 
             return services;
         }

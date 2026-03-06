@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Common.Validators
+﻿namespace Daco.Application.Common.Interfaces.Services.Security
 {
     public interface IPasswordHasher
     {

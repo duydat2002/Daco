@@ -8,7 +8,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(configuration);
 builder.Services.AddInfrastructureServices(configuration);
 
 builder.Services.AddCors(options =>

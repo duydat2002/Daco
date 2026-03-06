@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Daco.Application.Users.EventHandlers
+﻿namespace Daco.Application.Users.EventHandlers
 {
     public class UserRegisteredEventHandler : INotificationHandler<UserRegisteredEvent>
     {
@@ -30,8 +28,8 @@ namespace Daco.Application.Users.EventHandlers
                 var verificationToken = await _verificationTokenRepository.GenerateTokenAsync(
                     notification.UserId,
                     notification.ProviderType == ProviderTypes.Email ? 
-                        VerificationTokenType.EmailVerification : 
-                        VerificationTokenType.PhoneVerification,
+                        VerificationTokenTypes.EmailVerification : 
+                        VerificationTokenTypes.PhoneVerification,
                     cancellationToken);
 
                 _logger.LogDebug($"Generated verification token: {verificationToken}");

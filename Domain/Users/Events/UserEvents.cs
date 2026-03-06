@@ -1,6 +1,6 @@
 ﻿namespace Daco.Domain.Users.Events
 {
-    public record UserRegisteredEvent : DomainEvent
+    public class UserRegisteredEvent : DomainEvent
     {
         public Guid UserId { get; init; }
         public string Identifier { get; init; }
@@ -14,7 +14,7 @@
         }
     }
 
-    public record EmailVerifiedEvent : DomainEvent
+    public class EmailVerifiedEvent : DomainEvent
     {
         public Guid UserId { get; init; }
         public string Email { get; init; }
@@ -26,7 +26,7 @@
         }
     }
 
-    public record PhoneVerifiedEvent : DomainEvent
+    public class PhoneVerifiedEvent : DomainEvent
     {
         public Guid UserId { get; init; }
         public string Phone { get; init; }
@@ -38,7 +38,7 @@
         }
     }
 
-    public record PasswordChangedEvent : DomainEvent
+    public class PasswordChangedEvent : DomainEvent
     {
         public Guid UserId { get; init; }
 
@@ -48,7 +48,7 @@
         }
     }
 
-    public record AddressAddedEvent : DomainEvent
+    public class AddressAddedEvent : DomainEvent
     {
         public Guid UserId { get; init; }
         public Guid AddressId { get; init; }
@@ -60,7 +60,7 @@
         }
     }
 
-    public record UserSuspendedEvent : DomainEvent
+    public class UserSuspendedEvent : DomainEvent
     {
         public Guid UserId { get; init; }
         public string Reason { get; init; }

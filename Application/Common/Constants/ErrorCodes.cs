@@ -14,6 +14,7 @@
             public const string PasswordTooWeak    = "AUTH.PASSWORD_TOO_WEAK";
             public const string AccountSuspended   = "AUTH.ACCOUNT_SUSPENDED";
             public const string AccountBanned      = "AUTH.ACCOUNT_BANNED";
+            public const string TooManyRequests    = "AUTH.TOO_MANY_REQUESTS";
         }
 
         // Users

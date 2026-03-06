@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Common.Interfaces.Services
+﻿namespace Daco.Application.Common.Interfaces.Services.Authentication
 {
     public interface IGoogleAuthService
     {

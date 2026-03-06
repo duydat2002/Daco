@@ -24,7 +24,6 @@
         {
             _logger.LogDebug("Generating verification token for user {UserId}, type {TokenType}", userId, tokenType);
 
-            // Invalidate các token cũ còn pending của cùng loại
             var oldTokens = await _context.VerificationTokens
                 .Where(t => t.UserId == userId
                          && t.TokenType == tokenType
@@ -41,7 +40,6 @@
                 maxAttempts: 5);
 
             await _context.VerificationTokens.AddAsync(verificationToken, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
 
             _logger.LogInformation("Verification token created for user {UserId}", userId);
 
@@ -68,6 +66,17 @@
             await _context.SaveChangesAsync(cancellationToken);
 
             return isValid;
+        }
+
+        public async Task<VerificationToken?> GetLatestAsync(
+            Guid userId, 
+            string tokenType, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.VerificationTokens
+                .Where(t => t.UserId == userId && t.TokenType == tokenType)
+                .OrderByDescending(t => t.CreatedAt)
+                .FirstOrDefaultAsync(cancellationToken);
         }
         #endregion
 

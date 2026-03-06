@@ -1,6 +1,6 @@
 ﻿namespace Daco.Domain.Users.Events
 {
-    public record BankAccountRemovedEvent : DomainEvent
+    public class BankAccountRemovedEvent : DomainEvent
     {
         public Guid UserId { get; init; }
         public Guid BankAccountId { get; init; }

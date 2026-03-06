@@ -11,5 +11,10 @@
             Guid userId,
             string token,
             CancellationToken cancellationToken = default);
+
+        Task<VerificationToken?> GetLatestAsync(
+            Guid userId,
+            string tokenType,
+            CancellationToken cancellationToken = default);
     }
 }

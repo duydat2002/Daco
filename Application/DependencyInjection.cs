@@ -2,8 +2,10 @@
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<OtpSettings>(configuration.GetSection("Otp"));
+
             var assembly = Assembly.GetExecutingAssembly();
 
             services.AddMediatR(cfg => {
