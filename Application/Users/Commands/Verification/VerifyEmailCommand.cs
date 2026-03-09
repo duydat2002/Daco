@@ -5,7 +5,7 @@
         public Guid    UserId     { get; init; }
         public string  Otp        { get; init; } = null!;
         [JsonIgnore]
-        public string? IpAddress  { get; init; } = null!;
+        public string? IpAddress  { get; init; }
         [JsonIgnore]
         public string? UserAgent  { get; init; }
         [JsonIgnore]

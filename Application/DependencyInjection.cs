@@ -13,8 +13,8 @@
 
                 cfg.AddOpenBehavior(typeof(LoggingBehaviour<,>));
                 cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
-                cfg.AddOpenBehavior(typeof(DomainEventBehaviour<,>));
                 cfg.AddOpenBehavior(typeof(TransactionBehaviour<,>));
+                cfg.AddOpenBehavior(typeof(DomainEventBehaviour<,>));
             });
 
             // FluentValidation

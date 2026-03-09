@@ -49,5 +49,20 @@
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
         }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<ResponseDTO>> RefreshToken(
+            [FromBody] RefreshTokenCommand command,
+            CancellationToken cancellationToken)
+        {
+            command = command with
+            {
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                UserAgent = HttpContext.Request.Headers.UserAgent.ToString(),
+                DeviceType = DeviceDetector.Detect(HttpContext.Request.Headers.UserAgent.ToString())
+            };
+
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
     }
 }

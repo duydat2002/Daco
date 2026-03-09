@@ -17,6 +17,15 @@
         }
 
         #region EF
+        public async Task<LoginSession?> GetByRefreshTokenAsync(
+            string refreshToken,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.LoginSessions
+                .Where(s => s.RefreshToken == refreshToken && s.IsActive)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task AddAsync(LoginSession session, CancellationToken cancellationToken = default)
         {
             await _context.LoginSessions.AddAsync(session, cancellationToken);

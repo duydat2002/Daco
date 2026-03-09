@@ -22,7 +22,7 @@
 
             try
             {
-                var user = await _userRepository.GetByIdAsync(notification.UserId, cancellationToken);
+                var user = await _userRepository.GetProfileAsync(notification.UserId, cancellationToken);
                 if (user?.Email == null) return;
 
                 await _emailService.SendPasswordChangedAsync(user.Email.Value, cancellationToken);

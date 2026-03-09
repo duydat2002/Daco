@@ -41,7 +41,7 @@
 
             var passwordHash = _passwordHasher.HashPassword(request.Password);
 
-            User user = User.CreateWithEmailAndPhone(request.Username, request.Email, request.Phone, request.Password);
+            User user = User.CreateWithEmailAndPhone(request.Username, request.Email, request.Phone, passwordHash);
 
             _logger.LogDebug($"User domain model created with {user.DomainEvents.Count} events");
 
