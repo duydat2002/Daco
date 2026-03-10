@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Users.Commands.RegisterUser
+﻿namespace Daco.Application.Users.Commands.Authentication
 {
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ResponseDTO>
     {
@@ -24,7 +24,7 @@
             CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Registering user with username: {request.Username}");
-            
+
             if (!string.IsNullOrEmpty(request.Email))
             {
                 var existingUser = await _userRepository.FindByEmailAsync(request.Email, cancellationToken);
@@ -52,7 +52,8 @@
             _logger.LogInformation($"User registered successfully: {user.Id}");
 
             return ResponseDTO.Success(
-                new {
+                new
+                {
                     UserId = user.Id,
                     Username = user.Username.Value,
                     Email = user.Email?.Value,

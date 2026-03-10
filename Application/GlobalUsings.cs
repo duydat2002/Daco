@@ -28,4 +28,5 @@ global using System.Text.Json.Serialization;
 global using Microsoft.Extensions.Options;
 global using Daco.Application.Settings;
 global using Microsoft.Extensions.Configuration;
+global using Daco.Domain.Users.Enums;
 

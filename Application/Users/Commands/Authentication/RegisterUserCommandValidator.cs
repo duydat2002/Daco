@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Users.Commands.RegisterUser
+﻿namespace Daco.Application.Users.Commands.Authentication
 {
     public class RegisterUserCommandValidator : BaseValidator<RegisterUserCommand>
     {

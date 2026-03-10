@@ -5,6 +5,7 @@
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<OtpSettings>(configuration.GetSection("Otp"));
+            services.Configure<SessionSettings>(configuration.GetSection("Session"));
 
             var assembly = Assembly.GetExecutingAssembly();
 

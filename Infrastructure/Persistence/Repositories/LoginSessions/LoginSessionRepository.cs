@@ -17,6 +17,21 @@
         }
 
         #region EF
+        public async Task AddAsync(LoginSession session, CancellationToken cancellationToken = default)
+        {
+            await _context.LoginSessions.AddAsync(session, cancellationToken);
+            _logger.LogDebug("LoginSession added for user {UserId}", session.UserId);
+        }
+
+        public async Task<LoginSession?> GetByTokenHashAsync(
+            string tokenHash,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.LoginSessions
+                .Where(s => s.Token == tokenHash && s.IsActive)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task<LoginSession?> GetByRefreshTokenAsync(
             string refreshToken,
             CancellationToken cancellationToken = default)
@@ -26,10 +41,13 @@
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task AddAsync(LoginSession session, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<LoginSession>> GetAllActiveByUserIdAsync(
+            Guid userId,
+            CancellationToken cancellationToken = default)
         {
-            await _context.LoginSessions.AddAsync(session, cancellationToken);
-            _logger.LogDebug("LoginSession added for user {UserId}", session.UserId);
+            return await _context.LoginSessions
+                .Where(s => s.UserId == userId && s.IsActive)
+                .ToListAsync(cancellationToken);
         }
         #endregion
     }

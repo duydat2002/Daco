@@ -19,14 +19,6 @@
             return HandleResult(await _mediator.Send(command, cancellationToken));
         }
 
-        [HttpPost("register/google")]
-        public async Task<ActionResult<ResponseDTO>> RegisterWitGoogle(
-            [FromBody] RegisterWithGoogleCommand command,
-            CancellationToken cancellationToken)
-        {
-            return HandleResult(await _mediator.Send(command, cancellationToken));
-        }
-
         [HttpPost("resend-otp")]
         public async Task<ActionResult<ResponseDTO>> VerifyEmail(
             [FromBody] ResendOtpCommand command,
@@ -60,6 +52,69 @@
                 IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                 UserAgent = HttpContext.Request.Headers.UserAgent.ToString(),
                 DeviceType = DeviceDetector.Detect(HttpContext.Request.Headers.UserAgent.ToString())
+            };
+
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<ResponseDTO>> Login(
+            [FromBody] LoginCommand command,
+            CancellationToken cancellationToken)
+        {
+            command = command with
+            {
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                UserAgent = HttpContext.Request.Headers.UserAgent.ToString(),
+                DeviceType = DeviceDetector.Detect(HttpContext.Request.Headers.UserAgent.ToString())
+            };
+
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
+
+        [HttpPost("login/google")]
+        public async Task<ActionResult<ResponseDTO>> RegisterWitGoogle(
+            [FromBody] LoginWithGoogleCommand command,
+            CancellationToken cancellationToken)
+        {
+            command = command with
+            {
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                UserAgent = HttpContext.Request.Headers.UserAgent.ToString(),
+                DeviceType = DeviceDetector.Detect(HttpContext.Request.Headers.UserAgent.ToString())
+            };
+
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult<ResponseDTO>> Logout(
+            [FromBody] LogoutCommand command,
+            CancellationToken cancellationToken)
+        {
+            var rawToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+
+            command = command with
+            {
+                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                RawToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "")
+            };
+
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
+
+        [Authorize]
+        [HttpPost("link/google")]
+        public async Task<ActionResult<ResponseDTO>> LinkGoogleAccount(
+            [FromBody] LinkGoogleAccountCommand command,
+            CancellationToken cancellationToken)
+        {
+            var rawToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+
+            command = command with
+            {
+                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));

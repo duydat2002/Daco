@@ -25,6 +25,9 @@
 
             try
             {
+                if (notification.ProviderType != ProviderTypes.Email && notification.ProviderType != ProviderTypes.Phone)
+                    return;
+
                 var verificationToken = await _verificationTokenRepository.GenerateTokenAsync(
                     notification.UserId,
                     notification.ProviderType == ProviderTypes.Email ? 
