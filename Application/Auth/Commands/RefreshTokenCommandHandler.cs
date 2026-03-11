@@ -1,0 +1,80 @@
+﻿namespace Daco.Application.Auth.Commands
+{
+    public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, ResponseDTO>
+    {
+        private readonly ILoginSessionRepository _sessionRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IJwtService _jwtService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<RefreshTokenCommandHandler> _logger;
+
+        public RefreshTokenCommandHandler(
+            ILoginSessionRepository sessionRepository,
+            IUserRepository userRepository,
+            IJwtService jwtService,
+            IUnitOfWork unitOfWork,
+            ILogger<RefreshTokenCommandHandler> logger)
+        {
+            _sessionRepository = sessionRepository;
+            _userRepository = userRepository;
+            _jwtService = jwtService;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
+        }
+
+        public async Task<ResponseDTO> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Processing refresh token from IP {IpAddress}", request.IpAddress);
+
+            var session = await _sessionRepository.GetByRefreshTokenAsync(request.RefreshToken, cancellationToken);
+
+            if (session is null)
+                return ResponseDTO.Failure(ErrorCodes.Auth.TokenInvalid, "Refresh token không hợp lệ hoặc đã bị thu hồi");
+
+            if (session.IsExpired())
+            {
+                session.Revoke("expired");
+                return ResponseDTO.Failure(ErrorCodes.Auth.TokenExpired, "Refresh token đã hết hạn, vui lòng đăng nhập lại");
+            }
+
+            var user = await _userRepository.GetProfileAsync(session.UserId, cancellationToken);
+            if (user is null)
+                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "Không tìm thấy người dùng");
+
+            session.Revoke("refreshed");
+
+            var newJwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value);
+            var newRefreshToken = _jwtService.GenerateRefreshToken();
+            var newTokenHash = _jwtService.HashToken(newJwt);
+
+            var newSession = LoginSession.Create(
+                userId: user.Id,
+                loginProvider: session.LoginProvider,
+                token: newTokenHash,
+                refreshToken: newRefreshToken,
+                ipAddress: request.IpAddress,
+                userAgent: request.UserAgent ?? session.UserAgent,
+                deviceType: request.DeviceType ?? session.DeviceType);
+
+            await _sessionRepository.AddAsync(newSession, cancellationToken);
+
+            _logger.LogInformation("Refresh token thành công cho user {UserId}", user.Id);
+
+            return ResponseDTO.Success(new
+            {
+                AccessToken = newJwt,
+                RefreshToken = newRefreshToken,
+                newSession.ExpiresAt,
+                User = new
+                {
+                    user.Id,
+                    Username = user.Username.Value,
+                    Email = user.Email?.Value,
+                    Phone = user.Phone?.Value,
+                    user.Name,
+                    user.Avatar
+                }
+            }, "Token đã được làm mới thành công");
+        }
+    }
+}

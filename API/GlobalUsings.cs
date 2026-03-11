@@ -1,8 +1,7 @@
 ﻿global using Microsoft.AspNetCore.Mvc;
 global using MediatR;
 global using Daco.Application.Common.DTOs;
-global using Daco.Application.Users.Commands.Verifications;
-global using Daco.Application.Users.Commands.Authentication;
+global using Daco.Application.Auth.Commands;
 global using Daco.Application;
 global using Daco.Infrastructure;
 global using Daco.API.Middlewares;

@@ -1,4 +1,7 @@
-﻿namespace Daco.API.Controllers
+﻿using Daco.Application.Auth.Commands;
+using Daco.Application.Auth.Queries;
+
+namespace Daco.API.Controllers
 {
     [ApiController]
     [Route("api/auth")]
@@ -132,6 +135,34 @@
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
+
+        [Authorize]
+        [HttpGet("providers")]
+        public async Task<ActionResult<ResponseDTO>> GetAuthProviders(CancellationToken cancellationToken)
+        {
+            var query = new GetAuthProvidersQuery
+            {
+                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+            };
+
+            return HandleResult(await _mediator.Send(query, cancellationToken));
+        }
+
+        [Authorize]
+        [HttpGet("sessions")]
+        public async Task<ActionResult<ResponseDTO>> GetActiveSessions(CancellationToken cancellationToken)
+        {
+            var rawToken = HttpContext.Request.Headers.Authorization
+                .ToString().Replace("Bearer ", "");
+
+            var query = new GetActiveSessionsQuery
+            {
+                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                CurrentToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "")
+            };
+
+            return HandleResult(await _mediator.Send(query, cancellationToken));
         }
     }
 }
