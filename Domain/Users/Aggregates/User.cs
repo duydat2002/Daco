@@ -80,14 +80,23 @@
             Guard.AgainstNullOrEmpty(providerType, nameof(providerType));
             Guard.AgainstNullOrEmpty(providerUserId, nameof(providerUserId));
 
-            Guard.Against(
-                providerType != ProviderTypes.Google && providerType != ProviderTypes.Facebook,
-                "Only social providers (Google, Facebook) can be added to existing user");
+            Guard.Against(providerType != ProviderTypes.Google && providerType != ProviderTypes.Facebook,
+               "Only social providers can be added");
 
-            if (_authProviders.Any(p => p.ProviderType == providerType))
+            if (_authProviders.Any(p => p.ProviderType == providerType && p.DeletedAt == null))
             {
                 throw new InvalidOperationException(
                     $"User already has {providerType} provider linked");
+            }
+
+            var existing = _authProviders
+                .FirstOrDefault(p => p.ProviderType == providerType && p.DeletedAt != null);
+
+            if (existing is not null)
+            {
+                existing.Reactivate(providerUserId, email, name, avatar);
+                UpdatedAt = DateTime.UtcNow;
+                return;
             }
 
             var provider = AuthProvider.CreateSocialProvider(
@@ -230,6 +239,22 @@
                 providerType));
 
             return user;
+        }
+
+        public void UnlinkProvider(string providerType)
+        {
+            Guard.Against(
+                providerType == ProviderTypes.Email || providerType == ProviderTypes.Phone,
+                "Cannot unlink email/phone provider");
+
+            var activeProviders = _authProviders.Where(p => p.DeletedAt == null).ToList();
+            Guard.Against(activeProviders.Count <= 1, "Cannot unlink the only remaining provider");
+
+            var provider = activeProviders.FirstOrDefault(p => p.ProviderType == providerType);
+            Guard.Against(provider == null, $"{providerType} provider is not linked");
+
+            provider!.SoftDelete();
+            UpdatedAt = DateTime.UtcNow;
         }
         #endregion
 

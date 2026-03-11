@@ -141,6 +141,26 @@
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void SoftDelete()
+        {
+            Guard.Against(
+                ProviderType == ProviderTypes.Email || ProviderType == ProviderTypes.Phone,
+                "Cannot unlink email/phone provider");
+
+            DeletedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Reactivate(string providerUserId, string? email, string? name, string? avatar)
+        {
+            ProviderUserId = providerUserId;
+            ProviderEmail = email;
+            ProviderName = name;
+            ProviderAvatar = avatar;
+            DeletedAt = null;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public bool IsTokenExpired()
         {
             return TokenExpiresAt.HasValue && TokenExpiresAt.Value < DateTime.UtcNow;

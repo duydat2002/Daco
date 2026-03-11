@@ -1,8 +1,8 @@
 ﻿namespace Daco.Application.Users.Commands.Authentication
 {
-    public class LinkGoogleAccountValidator : BaseValidator<LinkGoogleAccountCommand>
+    public class LinkGoogleAccountCommandValidator : BaseValidator<LinkGoogleAccountCommand>
     {
-        public LinkGoogleAccountValidator()
+        public LinkGoogleAccountCommandValidator()
         {
             RuleFor(x => x.IdToken)
                 .NotEmpty().WithMessage("GoogleId is required");

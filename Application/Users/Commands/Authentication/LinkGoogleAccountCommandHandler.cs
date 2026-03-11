@@ -41,6 +41,8 @@
             if (await _userRepository.CheckUserAuthProvider(user.Id, ProviderTypes.Google, cancellationToken))
                 return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "Google account is already linked");
 
+            var countBefore = user.AuthProviders.Count;
+
             user.AddAuthProvider(
                 ProviderTypes.Google,
                 googleUser.Subject,
@@ -48,8 +50,12 @@
                 googleUser.Name,
                 googleUser.Picture);
 
-            var newProvider = user.AuthProviders.Last();
-            await _userRepository.AddAuthProviderAsync(user.Id, newProvider, cancellationToken);
+            var isNewProvider = user.AuthProviders.Count > countBefore;
+            if (isNewProvider)
+            {
+                var newProvider = user.AuthProviders.Last();
+                await _userRepository.AddAuthProviderAsync(user.Id, newProvider, cancellationToken);
+            }
             _unitOfWork.TrackEntity(user);
 
             _logger.LogInformation("Google account linked successfully for user {UserId}", user.Id);

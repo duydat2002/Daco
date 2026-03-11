@@ -119,5 +119,19 @@
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
         }
+
+        [Authorize]
+        [HttpDelete("unlink")]
+        public async Task<ActionResult<ResponseDTO>> UnlinkProvider(
+            [FromBody] UnlinkProviderCommand command,
+            CancellationToken cancellationToken)
+        {
+            command = command with
+            {
+                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+            };
+
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
     }
 }
