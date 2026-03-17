@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
-    <Folder Include="Users\Commands\AccountStatus\" />
     <Folder Include="Users\Commands\Session\" />
     <Folder Include="Users\Queries\" />
   </ItemGroup>

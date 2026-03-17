@@ -1,4 +1,6 @@
-﻿namespace Daco.API.Controllers
+﻿using Daco.Application.Users.Commands.AccountStatus;
+
+namespace Daco.API.Controllers
 {
     [ApiController]
     [Route("api/users")]
@@ -206,6 +208,19 @@
                 BankAccountId = bankAccountId
             };
 
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
+        #endregion
+
+        #region Account Status
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{userId:guid}/suspend")]
+        public async Task<ActionResult<ResponseDTO>> SuspendUser(
+            Guid userId,
+            [FromBody] SuspendUserCommand command,
+            CancellationToken cancellationToken)
+        {
+            command = command with { UserId = userId };
             return HandleResult(await _mediator.Send(command, cancellationToken));
         }
         #endregion
