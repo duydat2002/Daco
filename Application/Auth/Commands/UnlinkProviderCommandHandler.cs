@@ -21,7 +21,7 @@
             _logger.LogInformation("Unlinking {ProviderType} for user {UserId}",
                 request.ProviderType, request.UserId);
 
-            var user = await _userRepository.GetByIdAsync(request.UserId!.Value, cancellationToken);
+            var user = await _userRepository.GetByIdWithProvidersAsync(request.UserId!.Value, cancellationToken);
             if (user is null)
                 return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
 

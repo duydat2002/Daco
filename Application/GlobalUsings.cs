@@ -29,4 +29,6 @@ global using Microsoft.Extensions.Options;
 global using Daco.Application.Settings;
 global using Microsoft.Extensions.Configuration;
 global using Daco.Domain.Users.Enums;
+global using Daco.Application.Common.Interfaces.Services.FileStorage;
+global using System.ComponentModel.DataAnnotations;
 

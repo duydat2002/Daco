@@ -17,7 +17,7 @@
         {
             _logger.LogInformation("Getting auth providers for user {UserId}", request.UserId);
 
-            var user = await _userRepository.GetProfileAsync(request.UserId!.Value, cancellationToken);
+            var user = await _userRepository.GetByIdAsync(request.UserId!.Value, cancellationToken);
             if (user is null)
                 return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
 

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Daco.Application.Auth.Commands
+﻿namespace Daco.Application.Auth.Commands
 {
     public class LoginCommandValidator : BaseValidator<LoginCommand>
     {

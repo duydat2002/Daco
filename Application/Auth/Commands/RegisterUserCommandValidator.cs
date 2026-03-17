@@ -14,7 +14,9 @@
                 .NotEmpty().WithMessage("Phone is required")
                 .ValidPhoneNumber();
 
-            RuleForNotEmpty(x => x.Password, r => r.StrongPassword());
+            RuleFor(x => x.Password)
+                .NotEmpty().WithMessage("Pasword is required")
+                .StrongPassword();
         }
     }
 }

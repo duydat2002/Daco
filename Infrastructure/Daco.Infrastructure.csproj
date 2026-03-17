@@ -12,12 +12,13 @@
     <Folder Include="EventBus\" />
     <Folder Include="Persistence\Mappings\Users\" />
     <Folder Include="Persistence\Models\Parameters\" />
-    <Folder Include="Services\FileStorage\" />
     <Folder Include="Services\Shipping\" />
     <Folder Include="Services\Payment\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.Core" Version="4.0.3.16" />
+    <PackageReference Include="AWSSDK.S3" Version="4.0.18.8" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="Google.Apis.Auth" Version="1.73.0" />

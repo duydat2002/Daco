@@ -53,6 +53,7 @@
 
             return new UserAddress
             {
+                Id = Guid.NewGuid(),
                 UserId = userId,
                 Label = label ?? "",
                 AddressType = addressType,
@@ -114,6 +115,7 @@
 
         public void SoftDelete()
         {
+            IsDefault = false;
             DeletedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }

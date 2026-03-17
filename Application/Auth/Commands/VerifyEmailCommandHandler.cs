@@ -29,7 +29,7 @@
         {
             _logger.LogInformation("Verifying email OTP for user {UserId}", request.UserId);
 
-            var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
+            var user = await _userRepository.GetByIdWithProvidersAsync(request.UserId, cancellationToken);
             if (user is null)
                 return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
 

@@ -161,6 +161,15 @@
             UpdatedAt = DateTime.UtcNow;
         }
 
+        public void UpdateProviderKey(string newKey)
+        {
+            Guard.AgainstNullOrEmpty(newKey, nameof(newKey));
+            ProviderKey = newKey;
+            IsVerified = false;
+            VerifiedAt = null;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
         public bool IsTokenExpired()
         {
             return TokenExpiresAt.HasValue && TokenExpiresAt.Value < DateTime.UtcNow;

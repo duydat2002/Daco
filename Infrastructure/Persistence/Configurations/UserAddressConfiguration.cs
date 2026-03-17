@@ -91,10 +91,6 @@
             builder.HasIndex(a => a.UserId)
                 .HasFilter("deleted_at IS NULL")
                 .HasDatabaseName("idx_user_addresses_user");
-
-            builder.HasIndex(a => a.UserId)
-                .HasFilter("is_default = TRUE AND deleted_at IS NULL")
-                .HasDatabaseName("idx_user_default_address");
         }
     }
 }

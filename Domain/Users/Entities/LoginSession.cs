@@ -41,6 +41,7 @@
 
             return new LoginSession
             {
+                Id = Guid.NewGuid(),
                 UserId = userId,
                 LoginProvider = loginProvider,
                 Token = token,

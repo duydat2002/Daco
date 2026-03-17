@@ -20,10 +20,28 @@
         // Users
         public static class User
         {
-            public const string NotFound        = "USER.NOT_FOUND";
-            public const string InvalidEmail    = "USER.INVALID_EMAIL";
-            public const string InvalidPhone    = "USER.INVALID_PHONE";
-            public const string InvalidUsername = "USER.INVALID_USERNAME";
+            public const string NotFound             = "USER.NOT_FOUND";
+            public const string InvalidEmail         = "USER.INVALID_EMAIL";
+            public const string InvalidPhone         = "USER.INVALID_PHONE";
+            public const string InvalidUsername      = "USER.INVALID_USERNAME";
+            public const string AlreadyExists        = "USER.ALREADY_EXISTS";
+            public const string AddressLimitExceeded = "USER.ADDRESS_LIMIT_EXCEEDED";
+        }
+
+        //Address
+        public static class Address
+        {
+            public const string NotFound       = "ADDRESS.NOT_FOUND";
+            public const string AlreadyDefault = "ADDRESS.ALREADY_DEFAULT";
+        }
+
+        //Bank Account
+        public static class BankAccount
+        {
+            public const string NotFound       = "BANK_ACCOUNT.NOT_FOUND";
+            public const string LimitExceeded  = "BANK_ACCOUNT.ADDRESS_LIMIT_EXCEEDED";
+            public const string AlreadyExists  = "BANK_ACCOUNT.ALREADY_EXISTS";
+            public const string AlreadyDefault = "BANK_ACCOUNT.ALREADY_DEFAULT";
         }
 
         // Products

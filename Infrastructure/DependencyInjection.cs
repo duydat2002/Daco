@@ -1,4 +1,7 @@
-﻿namespace Daco.Infrastructure
+﻿using Daco.Infrastructure.Persistence.Repositories.UserAddresses;
+using Daco.Infrastructure.Persistence.Repositories.UserBankAccounts;
+
+namespace Daco.Infrastructure
 {
     public static class DependencyInjection
     {
@@ -8,6 +11,7 @@
         {
             services.Configure<EmailSettings>(configuration.GetSection("Email"));
             services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+            services.Configure<CloudflareR2Settings>(configuration.GetSection("CloudflareR2"));
 
             var connectionString = configuration.GetConnectionString(ConnectionStringNames.Ecommerce)
                     ?? throw new InvalidOperationException("Connection string not found");
@@ -19,6 +23,8 @@
 
             services.AddDbContextFactory<AppDbContext>(options =>
                 options.UseNpgsql(connectionString));
+
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -33,6 +39,8 @@
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IVerificationTokenRepository, VerificationTokenRepository>();
             services.AddScoped<ILoginSessionRepository, LoginSessionRepository>();
+            services.AddScoped<IUserAddressRepository, UserAddressRepository>();
+            services.AddScoped<IBankAccountRepository, BankAccountRepository>();
 
             // External Services
             services.AddScoped<IEmailService, EmailService>();
@@ -40,6 +48,7 @@
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
 
             // JWT Authentication
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()

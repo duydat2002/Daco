@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace Daco.Application.Auth.Commands
+﻿namespace Daco.Application.Auth.Commands
 {
     public class LogoutCommandHandler : IRequestHandler<LogoutCommand, ResponseDTO>
     {

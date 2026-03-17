@@ -1,7 +1,4 @@
-﻿using Daco.Application.Auth.Commands;
-using Daco.Application.Auth.Queries;
-
-namespace Daco.API.Controllers
+﻿namespace Daco.API.Controllers
 {
     [ApiController]
     [Route("api/auth")]

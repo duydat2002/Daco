@@ -71,4 +71,28 @@
             Reason = reason;
         }
     }
+
+    public class EmailChangeRequestedEvent : DomainEvent
+    {
+        public Guid UserId { get; init; }
+        public string NewEmail { get; init; }
+
+        public EmailChangeRequestedEvent(Guid userId, string newEmail)
+        {
+            UserId = userId;
+            NewEmail = newEmail;
+        }
+    }
+
+    public class PhoneChangeRequestedEvent : DomainEvent
+    {
+        public Guid UserId { get; init; }
+        public string NewPhone { get; init; }
+
+        public PhoneChangeRequestedEvent(Guid userId, string newPhone)
+        {
+            UserId = userId;
+            NewPhone = newPhone;
+        }
+    }
 }

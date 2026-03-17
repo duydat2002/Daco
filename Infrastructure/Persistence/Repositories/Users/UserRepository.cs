@@ -42,18 +42,18 @@
                 async () => await _context.Set<AuthProvider>().AddAsync(provider, cancellationToken));
         }
 
-        public async Task<User?> GetProfileAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            return await RepositoryLogger.ExecuteAsync(_logger, new { id },
-                () => _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id, cancellationToken));
-        }
-
         public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await RepositoryLogger.ExecuteAsync(_logger, new { id },
                 () => _context.Users
+                    .FirstOrDefaultAsync(u => u.Id == id, cancellationToken));
+        }
+
+        public async Task<User?> GetByIdWithProvidersAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { id },
+                () => _context.Users
                 .Include(u => u.AuthProviders)
-                .Include(u => u.Addresses)
                 .FirstOrDefaultAsync(u => u.Id == id, cancellationToken));
         }
 

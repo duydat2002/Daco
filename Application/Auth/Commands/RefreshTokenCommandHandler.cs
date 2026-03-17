@@ -37,7 +37,7 @@
                 return ResponseDTO.Failure(ErrorCodes.Auth.TokenExpired, "Refresh token đã hết hạn, vui lòng đăng nhập lại");
             }
 
-            var user = await _userRepository.GetProfileAsync(session.UserId, cancellationToken);
+            var user = await _userRepository.GetByIdAsync(session.UserId, cancellationToken);
             if (user is null)
                 return ResponseDTO.Failure(ErrorCodes.User.NotFound, "Không tìm thấy người dùng");
 

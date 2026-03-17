@@ -25,6 +25,7 @@
         {
             return new VerificationToken
             {
+                Id = Guid.NewGuid(),
                 UserId = userId,
                 Token = GenerateToken(),
                 TokenType = tokenType,

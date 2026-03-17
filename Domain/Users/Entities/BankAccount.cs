@@ -37,6 +37,7 @@
 
             return new BankAccount
             {
+                Id = Guid.NewGuid(),
                 UserId = userId,
                 BankCode = bankCode.ToUpperInvariant(),
                 BankName = bankName,
@@ -46,6 +47,26 @@
                 IsVerified = false,
                 CreatedAt = DateTime.UtcNow
             };
+        }
+
+        public void Update(
+            string bankCode, 
+            string bankName, 
+            string accountNumber, 
+            string accountHolder)
+        {
+            Guard.AgainstNullOrEmpty(bankCode, nameof(bankCode));
+            Guard.AgainstNullOrEmpty(bankName, nameof(bankName));
+            Guard.AgainstNullOrEmpty(accountNumber, nameof(accountNumber));
+            Guard.AgainstNullOrEmpty(accountHolder, nameof(accountHolder));
+
+            BankCode = bankCode.ToUpperInvariant();
+            BankName = bankName;
+            AccountNumber = accountNumber;
+            AccountHolder = accountHolder;
+            IsVerified = false;
+            VerifiedAt = null;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public void Verify()
@@ -71,6 +92,7 @@
 
         public void SoftDelete()
         {
+            IsDefault = false;
             DeletedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
         }

@@ -320,6 +320,53 @@
             Avatar = avatarUrl;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public void UpdateUsername(string username)
+        {
+            Guard.Against(Status != UserStatus.Active, "Cannot update username for inactive user");
+
+            var newUsername = Username.Create(username);
+            Guard.Against(newUsername.Value == Username.Value, "New username is the same as current");
+
+            Username = newUsername;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateEmail(string newEmail)
+        {
+            Guard.Against(Status != UserStatus.Active, "Cannot update email for inactive user");
+
+            var emailVo = Email.Create(newEmail);
+            Guard.Against(Email != null && emailVo.Value == Email.Value, "New email is the same as current");
+
+            Email = emailVo;
+            EmailVerified = false;
+            UpdatedAt = DateTime.UtcNow;
+
+            var emailProvider = _authProviders
+                .FirstOrDefault(p => p.ProviderType == ProviderTypes.Email && p.DeletedAt == null);
+            emailProvider?.UpdateProviderKey(emailVo.Value);
+
+            AddDomainEvent(new EmailChangeRequestedEvent(Id, emailVo.Value));
+        }
+
+        public void UpdatePhone(string newPhone)
+        {
+            Guard.Against(Status != UserStatus.Active, "Cannot update phone for inactive user");
+
+            var phoneVo = PhoneNumber.Create(newPhone);
+            Guard.Against(Phone != null && phoneVo.Value == Phone.Value, "New phone is the same as current");
+
+            Phone = phoneVo;
+            PhoneVerified = false;
+            UpdatedAt = DateTime.UtcNow;
+
+            var phoneProvider = _authProviders
+                .FirstOrDefault(p => p.ProviderType == ProviderTypes.Phone && p.DeletedAt == null);
+            phoneProvider?.UpdateProviderKey(phoneVo.Value);
+
+            AddDomainEvent(new PhoneChangeRequestedEvent(Id, phoneVo.Value));
+        }
         #endregion
 
         #region password management

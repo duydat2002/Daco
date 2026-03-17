@@ -9,3 +9,7 @@ global using Daco.API.Helpers;
 global using Microsoft.AspNetCore.Authorization;
 global using System.Security.Claims;
 global using System.IdentityModel.Tokens.Jwt;
+global using Daco.Application.Auth.Queries;
+global using Daco.Application.Users.Commands.Profile;
+global using Daco.Application.Users.Commands.Address;
+global using Daco.Application.Users.Commands.Banking;

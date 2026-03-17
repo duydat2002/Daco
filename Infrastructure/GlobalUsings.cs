@@ -41,3 +41,8 @@ global using System.Security.Cryptography;
 global using System.Text;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Daco.Application.Common.Interfaces.Services.FileStorage;
+global using Daco.Infrastructure.Services.FileStorage;
+global using Amazon.Runtime;
+global using Amazon.S3;
+global using Amazon.S3.Model;
