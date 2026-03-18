@@ -6,6 +6,6 @@
         Task SendWelcomeAsync(string to, string email, CancellationToken cancellationToken = default);
         Task SendPasswordChangedAsync(string to, CancellationToken cancellationToken = default);
         Task SendAccountSuspendedAsync(string to, string reason, CancellationToken cancellationToken = default);
-
+        Task SendSellerApprovedAsync(string to, string name, CancellationToken cancellationToken = default);
     }
 }

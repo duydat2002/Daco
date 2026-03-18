@@ -9,7 +9,7 @@
             _settings = settings.Value;
         }
 
-        public string GenerateToken(Guid userId, string username, string? email, string? phone)
+        public string GenerateToken(Guid userId, string username, string? email, string? phone, List<string> roles)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -21,6 +21,8 @@
                 new(JwtRegisteredClaimNames.Jti,        Guid.NewGuid().ToString()),
                 new(JwtRegisteredClaimNames.Iat,        DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
             };
+            foreach (var role in roles)
+                claims.Add(new(ClaimTypes.Role, role));
 
             if (!string.IsNullOrEmpty(email))
                 claims.Add(new Claim(JwtRegisteredClaimNames.Email, email));

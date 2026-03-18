@@ -1,6 +1,4 @@
-﻿using Daco.Application.Users.Commands.AccountStatus;
-
-namespace Daco.API.Controllers
+﻿namespace Daco.API.Controllers
 {
     [ApiController]
     [Route("api/users")]
@@ -213,7 +211,7 @@ namespace Daco.API.Controllers
         #endregion
 
         #region Account Status
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("{userId:guid}/suspend")]
         public async Task<ActionResult<ResponseDTO>> SuspendUser(
             Guid userId,

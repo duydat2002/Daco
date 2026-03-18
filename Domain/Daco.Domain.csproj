@@ -9,17 +9,18 @@
   <ItemGroup>
     <Folder Include="Carts\" />
     <Folder Include="Messaging\" />
+    <Folder Include="Administration\" />
     <Folder Include="Payments\" />
     <Folder Include="Shipping\" />
     <Folder Include="Notifications\" />
     <Folder Include="Reviews\" />
+    <Folder Include="Shops\Entities\" />
     <Folder Include="Users\Exceptions\" />
     <Folder Include="Users\Services\" />
     <Folder Include="Users\Specifications\" />
     <Folder Include="Wallets\" />
     <Folder Include="Projects\" />
     <Folder Include="Orders\" />
-    <Folder Include="Shops\" />
   </ItemGroup>
 
   <ItemGroup>

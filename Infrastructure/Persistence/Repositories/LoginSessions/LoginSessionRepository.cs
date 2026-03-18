@@ -4,12 +4,12 @@
     {
         private readonly AppDbContext _context;
         private readonly DapperExecutor _executor;
-        private readonly ILogger<VerificationTokenRepository> _logger;
+        private readonly ILogger<LoginSessionRepository> _logger;
 
         public LoginSessionRepository(
             AppDbContext context,
             DapperExecutor executor,
-            ILogger<VerificationTokenRepository> logger)
+            ILogger<LoginSessionRepository> logger)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _executor = executor ?? throw new ArgumentNullException(nameof(executor));

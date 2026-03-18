@@ -4,6 +4,7 @@
     {
         private readonly ILoginSessionRepository _sessionRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ISellerRepository _sellerRepository;
         private readonly IJwtService _jwtService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<RefreshTokenCommandHandler> _logger;
@@ -11,12 +12,14 @@
         public RefreshTokenCommandHandler(
             ILoginSessionRepository sessionRepository,
             IUserRepository userRepository,
+            ISellerRepository sellerRepository,
             IJwtService jwtService,
             IUnitOfWork unitOfWork,
             ILogger<RefreshTokenCommandHandler> logger)
         {
             _sessionRepository = sessionRepository;
             _userRepository = userRepository;
+            _sellerRepository = sellerRepository;
             _jwtService = jwtService;
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -43,7 +46,14 @@
 
             session.Revoke("refreshed");
 
-            var newJwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value);
+            var roles = new List<string> { "buyer" };
+            var isSeller = await _sellerRepository.IsSellerAsync(user.Id, cancellationToken);
+            if (isSeller) roles.Add("seller");
+
+            //var isAdmin = await _adminRepository.IsActiveAdminAsync(user.Id, cancellationToken);
+            //if (isAdmin) roles.Add("admin");
+
+            var newJwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var newRefreshToken = _jwtService.GenerateRefreshToken();
             var newTokenHash = _jwtService.HashToken(newJwt);
 
@@ -72,7 +82,8 @@
                     Email = user.Email?.Value,
                     Phone = user.Phone?.Value,
                     user.Name,
-                    user.Avatar
+                    user.Avatar,
+                    Roles = roles
                 }
             }, "Token đã được làm mới thành công");
         }

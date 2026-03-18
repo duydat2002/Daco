@@ -4,6 +4,7 @@
     {
         private readonly IUserRepository _userRepository;
         private readonly IVerificationTokenRepository _tokenRepository;
+        private readonly ISellerRepository _sellerRepository;
         private readonly IJwtService _jwtService;
         private readonly ILoginSessionRepository _sessionRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -12,6 +13,7 @@
         public VerifyEmailCommandHandler(
              IUserRepository userRepository,
              IVerificationTokenRepository tokenRepository,
+             ISellerRepository sellerRepository,
              IJwtService jwtService,
              ILoginSessionRepository sessionRepository,
              IUnitOfWork unitOfWork,
@@ -19,6 +21,7 @@
         {
             _userRepository = userRepository;
             _tokenRepository = tokenRepository;
+            _sellerRepository = sellerRepository;
             _jwtService = jwtService;
             _sessionRepository = sessionRepository;
             _unitOfWork = unitOfWork;
@@ -47,7 +50,14 @@
             user.VerifyEmail();
             await _userRepository.UpdateAsync(user, cancellationToken);
 
-            var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value);
+            var roles = new List<string> { "buyer" };
+            var isSeller = await _sellerRepository.IsSellerAsync(user.Id, cancellationToken);
+            if (isSeller) roles.Add("seller");
+
+            //var isAdmin = await _adminRepository.IsActiveAdminAsync(user.Id, cancellationToken);
+            //if (isAdmin) roles.Add("admin");
+
+            var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();
             var tokenHash = _jwtService.HashToken(jwt);
 
@@ -78,7 +88,8 @@
                     Email = user.Email?.Value,
                     Phone = user.Phone?.Value,
                     user.Name,
-                    user.Avatar
+                    user.Avatar,
+                    Roles = roles
                 }
             }, "Email verified successfully");
         }

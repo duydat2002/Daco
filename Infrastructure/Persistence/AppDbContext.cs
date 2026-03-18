@@ -10,6 +10,7 @@
         public DbSet<LoginSession> LoginSessions => Set<LoginSession>();
         public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
         public DbSet<VerificationToken> VerificationTokens => Set<VerificationToken>();
+        public DbSet<Seller> Sellers => Set<Seller>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -9,3 +9,6 @@ global using Daco.Shared.Attributes;
 global using Daco.Domain.Users.Constants;
 global using System.ComponentModel.DataAnnotations.Schema;
 global using Destructurama.Attributed;
+global using Daco.Domain.Shops.Constants;
+global using Daco.Domain.Shops.Enums;
+global using Daco.Domain.Shops.Events;

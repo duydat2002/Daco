@@ -4,6 +4,7 @@
     {
         private readonly IUserRepository _userRepository;
         private readonly ILoginSessionRepository _sessionRepository;
+        private readonly ISellerRepository _sellerRepository;
         private readonly IGoogleAuthService _googleAuthService;
         private readonly IJwtService _jwtService;
         private readonly IUnitOfWork _unitOfWork;
@@ -13,6 +14,7 @@
         public LoginWithGoogleCommandHandler(
             IUserRepository userRepository,
             ILoginSessionRepository sessionRepository,
+            ISellerRepository sellerRepository,
             IGoogleAuthService googleAuthService,
             IJwtService jwtService,
             IUnitOfWork unitOfWork,
@@ -21,6 +23,7 @@
         {
             _userRepository = userRepository;
             _sessionRepository = sessionRepository;
+            _sellerRepository = sellerRepository;
             _googleAuthService = googleAuthService;
             _jwtService = jwtService;
             _unitOfWork = unitOfWork;
@@ -84,7 +87,14 @@
                 _logger.LogInformation("Existing user logged in via Google: {UserId}", user.Id);
             }
 
-            var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value);
+            var roles = new List<string> { "buyer" };
+            var isSeller = await _sellerRepository.IsSellerAsync(user.Id, cancellationToken);
+            if (isSeller) roles.Add("seller");
+
+            //var isAdmin = await _adminRepository.IsActiveAdminAsync(user.Id, cancellationToken);
+            //if (isAdmin) roles.Add("admin");
+
+            var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();
             var tokenHash = _jwtService.HashToken(jwt);
 
@@ -112,7 +122,8 @@
                     Email = user.Email?.Value,
                     Phone = user.Phone?.Value,
                     user.Name,
-                    user.Avatar
+                    user.Avatar,
+                    Roles = roles
                 }
             }, "Login successful");
         }

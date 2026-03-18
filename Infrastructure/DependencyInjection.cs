@@ -1,7 +1,4 @@
-﻿using Daco.Infrastructure.Persistence.Repositories.UserAddresses;
-using Daco.Infrastructure.Persistence.Repositories.UserBankAccounts;
-
-namespace Daco.Infrastructure
+﻿namespace Daco.Infrastructure
 {
     public static class DependencyInjection
     {
@@ -41,6 +38,7 @@ namespace Daco.Infrastructure
             services.AddScoped<ILoginSessionRepository, LoginSessionRepository>();
             services.AddScoped<IUserAddressRepository, UserAddressRepository>();
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+            services.AddScoped<ISellerRepository, SellerRepository>();
 
             // External Services
             services.AddScoped<IEmailService, EmailService>();

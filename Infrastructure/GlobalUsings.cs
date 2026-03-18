@@ -46,3 +46,8 @@ global using Daco.Infrastructure.Services.FileStorage;
 global using Amazon.Runtime;
 global using Amazon.S3;
 global using Amazon.S3.Model;
+global using Daco.Domain.Shops.Aggregates;
+global using Daco.Infrastructure.Persistence.Repositories.Sellers;
+global using Daco.Infrastructure.Persistence.Repositories.UserAddresses;
+global using Daco.Infrastructure.Persistence.Repositories.UserBankAccounts;
+global using Daco.Domain.Shops.Enums;

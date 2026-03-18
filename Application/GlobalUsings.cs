@@ -31,4 +31,5 @@ global using Microsoft.Extensions.Configuration;
 global using Daco.Domain.Users.Enums;
 global using Daco.Application.Common.Interfaces.Services.FileStorage;
 global using System.ComponentModel.DataAnnotations;
-
+global using Daco.Domain.Shops.Events;
+global using Daco.Domain.Shops.Aggregates;
