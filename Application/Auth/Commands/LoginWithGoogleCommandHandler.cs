@@ -88,11 +88,10 @@
             }
 
             var roles = new List<string> { "buyer" };
-            var isSeller = await _sellerRepository.IsSellerAsync(user.Id, cancellationToken);
-            if (isSeller) roles.Add("seller");
-
-            //var isAdmin = await _adminRepository.IsActiveAdminAsync(user.Id, cancellationToken);
-            //if (isAdmin) roles.Add("admin");
+            var userRoles = await _userRepository.GetUserRolesAsync(user.Id);
+            if (userRoles.IsSeller) roles.Add("seller");
+            if (userRoles.IsAdmin)
+                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
 
             var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();

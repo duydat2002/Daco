@@ -15,3 +15,4 @@ global using Daco.Application.Users.Commands.Address;
 global using Daco.Application.Users.Commands.Banking;
 global using Daco.Application.Users.Commands.AccountStatus;
 global using Daco.Domain.Users.Constants;
+global using Daco.Application.Administration.Auth;

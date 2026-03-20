@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Carts\" />
     <Folder Include="Messaging\" />
-    <Folder Include="Administration\" />
     <Folder Include="Payments\" />
     <Folder Include="Shipping\" />
     <Folder Include="Notifications\" />

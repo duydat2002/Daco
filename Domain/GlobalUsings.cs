@@ -12,3 +12,7 @@ global using Destructurama.Attributed;
 global using Daco.Domain.Shops.Constants;
 global using Daco.Domain.Shops.Enums;
 global using Daco.Domain.Shops.Events;
+global using Daco.Domain.Administration.Entities;
+global using Daco.Domain.Administration.Enums;
+global using Daco.Domain.Administration.Constants;
+global using Daco.Domain.Administration.Events;

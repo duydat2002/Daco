@@ -39,6 +39,7 @@
             services.AddScoped<IUserAddressRepository, UserAddressRepository>();
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddScoped<ISellerRepository, SellerRepository>();
+            services.AddScoped<IAdminUserRepository, AdminUserRepository>();
 
             // External Services
             services.AddScoped<IEmailService, EmailService>();
@@ -47,6 +48,9 @@
             services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IFileStorageService, FileStorageService>();
+
+            // Mapper
+            DapperTypeMapper.RegisterMappings();
 
             // JWT Authentication
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()

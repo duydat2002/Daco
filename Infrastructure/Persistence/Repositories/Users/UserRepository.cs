@@ -1,4 +1,6 @@
-﻿namespace Daco.Infrastructure.Persistence.Repositories.Users
+﻿using Daco.Application.Common.DTOs;
+
+namespace Daco.Infrastructure.Persistence.Repositories.Users
 {
     public class UserRepository : IUserRepository
     {
@@ -59,13 +61,14 @@
 
         public async Task<User?> FindByIdentifierAsync(string identifier, CancellationToken cancellationToken = default)
         {
+            var normalized = identifier.Trim().ToLowerInvariant();
             return await RepositoryLogger.ExecuteAsync(_logger, new { identifier },
                 () => _context.Users
                     .Include(u => u.AuthProviders)
                     .Where(u => u.DeletedAt == null &&
-                        (u.Username.Value == identifier ||
-                        u.Email.Value == identifier ||
-                        u.Phone.Value == identifier))
+                        (u.Username.Value == normalized ||
+                        u.Email.Value == normalized ||
+                        u.Phone.Value == normalized))
                     .FirstOrDefaultAsync(cancellationToken));
         }
 
@@ -106,6 +109,26 @@
                     .AnyAsync(a => a.UserId == userId &&
                                    a.ProviderType == providerType &&
                                    a.DeletedAt == null, cancellationToken));
+        }
+        #endregion
+
+        #region Procedure
+        public async Task<UserRolesDTO> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { userId },
+                async () =>
+                {
+                    var parameters = new DapperParameterBuilder()
+                        .Add("p_user_id", userId)
+                        .Build();
+
+                    var result = await _executor.ExecuteFunctionSingleOrDefaultAsync<UserRolesDTO>(
+                        UserDbNames.GetUserRoles,
+                        parameters,
+                        cancellationToken);
+
+                    return result ?? new UserRolesDTO();
+                });
         }
         #endregion
 

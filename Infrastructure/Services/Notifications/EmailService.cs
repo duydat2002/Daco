@@ -55,6 +55,14 @@
             return SendAsync(to, "Account Suspended - Daco", body, cancellationToken);
         }
 
+        public Task SendAdminOtpAsync(string to, string otp, CancellationToken cancellationToken = default)
+        {
+            var body = LoadTemplate("account-suspended.html")
+                .Replace("{{Reason}}", otp);
+
+            return SendAsync(to, "Account Suspended - Daco", body, cancellationToken);
+        }
+        
         private string LoadTemplate(string fileName)
         {
             var path = Path.Combine(_templateRoot, fileName);

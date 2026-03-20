@@ -11,6 +11,12 @@
         public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
         public DbSet<VerificationToken> VerificationTokens => Set<VerificationToken>();
         public DbSet<Seller> Sellers => Set<Seller>();
+        public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
+        public DbSet<AdminRoleAssignment> AdminRoleAssignments => Set<AdminRoleAssignment>();
+        public DbSet<AdminCustomPermission> AdminCustomPermissions => Set<AdminCustomPermission>();
+        public DbSet<AdminRole> AdminRoles => Set<AdminRole>();
+        public DbSet<AdminPermission> AdminPermissions => Set<AdminPermission>();
+        public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

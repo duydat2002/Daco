@@ -1,12 +1,9 @@
-﻿using Daco.Application.Common.Interfaces.Repositories;
-
-namespace Daco.Application.Auth.Commands
+﻿namespace Daco.Application.Auth.Commands
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, ResponseDTO>
     {
         private readonly IUserRepository _userRepository;
         private readonly ILoginSessionRepository _sessionRepository;
-        private readonly ISellerRepository _sellerRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtService;
         private readonly SessionSettings _sessionSettings;
@@ -15,15 +12,13 @@ namespace Daco.Application.Auth.Commands
         public LoginCommandHandler(
             IUserRepository userRepository,
             ILoginSessionRepository sessionRepository,
-            ISellerRepository sellerRepository,
             IPasswordHasher passwordHasher,
             IJwtService jwtService,
             IOptions<SessionSettings> sessionSettings,
             ILogger<LoginCommandHandler> logger)
         {
-            _userRepository = userRepository;
+            _userRepository = userRepository;   
             _sessionRepository = sessionRepository;
-            _sellerRepository = sellerRepository;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
             _sessionSettings = sessionSettings.Value;
@@ -62,11 +57,10 @@ namespace Daco.Application.Auth.Commands
             //    return ResponseDTO.Failure(ErrorCodes.Auth.PhoneNotVerified, "Please verify your phone before logging in");
 
             var roles = new List<string> { "buyer" };
-            var isSeller = await _sellerRepository.IsSellerAsync(user.Id, cancellationToken);
-            if (isSeller) roles.Add("seller");
-
-            //var isAdmin = await _adminRepository.IsActiveAdminAsync(user.Id, cancellationToken);
-            //if (isAdmin) roles.Add("admin");
+            var userRoles = await _userRepository.GetUserRolesAsync(user.Id);
+            if (userRoles.IsSeller) roles.Add("seller");
+            if (userRoles.IsAdmin)
+                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
 
             var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();

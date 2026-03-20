@@ -15,6 +15,7 @@
             public const string AccountSuspended   = "AUTH.ACCOUNT_SUSPENDED";
             public const string AccountBanned      = "AUTH.ACCOUNT_BANNED";
             public const string TooManyRequests    = "AUTH.TOO_MANY_REQUESTS";
+            public const string Unauthorized       = "AUTH.UNAUTHORIZED";
         }
 
         // Users

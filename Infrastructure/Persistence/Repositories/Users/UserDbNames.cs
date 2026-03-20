@@ -10,5 +10,6 @@
         public const string UpdateUser              = "sp_update_user";
         public const string CreateAuthProvider      = "sp_create_auth_provider";
         public const string CheckUserAuthProvider   = "sp_check_user_auth_provider";
+        public const string GetUserRoles            = "fn_get_user_roles";
     }
 }

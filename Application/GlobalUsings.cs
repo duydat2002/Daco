@@ -33,3 +33,7 @@ global using Daco.Application.Common.Interfaces.Services.FileStorage;
 global using System.ComponentModel.DataAnnotations;
 global using Daco.Domain.Shops.Events;
 global using Daco.Domain.Shops.Aggregates;
+global using Daco.Domain.Administration.Aggregates;
+global using Daco.Shared.Attributes;
+global using Daco.Domain.Administration.Enums;
+
