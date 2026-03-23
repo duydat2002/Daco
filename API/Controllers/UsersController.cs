@@ -20,7 +20,7 @@
         {
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                UserId = CurrentUserId
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -34,7 +34,7 @@
         {
             var command = new UpdateAvatarCommand
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                UserId = CurrentUserId,
                 FileStream = avatar.OpenReadStream(),
                 FileName = avatar.FileName,
                 ContentType = avatar.ContentType,
@@ -52,7 +52,7 @@
         {
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                UserId = CurrentUserId
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -66,7 +66,7 @@
         {
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                UserId = CurrentUserId
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -80,7 +80,7 @@
         {
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                UserId = CurrentUserId
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -95,7 +95,7 @@
         {
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                UserId = CurrentUserId
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -110,7 +110,7 @@
         {
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                UserId = CurrentUserId,
                 AddressId = addressId
             };
 
@@ -125,7 +125,7 @@
         {
             var command = new SetDefaultAddressCommand
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                UserId = CurrentUserId,
                 AddressId = addressId
             };
 
@@ -140,7 +140,7 @@
         {
             var command = new DeleteAddressCommand
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                UserId = CurrentUserId,
                 AddressId = addressId
             };
 
@@ -157,7 +157,7 @@
         {
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+                UserId = CurrentUserId
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -172,7 +172,7 @@
         {
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                UserId = CurrentUserId,
                 BankAccountId = bankAccountId
             };
 
@@ -187,7 +187,7 @@
         {
             var command = new SetDefaultBankAccountCommand
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                UserId = CurrentUserId,
                 BankAccountId = bankAccountId
             };
 
@@ -202,7 +202,7 @@
         {
             var command = new DeleteBankAccountCommand
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
+                UserId = CurrentUserId,
                 BankAccountId = bankAccountId
             };
 

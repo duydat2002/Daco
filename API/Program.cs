@@ -1,8 +1,20 @@
+using Daco.Shared.Converters;
+
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true; 
+    })
+    .AddJsonOptions(options =>
+    {
+        //options.JsonSerializerOptions.Converters.Add(new EmptyStringToNullDateTimeConverter());
+        //options.JsonSerializerOptions.Converters.Add(new EmptyStringToNullGuidConverter());
+        //options.JsonSerializerOptions.Converters.Add(new EmptyStringGuidConverter());
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -36,6 +48,7 @@ app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

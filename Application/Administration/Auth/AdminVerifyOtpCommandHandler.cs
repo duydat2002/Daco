@@ -55,7 +55,7 @@
             var roles = new List<string> { UserRoles.Admin };
             roles.AddRange(adminRoles);
 
-            var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
+            var jwt = _jwtService.GenerateAdminToken(user.Id, adminUser.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();
             var tokenHash = _jwtService.HashToken(jwt);
 

@@ -1,6 +1,4 @@
-﻿using Daco.Application.Common.DTOs;
-
-namespace Daco.Infrastructure.Persistence.Repositories.Users
+﻿namespace Daco.Infrastructure.Persistence.Repositories.Users
 {
     public class UserRepository : IUserRepository
     {

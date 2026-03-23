@@ -41,6 +41,14 @@
                         cancellationToken));
         }
 
+        public async Task<AdminUser?> GetByIdAsync(Guid adminId, CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { adminId },
+                () => _context.AdminUsers
+                    .FirstOrDefaultAsync(s => s.Id == adminId,
+                        cancellationToken));
+        }
+
         public async Task<bool> IsAdminAsync(
             Guid userId,
             CancellationToken cancellationToken = default)
@@ -105,6 +113,39 @@
                 .Where(p => !revoked.Contains(p))
                 .ToList()
                 .AsReadOnly();
+        }
+
+        public async Task<AdminUser?> GetByEmployeeCodeAsync(
+            string employeeCode,
+            CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { employeeCode },
+                () => _context.AdminUsers
+                    .FirstOrDefaultAsync(a => a.EmployeeCode == employeeCode, cancellationToken));
+        }
+
+        public async Task<IReadOnlyList<AdminRole>> GetRolesByIdsAsync(
+            List<Guid> roleIds,
+            CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { roleIds },
+                async () =>
+                {
+                    var roles = await _context.AdminRoles
+                        .Where(r => roleIds.Contains(r.Id) && r.IsActive)
+                        .ToListAsync(cancellationToken);
+
+                    return roles.AsReadOnly() as IReadOnlyList<AdminRole>;
+                }) ?? new List<AdminRole>();
+        }
+
+        public async Task<AdminRole?> GetRoleByIdAsync(
+            Guid roleId,
+            CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { roleId },
+                () => _context.AdminRoles
+                    .FirstOrDefaultAsync(r => r.Id == roleId && r.IsActive, cancellationToken));
         }
         #endregion
     }

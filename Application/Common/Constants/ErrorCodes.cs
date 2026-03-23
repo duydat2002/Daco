@@ -29,14 +29,29 @@
             public const string AddressLimitExceeded = "USER.ADDRESS_LIMIT_EXCEEDED";
         }
 
-        //Address
+        // Admin
+        public static class Admin
+        {
+            public const string NotFound               = "ADMIN.NOT_FOUND";
+            public const string AlreadyDefault         = "ADMIN.ALREADY_DEFAULT";
+            public const string EmployeeCodeExists     = "ADMIN.EMPLOYEE_CODE_EXISTS";
+            public const string RoleNotFound           = "ADMIN.ROLE_NOT_FOUND";
+            public const string CannotUpdateSelf       = "ADMIN.CAN_NOT_UPDATE_SELF";
+            public const string CannotUpdateSuperAdmin = "ADMIN.CAN_NOT_UPDATE_SUPERADMIN";
+            public const string CannotAssignSuperAdmin = "ADMIN.CAN_NOT_ASSIGN_SUPERADMIN";
+            public const string RoleAlreadyAssigned    = "ADMIN.ROLE_ALREADY_ASSIGNED";
+            public const string RoleNotAssigned        = "ADMIN.ROLE_NOT_ASSIGNED";
+            public const string MustHaveAtLeastOneRole = "ADMIN.MUST_HAVE_AT_LEAST_ONE_ROLE";
+        }
+
+        // Address
         public static class Address
         {
             public const string NotFound       = "ADDRESS.NOT_FOUND";
             public const string AlreadyDefault = "ADDRESS.ALREADY_DEFAULT";
         }
 
-        //Bank Account
+        // Bank Account
         public static class BankAccount
         {
             public const string NotFound       = "BANK_ACCOUNT.NOT_FOUND";

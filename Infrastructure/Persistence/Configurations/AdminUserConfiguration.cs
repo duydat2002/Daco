@@ -92,6 +92,11 @@
             builder.Navigation(a => a.CustomPermissions)
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasField("_customPermissions");
+
+            builder.HasOne<User>()
+                .WithOne()
+                .HasForeignKey<AdminUser>(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

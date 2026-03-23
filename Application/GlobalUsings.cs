@@ -36,4 +36,6 @@ global using Daco.Domain.Shops.Aggregates;
 global using Daco.Domain.Administration.Aggregates;
 global using Daco.Shared.Attributes;
 global using Daco.Domain.Administration.Enums;
+global using Daco.Domain.Administration.Entities;
+global using Daco.Domain.Administration.Constants;
 

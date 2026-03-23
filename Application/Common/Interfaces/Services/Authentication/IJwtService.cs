@@ -7,5 +7,6 @@
         string HashToken(string token);
         string GenerateTempToken(Guid userId);
         Guid? ValidateTempToken(string tempToken);
+        string GenerateAdminToken(Guid userId, Guid adminId, string username, string? email, string? phone, List<string> roles);
     }
 }

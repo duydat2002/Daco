@@ -7,13 +7,16 @@
         public JwtService(IOptions<JwtSettings> settings)
         {
             _settings = settings.Value;
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
-        public string GenerateToken(Guid userId, string username, string? email, string? phone, List<string> roles)
+        public string GenerateToken(
+            Guid userId,
+            string username,
+            string? email,
+            string? phone,
+            List<string> roles)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Sub,        userId.ToString()),
@@ -21,24 +24,80 @@
                 new(JwtRegisteredClaimNames.Jti,        Guid.NewGuid().ToString()),
                 new(JwtRegisteredClaimNames.Iat,        DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
             };
+
+            if (!string.IsNullOrEmpty(email))
+                claims.Add(new(JwtRegisteredClaimNames.Email, email));
+
+            if (!string.IsNullOrEmpty(phone))
+                claims.Add(new("phone", phone));
+
             foreach (var role in roles)
                 claims.Add(new(ClaimTypes.Role, role));
 
+            return BuildToken(claims, _settings.ExpirationHours);
+        }
+
+        public string GenerateAdminToken(
+            Guid userId,
+            Guid adminId,
+            string username,
+            string? email,
+            string? phone,
+            List<string> roles)
+        {
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Sub,        userId.ToString()),
+                new("admin_id",                         adminId.ToString()),  
+                new(JwtRegisteredClaimNames.UniqueName, username),
+                new(JwtRegisteredClaimNames.Jti,        Guid.NewGuid().ToString()),
+                new(JwtRegisteredClaimNames.Iat,        DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
+            };
+
             if (!string.IsNullOrEmpty(email))
-                claims.Add(new Claim(JwtRegisteredClaimNames.Email, email));
+                claims.Add(new(JwtRegisteredClaimNames.Email, email));
 
             if (!string.IsNullOrEmpty(phone))
-                claims.Add(new Claim("phone", phone));
+                claims.Add(new("phone", phone));
 
-            var token = new JwtSecurityToken(
-                issuer: _settings.Issuer,
-                audience: _settings.Audience,
-                claims: claims,
-                notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddHours(_settings.ExpirationHours),
-                signingCredentials: credentials);
+            foreach (var role in roles)
+                claims.Add(new(ClaimTypes.Role, role));
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return BuildToken(claims, _settings.ExpirationHours);
+        }
+
+        public string GenerateTempToken(Guid userId)
+        {
+            var claims = new List<Claim>
+            {
+                new(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new("token_type",                "temp"),
+            };
+
+            return BuildToken(claims, expirationHours: null, expirationMinutes: 10);
+        }
+
+        public Guid? ValidateTempToken(string tempToken)
+        {
+            try
+            {
+                var principal = ValidateToken(tempToken);
+                if (principal is null) return null;
+
+                var tokenType = principal.FindFirstValue("token_type");
+                if (tokenType != "temp") return null;
+
+                var sub = principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
+                if (sub is null || !Guid.TryParse(sub, out var userId))
+                    return null;
+
+                return userId;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public string GenerateRefreshToken()
@@ -52,64 +111,47 @@
             return Convert.ToHexString(bytes).ToLowerInvariant();
         }
 
-        public string GenerateTempToken(Guid userId)
+        private string BuildToken(
+            List<Claim> claims,
+            int? expirationHours = null,
+            int? expirationMinutes = null)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Sub, userId.ToString()),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new("token_type", "temp"),  // phân biệt với JWT thật
-            };
+            var expires = expirationMinutes.HasValue
+                ? DateTime.UtcNow.AddMinutes(expirationMinutes.Value)
+                : DateTime.UtcNow.AddHours(expirationHours ?? _settings.ExpirationHours);
 
             var token = new JwtSecurityToken(
                 issuer: _settings.Issuer,
                 audience: _settings.Audience,
                 claims: claims,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddMinutes(5),  // chỉ sống 5 phút
+                expires: expires,
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public Guid? ValidateTempToken(string tempToken)
+        private ClaimsPrincipal? ValidateToken(string token)
         {
-            try
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
+
+            var validationParams = new TokenValidationParameters
             {
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _settings.Issuer,
+                ValidAudience = _settings.Audience,
+                IssuerSigningKey = key,
+                ClockSkew = TimeSpan.Zero
+            };
 
-                var validationParams = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = _settings.Issuer,
-                    ValidAudience = _settings.Audience,
-                    IssuerSigningKey = key,
-                    ClockSkew = TimeSpan.Zero
-                };
-
-                var principal = new JwtSecurityTokenHandler()
-                    .ValidateToken(tempToken, validationParams, out var validatedToken);
-
-                var tokenType = principal.FindFirstValue("token_type");
-                if (tokenType != "temp")
-                    return null;
-
-                var sub = principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
-                if (sub is null || !Guid.TryParse(sub, out var userId))
-                    return null;
-
-                return userId;
-            }
-            catch
-            {
-                return null;
-            }
+            return new JwtSecurityTokenHandler()
+                .ValidateToken(token, validationParams, out _);
         }
     }
 }

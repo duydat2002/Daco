@@ -1,4 +1,4 @@
-﻿namespace Daco.API.Controllers
+﻿namespace Daco.API.Controllers.Administration
 {
     [ApiController]
     [Route("api/admin/auth")]
@@ -18,9 +18,9 @@
         {
             command = command with
             {
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-                UserAgent = HttpContext.Request.Headers.UserAgent.ToString(),
-                DeviceType = DeviceDetector.Detect(HttpContext.Request.Headers.UserAgent.ToString())
+                IpAddress = CurrentIpAddress,
+                UserAgent = CurrentUserAgent,
+                DeviceType = CurrentDeviceType
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -33,9 +33,9 @@
         {
             command = command with
             {
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-                UserAgent = HttpContext.Request.Headers.UserAgent.ToString(),
-                DeviceType = DeviceDetector.Detect(HttpContext.Request.Headers.UserAgent.ToString())
+                IpAddress = CurrentIpAddress,
+                UserAgent = CurrentUserAgent,
+                DeviceType = CurrentDeviceType
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -47,12 +47,10 @@
             [FromBody] AdminLogoutCommand command,
             CancellationToken cancellationToken)
         {
-            var rawToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
-
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
-                RawToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "")
+                UserId = CurrentUserId,
+                RawToken = CurrentRawToken
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));

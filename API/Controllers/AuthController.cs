@@ -93,12 +93,12 @@
             [FromBody] LogoutCommand command,
             CancellationToken cancellationToken)
         {
-            var rawToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+            var rawToken = CurrentRawToken;
 
             command = command with
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
-                RawToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "")
+                UserId = CurrentUserId,
+                RawToken = CurrentRawToken
             };
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
@@ -110,7 +110,7 @@
             [FromBody] LinkGoogleAccountCommand command,
             CancellationToken cancellationToken)
         {
-            var rawToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "");
+            var rawToken = CurrentRawToken;
 
             command = command with
             {
@@ -155,8 +155,8 @@
 
             var query = new GetActiveSessionsQuery
             {
-                UserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!),
-                CurrentToken = HttpContext.Request.Headers.Authorization.ToString().Replace("Bearer ", "")
+                UserId = CurrentUserId,
+                CurrentToken = CurrentRawToken
             };
 
             return HandleResult(await _mediator.Send(query, cancellationToken));
