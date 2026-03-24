@@ -3,15 +3,18 @@
     public class RevokeAdminRoleCommandHandler : IRequestHandler<RevokeAdminRoleCommand, ResponseDTO>
     {
         private readonly IAdminUserRepository _adminRepository;
+        private readonly IPermissionCacheService _permissionCache;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<RevokeAdminRoleCommandHandler> _logger;
 
         public RevokeAdminRoleCommandHandler(
             IAdminUserRepository adminRepository,
+            IPermissionCacheService permissionCache,
             IUnitOfWork unitOfWork,
             ILogger<RevokeAdminRoleCommandHandler> logger)
         {
             _adminRepository = adminRepository;
+            _permissionCache = permissionCache;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -45,6 +48,9 @@
                 return ResponseDTO.Failure(ErrorCodes.Admin.RoleNotAssigned, "Role is not assigned");
 
             assignment.Revoke();
+
+            _permissionCache.InvalidateCache(request.AdminId);
+
             _unitOfWork.TrackEntity(admin);
 
             _logger.LogInformation("Role {RoleCode} revoked from admin {AdminId}", role.RoleCode, admin.Id);

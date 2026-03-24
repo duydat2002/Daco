@@ -1,4 +1,6 @@
-﻿namespace Daco.Infrastructure
+﻿using Daco.Infrastructure.Services.Authorization;
+
+namespace Daco.Infrastructure
 {
     public static class DependencyInjection
     {
@@ -52,6 +54,12 @@
             // Mapper
             DapperTypeMapper.RegisterMappings();
 
+            // Authorization
+            services.AddMemoryCache();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+            services.AddScoped<IPermissionCacheService, PermissionCacheService>();
+
             // JWT Authentication
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()
                 ?? throw new InvalidOperationException("JWT settings not configured");
@@ -74,6 +82,37 @@
                         ValidAudience = jwtSettings.Audience,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
                         ClockSkew = TimeSpan.Zero 
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnChallenge = async context =>
+                        {
+                            context.HandleResponse();
+
+                            context.Response.StatusCode = 401;
+                            context.Response.ContentType = "application/json";
+
+                            await context.Response.WriteAsJsonAsync(new
+                            {
+                                code = 401,
+                                message = "Unauthorized",
+                                data = (object?)null
+                            });
+                        },
+
+                        OnForbidden = async context =>
+                        {
+                            context.Response.StatusCode = 403;
+                            context.Response.ContentType = "application/json";
+
+                            await context.Response.WriteAsJsonAsync(new
+                            {
+                                code = 403,
+                                message = "Forbidden",
+                                data = (object?)null
+                            });
+                        }
                     };
                 });
 

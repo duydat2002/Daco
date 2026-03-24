@@ -3,15 +3,18 @@
     public class UpdateAdminStatusCommandHandler : IRequestHandler<UpdateAdminStatusCommand, ResponseDTO>
     {
         private readonly IAdminUserRepository _adminRepository;
+        private readonly IPermissionCacheService _permissionCache;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<UpdateAdminStatusCommandHandler> _logger;
 
         public UpdateAdminStatusCommandHandler(
             IAdminUserRepository adminRepository,
+            IPermissionCacheService permissionCache,
             IUnitOfWork unitOfWork,
             ILogger<UpdateAdminStatusCommandHandler> logger)
         {
             _adminRepository = adminRepository;
+            _permissionCache = permissionCache;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -49,6 +52,8 @@
             }
 
             await _adminRepository.UpdateAsync(admin, cancellationToken);
+            if (request.Status != "active")
+                _permissionCache.InvalidateCache(request.AdminId);
             _unitOfWork.TrackEntity(admin);
 
             _logger.LogInformation(

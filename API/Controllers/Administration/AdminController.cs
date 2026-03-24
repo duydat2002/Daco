@@ -74,5 +74,24 @@
 
             return HandleResult(await _mediator.Send(command, cancellationToken));
         }
+
+        [HttpGet]
+        [RequirePermission(AdminPermissions.Admins.View)]
+        public async Task<ActionResult<ResponseDTO>> GetAdmins(
+            [FromQuery] GetAdminsQuery query,
+            CancellationToken cancellationToken)
+        {
+            return HandleResult(await _mediator.Send(query, cancellationToken));
+        }
+
+        [HttpGet("{adminId}")]
+        [RequirePermission(AdminPermissions.Admins.View)]
+        public async Task<ActionResult<ResponseDTO>> GetById(
+            Guid adminId,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetAdminByIdQuery { AdminId = adminId };
+            return HandleResult(await _mediator.Send(query, cancellationToken));
+        }
     }
 }

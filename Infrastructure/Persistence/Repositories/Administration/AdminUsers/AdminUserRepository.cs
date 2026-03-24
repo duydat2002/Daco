@@ -79,7 +79,6 @@
             Guid adminId,
             CancellationToken cancellationToken = default)
         {
-            // Permissions từ roles
             var rolePermissions = await _context.Set<AdminRoleAssignment>()
                 .Where(r => r.AdminId == adminId
                          && r.IsActive
@@ -95,7 +94,6 @@
                 .Distinct()
                 .ToListAsync(cancellationToken);
 
-            // Custom permissions (grant hoặc revoke)
             var customPermissions = await _context.Set<AdminCustomPermission>()
                 .Where(c => c.AdminId == adminId)
                 .Join(_context.AdminPermissions,
@@ -104,7 +102,6 @@
                     (c, p) => new { p.PermissionCode, c.IsGranted })
                 .ToListAsync(cancellationToken);
 
-            // Apply custom: grant thêm, revoke bớt
             var granted = customPermissions.Where(c => c.IsGranted).Select(c => c.PermissionCode);
             var revoked = customPermissions.Where(c => !c.IsGranted).Select(c => c.PermissionCode).ToHashSet();
 
@@ -142,6 +139,208 @@
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<PagedResult<AdminListItemDTO>> GetAdminsAsync(
+            GetAdminsQuery query,
+            CancellationToken cancellationToken = default)
+        {
+            var q = _context.AdminUsers
+                .Join(_context.Users,
+                    a => a.UserId,
+                    u => u.Id,
+                    (a, u) => new { Admin = a, User = u })
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(query.Search))
+            {
+                var search = query.Search.ToLower();
+                q = q.Where(x =>
+                    x.User.Username.Value.Contains(search) ||
+                    x.User.Email.Value.Contains(search) ||
+                    x.Admin.EmployeeCode!.Contains(search));
+            }
+
+            if (!string.IsNullOrEmpty(query.Status) &&
+                Enum.TryParse<AdminStatus>(query.Status, true, out var status))
+            {
+                q = q.Where(x => x.Admin.Status == status);
+            }
+
+            if (!string.IsNullOrEmpty(query.Department))
+            {
+                q = q.Where(x => x.Admin.Department == query.Department);
+            }
+
+            var total = await q.CountAsync(cancellationToken);
+
+            var admins = await q
+                .OrderByDescending(x => x.Admin.CreatedAt)
+                .Skip((query.Page - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .Select(x => new
+                {
+                    x.Admin.Id,
+                    x.Admin.UserId,
+                    x.Admin.EmployeeCode,
+                    x.Admin.Department,
+                    x.Admin.Position,
+                    x.Admin.Status,
+                    x.Admin.CreatedAt,
+                    x.Admin.UpdatedAt,
+                    Username = x.User.Username.Value,
+                    Email = x.User.Email.Value,
+                })
+                .ToListAsync(cancellationToken);
+
+            var adminIds = admins.Select(a => a.Id).ToList();
+            var roleAssignments = await _context.AdminRoleAssignments
+                .Where(r => adminIds.Contains(r.AdminId)
+                         && r.IsActive
+                         && (r.ExpiresAt == null || r.ExpiresAt > DateTime.UtcNow))
+                .Join(_context.AdminRoles,
+                    r => r.RoleId,
+                    role => role.Id,
+                    (r, role) => new { r.AdminId, role.RoleCode })
+                .ToListAsync(cancellationToken);
+
+            var roleMap = roleAssignments
+                .GroupBy(r => r.AdminId)
+                .ToDictionary(g => g.Key, g => g.Select(r => r.RoleCode).ToList());
+
+            var items = admins.Select(a => new AdminListItemDTO
+            {
+                Id = a.Id,
+                UserId = a.UserId,
+                Username = a.Username,
+                Email = a.Email,
+                EmployeeCode = a.EmployeeCode,
+                Department = a.Department,
+                Position = a.Position,
+                Status = a.Status.ToString().ToLower(),
+                CreatedAt = a.CreatedAt,
+                Roles = roleMap.TryGetValue(a.Id, out var roles) ? roles : new()
+            }).ToList();
+
+            return new PagedResult<AdminListItemDTO>
+            {
+                Items = items,
+                Total = total,
+                Page = query.Page,
+                PageSize = query.PageSize
+            };
+        }
+
+        public async Task<AdminDetailDTO?> GetAdminDetailAsync(
+            Guid adminId,
+            CancellationToken cancellationToken = default)
+        {
+            var admin = await _context.AdminUsers
+                .Join(_context.Users,
+                    a => a.UserId,
+                    u => u.Id,
+                    (a, u) => new { Admin = a, User = u })
+                .Where(x => x.Admin.Id == adminId)
+                .Select(x => new
+                {
+                    x.Admin.Id,
+                    x.Admin.UserId,
+                    x.Admin.EmployeeCode,
+                    x.Admin.Department,
+                    x.Admin.Position,
+                    x.Admin.WorkEmail,
+                    x.Admin.WorkPhone,
+                    x.Admin.Status,
+                    x.Admin.Notes,
+                    x.Admin.CreatedAt,
+                    x.Admin.UpdatedAt,
+                    Username = x.User.Username.Value,
+                    Email = x.User.Email.Value,
+                    Phone = x.User.Phone.Value,
+                    Avatar = x.User.Avatar,
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (admin is null) return null;
+
+            var roles = await _context.AdminRoleAssignments
+                .Where(r => r.AdminId == adminId
+                         && r.IsActive
+                         && (r.ExpiresAt == null || r.ExpiresAt > DateTime.UtcNow))
+                .Join(_context.AdminRoles,
+                    r => r.RoleId,
+                    role => role.Id,
+                    (r, role) => new RoleDTO
+                    {
+                        Id = role.Id,
+                        RoleCode = role.RoleCode,
+                        RoleName = role.RoleName,
+                        AssignedAt = r.AssignedAt,
+                        ExpiresAt = r.ExpiresAt
+                    })
+                .ToListAsync(cancellationToken);
+
+            var roleIds = roles.Select(r => r.Id).ToList();
+            var rolePermissions = await _context.RolePermissions
+                .Where(rp => roleIds.Contains(rp.RoleId))
+                .Join(_context.AdminPermissions,
+                    rp => rp.PermissionId,
+                    p => p.Id,
+                    (rp, p) => new PermissionDTO
+                    {
+                        PermissionCode = p.PermissionCode,
+                        Module = p.Module,
+                        IsCustom = false,
+                        IsGranted = true
+                    })
+                .Distinct()
+                .ToListAsync(cancellationToken);
+
+            var customPermissions = await _context.AdminCustomPermissions
+                .Where(c => c.AdminId == adminId)
+                .Join(_context.AdminPermissions,
+                    c => c.PermissionId,
+                    p => p.Id,
+                    (c, p) => new PermissionDTO
+                    {
+                        PermissionCode = p.PermissionCode,
+                        Module = p.Module,
+                        IsCustom = true,
+                        IsGranted = c.IsGranted
+                    })
+                .ToListAsync(cancellationToken);
+
+            var revokedCodes = customPermissions
+                .Where(c => !c.IsGranted)
+                .Select(c => c.PermissionCode)
+                .ToHashSet();
+
+            var grantedCustom = customPermissions.Where(c => c.IsGranted).ToList();
+
+            var finalPermissions = rolePermissions
+                .Where(p => !revokedCodes.Contains(p.PermissionCode))
+                .Union(grantedCustom)
+                .ToList();
+
+            return new AdminDetailDTO
+            {
+                Id = admin.Id,
+                UserId = admin.UserId,
+                Username = admin.Username,
+                Email = admin.Email,
+                Phone = admin.Phone,
+                Avatar = admin.Avatar,
+                EmployeeCode = admin.EmployeeCode,
+                Department = admin.Department,
+                Position = admin.Position,
+                WorkEmail = admin.WorkEmail,
+                WorkPhone = admin.WorkPhone,
+                Status = admin.Status.ToString().ToLower(),
+                Notes = admin.Notes,
+                CreatedAt = admin.CreatedAt,
+                UpdatedAt = admin.UpdatedAt,
+                Roles = roles,
+                Permissions = finalPermissions
+            };
+        }
         #region Admin Role
         public async Task<AdminRoleAssignment?> GetRoleAssignmentAsync(
             Guid adminId,

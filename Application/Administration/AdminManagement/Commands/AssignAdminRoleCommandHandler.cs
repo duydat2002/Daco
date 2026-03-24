@@ -3,15 +3,18 @@
     public class AssignAdminRoleCommandHandler : IRequestHandler<AssignAdminRoleCommand, ResponseDTO>
     {
         private readonly IAdminUserRepository _adminRepository;
+        private readonly IPermissionCacheService _permissionCache;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<AssignAdminRoleCommandHandler> _logger;
 
         public AssignAdminRoleCommandHandler(
             IAdminUserRepository adminRepository,
+            IPermissionCacheService permissionCache,
             IUnitOfWork unitOfWork,
             ILogger<AssignAdminRoleCommandHandler> logger)
         {
             _adminRepository = adminRepository;
+            _permissionCache = permissionCache;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
@@ -51,6 +54,9 @@
 
                 await _adminRepository.AddRoleAssignmentAsync(assignment, cancellationToken);
             }
+
+            _permissionCache.InvalidateCache(request.AdminId);
+
             _unitOfWork.TrackEntity(admin);
 
             _logger.LogInformation("Role {RoleCode} assigned to admin {AdminId}", role.RoleCode, admin.Id);

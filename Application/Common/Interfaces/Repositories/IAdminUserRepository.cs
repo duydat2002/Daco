@@ -12,13 +12,18 @@
         Task<AdminUser?> GetByEmployeeCodeAsync(string employeeCode, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<AdminRole>> GetRolesByIdsAsync(List<Guid> roleIds, CancellationToken cancellationToken = default);
         Task<AdminRole?> GetRoleByIdAsync(Guid roleId, CancellationToken cancellationToken = default);
+        Task<PagedResult<AdminListItemDTO>> GetAdminsAsync(
+            GetAdminsQuery query,
+            CancellationToken cancellationToken = default);
+        Task<AdminDetailDTO?> GetAdminDetailAsync(
+            Guid adminId,
+            CancellationToken cancellationToken = default);
 
         #region Admin Role
         Task<AdminRoleAssignment?> GetRoleAssignmentAsync(Guid adminId, Guid roleId, CancellationToken cancellationToken = default);
         Task AddRoleAssignmentAsync(AdminRoleAssignment assignment, CancellationToken cancellationToken = default);
         Task RemoveRoleAssignmentAsync(AdminRoleAssignment assignment, CancellationToken cancellationToken = default);
         Task AddCustomPermissionAsync(AdminCustomPermission permission, CancellationToken cancellationToken = default);
-
         #endregion
     }
 }
