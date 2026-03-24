@@ -21,3 +21,4 @@ global using Daco.Domain.Administration.Constants;
 global using Daco.Shared.Converters;
 global using Daco.Application.Administration.AdminManagement.Queries;
 global using Daco.Infrastructure.Authorization;
+global using Daco.Application.Administration.UserManagement.Commands;

@@ -1,8 +1,8 @@
 ﻿namespace Daco.Application.Administration.UserManagement.Commands
 {
-    public class SuspendUserCommandValidator : BaseValidator<SuspendUserCommand>
+    public class BanUserCommandValidator : BaseValidator<BanUserCommand>
     {
-        public SuspendUserCommandValidator() 
+        public BanUserCommandValidator() 
         {
             RuleFor(x => x.UserId)
                 .NotEmpty().WithMessage("UserId is required");

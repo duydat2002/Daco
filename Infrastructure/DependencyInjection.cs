@@ -20,7 +20,7 @@ namespace Daco.Infrastructure
 
             services.AddScoped<IDbSession, NpgsqlDbSession>();
 
-            services.AddDbContextFactory<AppDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

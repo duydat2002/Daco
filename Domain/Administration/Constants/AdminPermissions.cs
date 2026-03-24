@@ -4,9 +4,10 @@
     {
         public static class Users
         {
-            public const string View    = "users.view";
-            public const string Suspend = "users.suspend";
-            public const string Ban     = "users.ban";
+            public const string View     = "users.view";
+            public const string Suspend  = "users.suspend";
+            public const string Ban      = "users.ban";
+            public const string Activate = "users.activate";
         }
 
         public static class Admins

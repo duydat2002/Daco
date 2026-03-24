@@ -1,6 +1,6 @@
 ﻿namespace Daco.Application.Administration.UserManagement.Commands
 {
-    public record SuspendUserCommand : IRequest<ResponseDTO>
+    public record BanUserCommand : IRequest<ResponseDTO>
     {
         [JsonIgnore]
         public Guid   UserId { get; init; }
