@@ -1,8 +1,8 @@
-﻿namespace Daco.Application.Administration.AdminManagement
+﻿namespace Daco.Application.Administration.AdminManagement.Commands
 {
     public class CreateAdminCommandValidator : BaseValidator<CreateAdminCommand>
     {
-        public CreateAdminCommandValidator() 
+        public CreateAdminCommandValidator()
         {
             RuleFor(x => x.Username)
                     .ValidUsername();

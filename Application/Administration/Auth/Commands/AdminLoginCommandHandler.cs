@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.Auth
+﻿namespace Daco.Application.Administration.Auth.Commands
 {
     public class AdminLoginCommandHandler : IRequestHandler<AdminLoginCommand, ResponseDTO>
     {
@@ -77,7 +77,7 @@
             return ResponseDTO.Success(new
             {
                 TempToken = tempToken,
-                ExpiredIn = 300 
+                ExpiredIn = 300
             }, "OTP has been sent to your email");
         }
     }

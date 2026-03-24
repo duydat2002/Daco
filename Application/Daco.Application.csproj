@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Administration\AdminManagement\Queries\" />
+    <Folder Include="Administration\Auth\Queries\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
     <Folder Include="Users\Commands\Session\" />

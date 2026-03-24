@@ -1,8 +1,8 @@
-﻿namespace Daco.Application.Administration.AdminManagement
+﻿namespace Daco.Application.Administration.AdminManagement.Commands
 {
-    public class AssignAdminRoleCommandValidator :BaseValidator<AssignAdminRoleCommand>
+    public class AssignAdminRoleCommandValidator : BaseValidator<AssignAdminRoleCommand>
     {
-        public AssignAdminRoleCommandValidator() 
+        public AssignAdminRoleCommandValidator()
         {
             RuleFor(x => x.AdminId)
                     .NotEmpty().WithMessage("AdminId is required");

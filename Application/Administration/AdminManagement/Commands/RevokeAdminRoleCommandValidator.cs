@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.AdminManagement
+﻿namespace Daco.Application.Administration.AdminManagement.Commands
 {
     public class RevokeAdminRoleCommandValidator : BaseValidator<RevokeAdminRoleCommand>
     {

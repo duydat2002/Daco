@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.AdminManagement
+﻿namespace Daco.Application.Administration.AdminManagement.Commands
 {
     public class CreateAdminCommandHandler : IRequestHandler<CreateAdminCommand, ResponseDTO>
     {
@@ -78,9 +78,9 @@
                 UserId = user.Id,
                 Username = user.Username.Value,
                 Email = user.Email?.Value,
-                EmployeeCode = admin.EmployeeCode,
-                Department = admin.Department,
-                Position = admin.Position,
+                admin.EmployeeCode,
+                admin.Department,
+                admin.Position,
                 Roles = roles.Select(r => r.RoleCode).ToList()
             }, "Admin created successfully");
         }

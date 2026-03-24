@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.AdminManagement
+﻿namespace Daco.Application.Administration.AdminManagement.Commands
 {
     public class AssignAdminRoleCommandHandler : IRequestHandler<AssignAdminRoleCommand, ResponseDTO>
     {
@@ -59,8 +59,8 @@
             {
                 admin.Id,
                 RoleId = role.Id,
-                RoleCode = role.RoleCode,
-                RoleName = role.RoleName,
+                role.RoleCode,
+                role.RoleName,
                 request.ExpiresAt
             }, "Role assigned successfully");
         }

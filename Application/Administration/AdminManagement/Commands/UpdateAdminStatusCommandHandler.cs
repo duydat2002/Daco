@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Administration.Constants;
-
-namespace Daco.Application.Administration.AdminManagement
+﻿namespace Daco.Application.Administration.AdminManagement.Commands
 {
     public class UpdateAdminStatusCommandHandler : IRequestHandler<UpdateAdminStatusCommand, ResponseDTO>
     {
@@ -60,7 +58,7 @@ namespace Daco.Application.Administration.AdminManagement
             return ResponseDTO.Success(new
             {
                 admin.Id,
-                Status = request.Status
+                request.Status
             }, "Admin status updated successfully");
         }
     }

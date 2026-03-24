@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.Auth
+﻿namespace Daco.Application.Administration.Auth.Commands
 {
     public class AdminLoginCommandValidator : BaseValidator<AdminLoginCommand>
     {

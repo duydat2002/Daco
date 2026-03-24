@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.Auth
+﻿namespace Daco.Application.Administration.Auth.Commands
 {
     public class AdminVerifyOtpCommandHandler : IRequestHandler<AdminVerifyOtpCommand, ResponseDTO>
     {
@@ -77,16 +77,16 @@
             {
                 AccessToken = jwt,
                 RefreshToken = refreshToken,
-                ExpiresAt = session.ExpiresAt,
+                session.ExpiresAt,
                 Admin = new
                 {
                     adminUser.Id,
                     UserId = user.Id,
                     Username = user.Username.Value,
                     Email = user.Email?.Value,
-                    EmployeeCode = adminUser.EmployeeCode,
-                    Department = adminUser.Department,
-                    Position = adminUser.Position,
+                    adminUser.EmployeeCode,
+                    adminUser.Department,
+                    adminUser.Position,
                     Roles = adminRoles
                 }
             }, "Login successful");

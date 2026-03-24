@@ -1,6 +1,4 @@
-﻿using static Daco.Domain.Administration.Constants.AdminPermissions;
-
-namespace Daco.Application.Administration.AdminManagement
+﻿namespace Daco.Application.Administration.AdminManagement.Commands
 {
     public class RevokeAdminRoleCommandHandler : IRequestHandler<RevokeAdminRoleCommand, ResponseDTO>
     {
@@ -55,7 +53,7 @@ namespace Daco.Application.Administration.AdminManagement
             {
                 admin.Id,
                 RoleId = role.Id,
-                RoleCode = role.RoleCode
+                role.RoleCode
             }, "Role revoked successfully");
         }
     }

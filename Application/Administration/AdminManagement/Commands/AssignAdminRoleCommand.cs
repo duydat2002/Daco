@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.AdminManagement
+﻿namespace Daco.Application.Administration.AdminManagement.Commands
 {
     public record AssignAdminRoleCommand : IRequest<ResponseDTO>
     {
@@ -6,7 +6,7 @@
         public Guid      AdminId           { get; init; }
         public Guid      RoleId            { get; init; }
         public DateTime? ExpiresAt         { get; init; }
-        [JsonIgnore] 
+        [JsonIgnore]
         public Guid      AssignedByAdminId { get; init; }
     }
 }
