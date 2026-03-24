@@ -64,7 +64,7 @@
             Guid adminId,
             CancellationToken cancellationToken = default)
         {
-            return await _context.Set<AdminRoleAssignment>()
+            return await _context.AdminRoleAssignments
                 .Where(r => r.AdminId == adminId
                          && r.IsActive
                          && (r.ExpiresAt == null || r.ExpiresAt > DateTime.UtcNow))
@@ -124,21 +124,6 @@
                     .FirstOrDefaultAsync(a => a.EmployeeCode == employeeCode, cancellationToken));
         }
 
-        public async Task<IReadOnlyList<AdminRole>> GetRolesByIdsAsync(
-            List<Guid> roleIds,
-            CancellationToken cancellationToken = default)
-        {
-            return await RepositoryLogger.ExecuteAsync(_logger, new { roleIds },
-                async () =>
-                {
-                    var roles = await _context.AdminRoles
-                        .Where(r => roleIds.Contains(r.Id) && r.IsActive)
-                        .ToListAsync(cancellationToken);
-
-                    return roles.AsReadOnly() as IReadOnlyList<AdminRole>;
-                }) ?? new List<AdminRole>();
-        }
-
         public async Task<AdminRole?> GetRoleByIdAsync(
             Guid roleId,
             CancellationToken cancellationToken = default)
@@ -147,6 +132,44 @@
                 () => _context.AdminRoles
                     .FirstOrDefaultAsync(r => r.Id == roleId && r.IsActive, cancellationToken));
         }
+
+        public async Task<IReadOnlyList<AdminRole>> GetRolesByIdsAsync(
+            List<Guid> roleIds,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.AdminRoles
+                .Where(r => roleIds.Contains(r.Id) && r.IsActive)
+                .ToListAsync(cancellationToken);
+        }
+
+        #region Admin Role
+        public async Task<AdminRoleAssignment?> GetRoleAssignmentAsync(
+            Guid adminId,
+            Guid roleId,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Set<AdminRoleAssignment>()
+                .FirstOrDefaultAsync(r => r.AdminId == adminId
+                                       && r.RoleId == roleId, 
+                                       cancellationToken);
+        }
+
+        public async Task AddRoleAssignmentAsync(AdminRoleAssignment assignment, CancellationToken cancellationToken = default)
+        {
+            await _context.AdminRoleAssignments.AddAsync(assignment, cancellationToken);
+        }
+
+        public async Task RemoveRoleAssignmentAsync(AdminRoleAssignment assignment, CancellationToken cancellationToken = default)
+        {
+            _context.AdminRoleAssignments.Remove(assignment);
+            await Task.CompletedTask;
+        }
+
+        public async Task AddCustomPermissionAsync(AdminCustomPermission permission, CancellationToken cancellationToken = default)
+        {
+            await _context.AdminCustomPermissions.AddAsync(permission, cancellationToken);
+        }
+        #endregion
         #endregion
     }
 }

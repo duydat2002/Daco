@@ -33,20 +33,27 @@
             if (role.RoleCode == AdminRoles.SuperAdmin)
                 return ResponseDTO.Failure(ErrorCodes.Admin.CannotAssignSuperAdmin, "Cannot assign super admin role");
 
-            try
+            var existing = await _adminRepository.GetRoleAssignmentAsync(request.AdminId, role.Id, cancellationToken);
+            if (existing is not null)
             {
-                admin.AssignRole(role.Id, request.AssignedByAdminId, request.ExpiresAt);
+                if (existing.IsActive)
+                    return ResponseDTO.Failure(ErrorCodes.Admin.RoleAlreadyAssigned, "Role is already assigned");
+
+                existing.Reactivate(request.AssignedByAdminId, request.ExpiresAt);
             }
-            catch (InvalidOperationException ex)
+            else
             {
-                return ResponseDTO.Failure(ErrorCodes.Admin.RoleAlreadyAssigned, ex.Message);
+                var assignment = AdminRoleAssignment.Create(
+                    admin.Id,
+                    role.Id,
+                    request.AssignedByAdminId,
+                    request.ExpiresAt);
+
+                await _adminRepository.AddRoleAssignmentAsync(assignment, cancellationToken);
             }
+            _unitOfWork.TrackEntity(admin);
 
-            await _adminRepository.UpdateAsync(admin, cancellationToken);
-
-            _logger.LogInformation(
-                "Role {RoleCode} assigned to admin {AdminId}",
-                role.RoleCode, admin.Id);
+            _logger.LogInformation("Role {RoleCode} assigned to admin {AdminId}", role.RoleCode, admin.Id);
 
             return ResponseDTO.Success(new
             {

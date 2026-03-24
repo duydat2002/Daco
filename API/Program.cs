@@ -7,13 +7,13 @@ var configuration = builder.Configuration;
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
-        options.SuppressModelStateInvalidFilter = true; 
+        options.SuppressModelStateInvalidFilter = true;
     })
     .AddJsonOptions(options =>
     {
-        //options.JsonSerializerOptions.Converters.Add(new EmptyStringToNullDateTimeConverter());
-        //options.JsonSerializerOptions.Converters.Add(new EmptyStringToNullGuidConverter());
-        //options.JsonSerializerOptions.Converters.Add(new EmptyStringGuidConverter());
+        options.JsonSerializerOptions.Converters.Add(new EmptyStringToNullDateTimeConverter());
+        options.JsonSerializerOptions.Converters.Add(new EmptyStringToNullGuidConverter());
+        options.JsonSerializerOptions.Converters.Add(new EmptyStringGuidConverter());
     });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

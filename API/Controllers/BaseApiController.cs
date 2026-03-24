@@ -13,7 +13,15 @@
             => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         protected Guid CurrentAdminId
-            => Guid.Parse(User.FindFirstValue("admin_id")!);
+        {
+            get
+            {
+                var claim = User.FindFirstValue("admin_id");
+                if (string.IsNullOrEmpty(claim) || !Guid.TryParse(claim, out var adminId))
+                    throw new UnauthorizedAccessException("Admin ID claim not found in token");
+                return adminId;
+            }
+        }
 
         protected string CurrentIpAddress
             => HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";

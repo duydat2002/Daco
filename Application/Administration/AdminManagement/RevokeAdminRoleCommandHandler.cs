@@ -1,4 +1,6 @@
-﻿namespace Daco.Application.Administration.AdminManagement
+﻿using static Daco.Domain.Administration.Constants.AdminPermissions;
+
+namespace Daco.Application.Administration.AdminManagement
 {
     public class RevokeAdminRoleCommandHandler : IRequestHandler<RevokeAdminRoleCommand, ResponseDTO>
     {
@@ -19,8 +21,8 @@
         public async Task<ResponseDTO> Handle(RevokeAdminRoleCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation(
-                "Revoking role {RoleId} from admin {AdminId} by {RevokedBy}",
-                request.RoleId, request.AdminId, request.RevokedByAdminId);
+        "Revoking role {RoleId} from admin {AdminId} by {RevokedBy}",
+        request.RoleId, request.AdminId, request.RevokedByAdminId);
 
             if (request.AdminId == request.RevokedByAdminId)
                 return ResponseDTO.Failure(ErrorCodes.Admin.CannotUpdateSelf, "Cannot revoke your own role");
@@ -40,21 +42,14 @@
             if (currentRoles.Count <= 1)
                 return ResponseDTO.Failure(ErrorCodes.Admin.MustHaveAtLeastOneRole, "Admin must have at least one role");
 
-            try
-            {
-                admin.RevokeRole(role.Id);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return ResponseDTO.Failure(ErrorCodes.Admin.RoleNotAssigned, ex.Message);
-            }
+            var assignment = await _adminRepository.GetRoleAssignmentAsync(admin.Id, role.Id);
+            if (assignment is null)
+                return ResponseDTO.Failure(ErrorCodes.Admin.RoleNotAssigned, "Role is not assigned");
 
-            await _adminRepository.UpdateAsync(admin, cancellationToken);
+            assignment.Revoke();
             _unitOfWork.TrackEntity(admin);
 
-            _logger.LogInformation(
-                "Role {RoleCode} revoked from admin {AdminId}",
-                role.RoleCode, admin.Id);
+            _logger.LogInformation("Role {RoleCode} revoked from admin {AdminId}", role.RoleCode, admin.Id);
 
             return ResponseDTO.Success(new
             {

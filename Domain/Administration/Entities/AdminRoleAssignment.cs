@@ -34,6 +34,14 @@
             IsActive = false;
         }
 
+        public void Reactivate(Guid assignedBy, DateTime? expiresAt = null)
+        {
+            IsActive = true;
+            AssignedBy = assignedBy;
+            AssignedAt = DateTime.UtcNow;
+            ExpiresAt = expiresAt;
+        }
+
         public bool IsExpired() =>
             ExpiresAt.HasValue && DateTime.UtcNow > ExpiresAt.Value;
     }
