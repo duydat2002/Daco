@@ -43,5 +43,45 @@
             command = command with { UserId = userId };
             return HandleResult(await _mediator.Send(command, cancellationToken));
         }
+
+        [HttpGet]
+        [RequirePermission(AdminPermissions.Users.View)]
+        public async Task<ActionResult<ResponseDTO>> GetUsers(
+            [FromQuery] GetUsersQuery query,
+            CancellationToken cancellationToken)
+        {
+            return HandleResult(await _mediator.Send(query, cancellationToken));
+        }    
+
+        [HttpGet("{userId:guid}")]
+        [RequirePermission(AdminPermissions.Users.View)]
+        public async Task<ActionResult<ResponseDTO>> GetUserById(
+            Guid userId,
+            CancellationToken cancellationToken)
+        {
+            return HandleResult(await _mediator.Send(new GetUserByIdQuery { UserId = userId }, cancellationToken));
+        }
+
+        [HttpGet("{userId:guid}/orders")]
+        [RequirePermission(AdminPermissions.Users.View)]
+        public async Task<ActionResult<ResponseDTO>> GetUserOrders(
+            Guid userId,
+            [FromQuery] GetUserOrdersQuery query,
+            CancellationToken cancellationToken)
+        {
+            query = query with { UserId = userId };
+            return HandleResult(await _mediator.Send(query, cancellationToken));
+        }
+
+        [HttpGet("{userId:guid}/transactions")]
+        [RequirePermission(AdminPermissions.Users.View)]
+        public async Task<ActionResult<ResponseDTO>> GetUserTransactions(
+            Guid userId,
+            [FromQuery] GetUserTransactionsQuery query,
+            CancellationToken cancellationToken)
+        {
+            query = query with { UserId = userId };
+            return HandleResult(await _mediator.Send(query, cancellationToken));
+        }
     }
 }

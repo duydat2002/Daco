@@ -44,7 +44,7 @@
                 var response = new TResponse
                 {
                     IsSuccess = false,
-                    Code = ErrorCodes.Validation.Failed,
+                    Code = ErrorCodes.ValidationErrors.Failed,
                     Message = "Validation failed",
                     Data = new
                     {

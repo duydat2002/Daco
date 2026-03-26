@@ -23,7 +23,7 @@
 
             var account = await _bankAccountRepository.GetByIdAsync(request.BankAccountId, cancellationToken);
             if (account is null || account.UserId != request.UserId)
-                return ResponseDTO.Failure(ErrorCodes.BankAccount.NotFound, "Bank account not found");
+                return ResponseDTO.Failure(ErrorCodes.BankAccountErrors.NotFound, "Bank account not found");
 
             var accounts = await _bankAccountRepository.GetByUserIdAsync(request.UserId, cancellationToken);
             var isDuplicate = accounts.Any(b =>
@@ -32,7 +32,7 @@
                 b.AccountNumber == request.AccountNumber);
 
             if (isDuplicate)
-                return ResponseDTO.Failure(ErrorCodes.BankAccount.AlreadyExists, "Bank account already exists");
+                return ResponseDTO.Failure(ErrorCodes.BankAccountErrors.AlreadyExists, "Bank account already exists");
 
             account.Update(
                 bankCode: request.BankCode,

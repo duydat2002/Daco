@@ -1,6 +1,4 @@
-﻿using Daco.Infrastructure.Services.Authorization;
-
-namespace Daco.Infrastructure
+﻿namespace Daco.Infrastructure
 {
     public static class DependencyInjection
     {

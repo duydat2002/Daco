@@ -23,7 +23,7 @@
 
             var address = await _addressRepository.GetByIdAsync(request.AddressId, cancellationToken);
             if (address is null || address.UserId != request.UserId)
-                return ResponseDTO.Failure(ErrorCodes.Address.NotFound, "Address not found");
+                return ResponseDTO.Failure(ErrorCodes.AddressErrors.NotFound, "Address not found");
 
             address.SoftDelete();
             await _unitOfWork.SaveChangesAsync(cancellationToken);

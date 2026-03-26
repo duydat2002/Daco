@@ -32,17 +32,17 @@
             var session = await _sessionRepository.GetByRefreshTokenAsync(request.RefreshToken, cancellationToken);
 
             if (session is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.TokenInvalid, "Refresh token không hợp lệ hoặc đã bị thu hồi");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.TokenInvalid, "Refresh token không hợp lệ hoặc đã bị thu hồi");
 
             if (session.IsExpired())
             {
                 session.Revoke("expired");
-                return ResponseDTO.Failure(ErrorCodes.Auth.TokenExpired, "Refresh token đã hết hạn, vui lòng đăng nhập lại");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.TokenExpired, "Refresh token đã hết hạn, vui lòng đăng nhập lại");
             }
 
             var user = await _userRepository.GetByIdAsync(session.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "Không tìm thấy người dùng");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "Không tìm thấy người dùng");
 
             session.Revoke("refreshed");
 

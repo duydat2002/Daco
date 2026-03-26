@@ -39,10 +39,10 @@
 
             var googleUser = await _googleAuthService.VerifyIdTokenAsync(request.IdToken);
             if (googleUser is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.TokenInvalid, "Invalid or expired Google ID token");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.TokenInvalid, "Invalid or expired Google ID token");
 
             if (!googleUser.EmailVerified)
-                return ResponseDTO.Failure(ErrorCodes.Auth.EmailNotVerified, "Google email is not verified");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.EmailNotVerified, "Google email is not verified");
 
             var providerUserId = googleUser.Subject;
             var email = googleUser.Email;
@@ -71,10 +71,10 @@
             else
             {
                 if (user.Status == UserStatus.Suspended)
-                    return ResponseDTO.Failure(ErrorCodes.Auth.AccountSuspended, "Your account has been suspended");
+                    return ResponseDTO.Failure(ErrorCodes.AuthErrors.AccountSuspended, "Your account has been suspended");
 
                 if (user.Status == UserStatus.Banned)
-                    return ResponseDTO.Failure(ErrorCodes.Auth.AccountBanned, "Your account has been banned");
+                    return ResponseDTO.Failure(ErrorCodes.AuthErrors.AccountBanned, "Your account has been banned");
 
                 if (!await _userRepository.CheckUserAuthProvider(user.Id, ProviderTypes.Google, cancellationToken))
                 {
@@ -91,7 +91,7 @@
             var userRoles = await _userRepository.GetUserRolesAsync(user.Id);
             if (userRoles.IsSeller) roles.Add("seller");
             if (userRoles.IsAdmin)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();

@@ -32,15 +32,15 @@
         {
             var userId = _jwtService.ValidateTempToken(request.TempToken);
             if (userId is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.TokenInvalid, "Invalid or expired token");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.TokenInvalid, "Invalid or expired token");
 
             var user = await _userRepository.GetByIdAsync(userId.Value, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             var adminUser = await _adminRepository.GetByUserIdAsync(userId.Value, cancellationToken);
             if (adminUser is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             var isValid = await _tokenRepository.ValidateTokenAsync(
                 userId.Value,
@@ -48,7 +48,7 @@
                 cancellationToken);
 
             if (!isValid)
-                return ResponseDTO.Failure(ErrorCodes.Auth.TokenInvalid, "Invalid or expired OTP");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.TokenInvalid, "Invalid or expired OTP");
 
             var adminRoles = await _adminRepository.GetRolesAsync(adminUser.Id, cancellationToken);
 

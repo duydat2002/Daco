@@ -34,10 +34,10 @@
 
             var user = await _userRepository.GetByIdWithProvidersAsync(request.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             if (user.EmailVerified)
-                return ResponseDTO.Failure(ErrorCodes.Auth.EmailNotVerified, "Email is already verified");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.EmailNotVerified, "Email is already verified");
 
             var isValid = await _tokenRepository.ValidateTokenAsync(
                 request.UserId,
@@ -45,7 +45,7 @@
                 cancellationToken);
 
             if (!isValid)
-                return ResponseDTO.Failure(ErrorCodes.Auth.TokenInvalid, "OTP is invalid or expired");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.TokenInvalid, "OTP is invalid or expired");
 
             user.VerifyEmail();
             await _userRepository.UpdateAsync(user, cancellationToken);
@@ -54,7 +54,7 @@
             var userRoles = await _userRepository.GetUserRolesAsync(user.Id);
             if (userRoles.IsSeller) roles.Add("seller");
             if (userRoles.IsAdmin)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();

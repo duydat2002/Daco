@@ -26,15 +26,15 @@
                 request.AdminId, request.Status, request.UpdatedByAdminId);
 
             if (request.AdminId == request.UpdatedByAdminId)
-                return ResponseDTO.Failure(ErrorCodes.Admin.CannotUpdateSelf, "Cannot update your own status");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.CannotUpdateSelf, "Cannot update your own status");
 
             var admin = await _adminRepository.GetByIdAsync(request.AdminId, cancellationToken);
             if (admin is null)
-                return ResponseDTO.Failure(ErrorCodes.Admin.NotFound, "Admin not found");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.NotFound, "Admin not found");
 
             var adminRoles = await _adminRepository.GetRolesAsync(admin.Id, cancellationToken);
             if (adminRoles.Contains(AdminRoles.SuperAdmin))
-                return ResponseDTO.Failure(ErrorCodes.Admin.CannotUpdateSuperAdmin, "Cannot update super admin status");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.CannotUpdateSuperAdmin, "Cannot update super admin status");
 
             switch (request.Status)
             {

@@ -3,7 +3,7 @@
     public static class ErrorCodes
     {
         // Authentication & Authorization
-        public static class Auth
+        public static class AuthErrors
         {
             public const string UserAlreadyExists  = "AUTH.USER_ALREADY_EXISTS";
             public const string InvalidCredentials = "AUTH.INVALID_CREDENTIALS";
@@ -19,7 +19,7 @@
         }
 
         // Users
-        public static class User
+        public static class UserErrors
         {
             public const string NotFound             = "USER.NOT_FOUND";
             public const string InvalidEmail         = "USER.INVALID_EMAIL";
@@ -30,7 +30,7 @@
         }
 
         // Admin
-        public static class Admin
+        public static class AdminErrors
         {
             public const string NotFound               = "ADMIN.NOT_FOUND";
             public const string AlreadyDefault         = "ADMIN.ALREADY_DEFAULT";
@@ -45,14 +45,14 @@
         }
 
         // Address
-        public static class Address
+        public static class AddressErrors
         {
             public const string NotFound       = "ADDRESS.NOT_FOUND";
             public const string AlreadyDefault = "ADDRESS.ALREADY_DEFAULT";
         }
 
         // Bank Account
-        public static class BankAccount
+        public static class BankAccountErrors
         {
             public const string NotFound       = "BANK_ACCOUNT.NOT_FOUND";
             public const string LimitExceeded  = "BANK_ACCOUNT.ADDRESS_LIMIT_EXCEEDED";
@@ -61,7 +61,7 @@
         }
 
         // Products
-        public static class Product
+        public static class ProductErrors
         {
             public const string NotFound          = "PRODUCT.NOT_FOUND";
             public const string OutOfStock        = "PRODUCT.OUT_OF_STOCK";
@@ -71,7 +71,7 @@
         }
 
         // Orders
-        public static class Order
+        public static class OrderErrors
         {
             public const string NotFound      = "ORDER.NOT_FOUND";
             public const string CannotCancel  = "ORDER.CANNOT_CANCEL";
@@ -81,7 +81,7 @@
         }
 
         // Wallet
-        public static class Wallet
+        public static class WalletErrors
         {
             public const string InsufficientBalance = "WALLET.INSUFFICIENT_BALANCE";
             public const string TransactionFailed   = "WALLET.TRANSACTION_FAILED";
@@ -89,7 +89,7 @@
         }
 
         // Shop
-        public static class Shop
+        public static class ShopErrors
         {
             public const string NotFound      = "SHOP.NOT_FOUND";
             public const string AlreadyExists = "SHOP.ALREADY_EXISTS";
@@ -98,7 +98,7 @@
         }
 
         // Validation
-        public static class Validation
+        public static class ValidationErrors
         {
             public const string Failed        = "VALIDATION.FAILED";
             public const string RequiredField = "VALIDATION.REQUIRED_FIELD";
@@ -106,7 +106,7 @@
         }
 
         // System
-        public static class System
+        public static class SystemErrors
         {
             public const string InternalError      = "SYSTEM.INTERNAL_ERROR";
             public const string ServiceUnavailable = "SYSTEM.SERVICE_UNAVAILABLE";

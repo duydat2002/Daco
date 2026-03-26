@@ -27,20 +27,20 @@
 
             var admin = await _adminRepository.GetByIdAsync(request.AdminId, cancellationToken);
             if (admin is null)
-                return ResponseDTO.Failure(ErrorCodes.Admin.NotFound, "Admin not found");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.NotFound, "Admin not found");
 
             var role = await _adminRepository.GetRoleByIdAsync(request.RoleId, cancellationToken);
             if (role is null)
-                return ResponseDTO.Failure(ErrorCodes.Admin.RoleNotFound, "Role not found");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.RoleNotFound, "Role not found");
 
             if (role.RoleCode == AdminRoles.SuperAdmin)
-                return ResponseDTO.Failure(ErrorCodes.Admin.CannotAssignSuperAdmin, "Cannot assign super admin role");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.CannotAssignSuperAdmin, "Cannot assign super admin role");
 
             var existing = await _adminRepository.GetRoleAssignmentAsync(request.AdminId, role.Id, cancellationToken);
             if (existing is not null)
             {
                 if (existing.IsActive)
-                    return ResponseDTO.Failure(ErrorCodes.Admin.RoleAlreadyAssigned, "Role is already assigned");
+                    return ResponseDTO.Failure(ErrorCodes.AdminErrors.RoleAlreadyAssigned, "Role is already assigned");
 
                 existing.Reactivate(request.AssignedByAdminId, request.ExpiresAt);
             }

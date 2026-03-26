@@ -23,10 +23,10 @@
 
             var bankAccount = await _bankAccountRepository.GetByIdAsync(request.BankAccountId, cancellationToken);
             if (bankAccount is null || bankAccount.UserId != request.UserId)
-                return ResponseDTO.Failure(ErrorCodes.BankAccount.NotFound, "Bank account not found");
+                return ResponseDTO.Failure(ErrorCodes.BankAccountErrors.NotFound, "Bank account not found");
 
             if (bankAccount.IsDefault)
-                return ResponseDTO.Failure(ErrorCodes.BankAccount.AlreadyDefault, "Bank account is already default");
+                return ResponseDTO.Failure(ErrorCodes.BankAccountErrors.AlreadyDefault, "Bank account is already default");
 
             var bankAccounts = await _bankAccountRepository.GetByUserIdAsync(request.UserId, cancellationToken);
             foreach (var acc in bankAccounts.Where(a => a.IsDefault))

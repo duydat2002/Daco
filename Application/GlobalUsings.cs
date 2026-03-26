@@ -41,4 +41,6 @@ global using Daco.Domain.Administration.Constants;
 global using Daco.Application.Administration.AdminManagement.Queries;
 global using Daco.Application.Administration.AdminManagement.DTOs;
 global using Daco.Application.Common.Interfaces.Services.Authorization;
-
+global using Daco.Application.Administration.UserManagement.DTOs;
+global using Daco.Application.Administration.UserManagement.Queries;
+global using Daco.Domain.Orders.Aggregates;

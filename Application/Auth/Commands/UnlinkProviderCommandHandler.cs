@@ -23,7 +23,7 @@
 
             var user = await _userRepository.GetByIdWithProvidersAsync(request.UserId!.Value, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             user.UnlinkProvider(request.ProviderType);
 

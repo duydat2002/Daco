@@ -25,21 +25,21 @@
 
             var googleUser = await _googleAuthService.VerifyIdTokenAsync(request.IdToken);
             if (googleUser is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.TokenInvalid, "Invalid or expired Google ID token");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.TokenInvalid, "Invalid or expired Google ID token");
 
             if (!googleUser.EmailVerified)
-                return ResponseDTO.Failure(ErrorCodes.Auth.EmailNotVerified, "Google email is not verified");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.EmailNotVerified, "Google email is not verified");
 
             var user = await _userRepository.GetByIdWithProvidersAsync(request.UserId!.Value, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             var existingUser = await _userRepository.FindByIdentifierAsync(googleUser.Email, cancellationToken);
             if (existingUser is not null && existingUser.Id != user.Id)
-                return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "This Google account is already linked to another user");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.UserAlreadyExists, "This Google account is already linked to another user");
 
             if (await _userRepository.CheckUserAuthProvider(user.Id, ProviderTypes.Google, cancellationToken))
-                return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "Google account is already linked");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.UserAlreadyExists, "Google account is already linked");
 
             var countBefore = user.AuthProviders.Count;
 

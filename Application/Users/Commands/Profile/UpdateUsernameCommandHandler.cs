@@ -22,11 +22,11 @@
 
             var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
             
             var existing = await _userRepository.FindByIdentifierAsync(request.Username, cancellationToken);
             if (existing is not null && existing.Id != request.UserId)
-                return ResponseDTO.Failure(ErrorCodes.User.AlreadyExists, "Username already taken");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.AlreadyExists, "Username already taken");
 
             user.UpdateUsername(request.Username);
             _unitOfWork.TrackEntity(user);

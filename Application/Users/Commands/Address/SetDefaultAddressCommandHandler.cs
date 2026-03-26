@@ -23,10 +23,10 @@
 
             var address = await _addressRepository.GetByIdAsync(request.AddressId, cancellationToken);
             if (address is null || address.UserId != request.UserId)
-                return ResponseDTO.Failure(ErrorCodes.Address.NotFound, "Address not found");
+                return ResponseDTO.Failure(ErrorCodes.AddressErrors.NotFound, "Address not found");
 
             if (address.IsDefault)
-                return ResponseDTO.Failure(ErrorCodes.Address.AlreadyDefault, "Address is already default");
+                return ResponseDTO.Failure(ErrorCodes.AddressErrors.AlreadyDefault, "Address is already default");
 
             var addresses = await _addressRepository.GetByUserIdAsync(request.UserId, cancellationToken);
             foreach (var addr in addresses.Where(a => a.IsDefault))

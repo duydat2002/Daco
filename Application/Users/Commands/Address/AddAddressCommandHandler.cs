@@ -25,11 +25,11 @@
 
             var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             var addresses = await _addressRepository.GetByUserIdAsync(request.UserId, cancellationToken);
             if (addresses.Count >= 10)
-                return ResponseDTO.Failure(ErrorCodes.User.AddressLimitExceeded, "Cannot have more than 10 active addresses");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.AddressLimitExceeded, "Cannot have more than 10 active addresses");
 
             if (request.IsDefault)
             {

@@ -25,7 +25,7 @@
 
             var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             var oldAvatarUrl = user.Avatar;
 

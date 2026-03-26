@@ -22,11 +22,11 @@
 
             var existing = await _userRepository.FindByPhoneAsync(request.Phone, cancellationToken);
             if (existing is not null && existing.Id != request.UserId)
-                return ResponseDTO.Failure(ErrorCodes.User.AlreadyExists, "Phone already in use");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.AlreadyExists, "Phone already in use");
 
             var user = await _userRepository.GetByIdWithProvidersAsync(request.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             user.UpdatePhone(request.Phone); 
             _unitOfWork.TrackEntity(user);

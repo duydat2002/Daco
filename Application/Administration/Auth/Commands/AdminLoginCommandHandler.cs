@@ -36,17 +36,17 @@
             var user = await _userRepository.FindByIdentifierAsync(normalized, cancellationToken);
 
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             var adminUser = await _adminRepository.GetByUserIdAsync(user.Id, cancellationToken);
             if (adminUser is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             if (adminUser.Status == AdminStatus.Suspended)
-                return ResponseDTO.Failure(ErrorCodes.Auth.AccountSuspended, "Your account has been suspended");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.AccountSuspended, "Your account has been suspended");
 
             if (adminUser.Status == AdminStatus.Inactive)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             var provider = user.AuthProviders
                 .FirstOrDefault(p => (p.ProviderType == ProviderTypes.Email
@@ -54,10 +54,10 @@
                                   && p.DeletedAt == null);
 
             if (provider is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             if (!_passwordHasher.VerifyPassword(request.Password, provider.PasswordHash!))
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             var otp = await _tokenRepository.GenerateTokenAsync(
                 user.Id,

@@ -30,18 +30,18 @@
 
             var existingUser = await _userRepository.FindByEmailAsync(request.Email, cancellationToken);
             if (existingUser is not null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "Email already exists");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.UserAlreadyExists, "Email already exists");
 
             var existingAdmin = await _adminRepository.GetByEmployeeCodeAsync(request.EmployeeCode, cancellationToken);
             if (existingAdmin is not null)
-                return ResponseDTO.Failure(ErrorCodes.Admin.EmployeeCodeExists, "Employee code already exists");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.EmployeeCodeExists, "Employee code already exists");
 
             var roles = await _adminRepository.GetRolesByIdsAsync(request.RoleIds, cancellationToken);
             if (roles.Count != request.RoleIds.Count)
-                return ResponseDTO.Failure(ErrorCodes.Admin.RoleNotFound, "One or more roles not found");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.RoleNotFound, "One or more roles not found");
 
             if (roles.Any(r => r.RoleCode == AdminRoles.SuperAdmin))
-                return ResponseDTO.Failure(ErrorCodes.Admin.CannotAssignSuperAdmin, "Cannot assign super admin role");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.CannotAssignSuperAdmin, "Cannot assign super admin role");
 
             var passwordHash = _passwordHasher.HashPassword(request.Password);
             var user = User.CreateWithEmail(request.Username, request.Email, passwordHash);

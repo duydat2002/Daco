@@ -23,7 +23,7 @@
 
             var bankAccount = await _bankAccountRepository.GetByIdAsync(request.BankAccountId, cancellationToken);
             if (bankAccount is null || bankAccount.UserId != request.UserId)
-                return ResponseDTO.Failure(ErrorCodes.BankAccount.NotFound, "Bank account not found");
+                return ResponseDTO.Failure(ErrorCodes.BankAccountErrors.NotFound, "Bank account not found");
 
             bankAccount.SoftDelete();
             await _unitOfWork.SaveChangesAsync(cancellationToken);

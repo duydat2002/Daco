@@ -26,26 +26,26 @@
         request.RoleId, request.AdminId, request.RevokedByAdminId);
 
             if (request.AdminId == request.RevokedByAdminId)
-                return ResponseDTO.Failure(ErrorCodes.Admin.CannotUpdateSelf, "Cannot revoke your own role");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.CannotUpdateSelf, "Cannot revoke your own role");
 
             var admin = await _adminRepository.GetByIdAsync(request.AdminId, cancellationToken);
             if (admin is null)
-                return ResponseDTO.Failure(ErrorCodes.Admin.NotFound, "Admin not found");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.NotFound, "Admin not found");
 
             var role = await _adminRepository.GetRoleByIdAsync(request.RoleId, cancellationToken);
             if (role is null)
-                return ResponseDTO.Failure(ErrorCodes.Admin.RoleNotFound, "Role not found");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.RoleNotFound, "Role not found");
 
             if (role.RoleCode == AdminRoles.SuperAdmin)
-                return ResponseDTO.Failure(ErrorCodes.Admin.CannotAssignSuperAdmin, "Cannot revoke super admin role");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.CannotAssignSuperAdmin, "Cannot revoke super admin role");
 
             var currentRoles = await _adminRepository.GetRolesAsync(admin.Id, cancellationToken);
             if (currentRoles.Count <= 1)
-                return ResponseDTO.Failure(ErrorCodes.Admin.MustHaveAtLeastOneRole, "Admin must have at least one role");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.MustHaveAtLeastOneRole, "Admin must have at least one role");
 
             var assignment = await _adminRepository.GetRoleAssignmentAsync(admin.Id, role.Id);
             if (assignment is null)
-                return ResponseDTO.Failure(ErrorCodes.Admin.RoleNotAssigned, "Role is not assigned");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.RoleNotAssigned, "Role is not assigned");
 
             assignment.Revoke();
 

@@ -32,35 +32,35 @@
             var user = await _userRepository.FindByIdentifierAsync(request.Identifier, cancellationToken);
 
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             if (user.Status == UserStatus.Suspended)
-                return ResponseDTO.Failure(ErrorCodes.Auth.AccountSuspended, "Your account has been suspended");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.AccountSuspended, "Your account has been suspended");
 
             if (user.Status == UserStatus.Banned)
-                return ResponseDTO.Failure(ErrorCodes.Auth.AccountBanned, "Your account has been banned");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.AccountBanned, "Your account has been banned");
 
             var provider = user.AuthProviders
                 .FirstOrDefault(p => p.ProviderType == ProviderTypes.Email
                                   || p.ProviderType == ProviderTypes.Phone);
 
             if (provider is null)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             if (!_passwordHasher.VerifyPassword(request.Password, provider.PasswordHash!))
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             if (provider.ProviderType == ProviderTypes.Email && !user.EmailVerified)
-                return ResponseDTO.Failure(ErrorCodes.Auth.EmailNotVerified, "Please verify your email before logging in");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.EmailNotVerified, "Please verify your email before logging in");
 
             //if (provider.ProviderType == ProviderTypes.Phone && !user.PhoneVerified)
-            //    return ResponseDTO.Failure(ErrorCodes.Auth.PhoneNotVerified, "Please verify your phone before logging in");
+            //    return ResponseDTO.Failure(ErrorCodes.AuthErrors.PhoneNotVerified, "Please verify your phone before logging in");
 
             var roles = new List<string> { "buyer" };
             var userRoles = await _userRepository.GetUserRolesAsync(user.Id);
             if (userRoles.IsSeller) roles.Add("seller");
             if (userRoles.IsAdmin)
-                return ResponseDTO.Failure(ErrorCodes.Auth.InvalidCredentials, "Invalid credentials");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.InvalidCredentials, "Invalid credentials");
 
             var jwt = _jwtService.GenerateToken(user.Id, user.Username.Value, user.Email?.Value, user.Phone?.Value, roles);
             var refreshToken = _jwtService.GenerateRefreshToken();

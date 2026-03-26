@@ -19,7 +19,6 @@
     <Folder Include="Users\Specifications\" />
     <Folder Include="Wallets\" />
     <Folder Include="Projects\" />
-    <Folder Include="Orders\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -28,10 +28,10 @@
 
             var user = await _userRepository.GetByIdWithProvidersAsync(request.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             if (user.EmailVerified)
-                return ResponseDTO.Failure(ErrorCodes.Auth.EmailNotVerified, "Email is already verified");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.EmailNotVerified, "Email is already verified");
 
             var latest = await _tokenRepository.GetLatestAsync(
                 request.UserId,
@@ -45,7 +45,7 @@
                 {
                     var waitSeconds = (int)(_otpSettings.ResendCooldownSeconds - secondsSinceLast);
                     return ResponseDTO.Failure(
-                        ErrorCodes.Auth.TooManyRequests,
+                        ErrorCodes.AuthErrors.TooManyRequests,
                         $"Please wait {waitSeconds} seconds before requesting a new OTP");
                 }
             }

@@ -29,14 +29,14 @@
             {
                 var existingUser = await _userRepository.FindByEmailAsync(request.Email, cancellationToken);
                 if (existingUser != null)
-                    return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "The email address has already been used!");
+                    return ResponseDTO.Failure(ErrorCodes.AuthErrors.UserAlreadyExists, "The email address has already been used!");
             }
 
             if (!string.IsNullOrEmpty(request.Phone))
             {
                 var existingUser = await _userRepository.FindByPhoneAsync(request.Phone, cancellationToken);
                 if (existingUser != null)
-                    return ResponseDTO.Failure(ErrorCodes.Auth.UserAlreadyExists, "The phone number has already been used!");
+                    return ResponseDTO.Failure(ErrorCodes.AuthErrors.UserAlreadyExists, "The phone number has already been used!");
             }
 
             var passwordHash = _passwordHasher.HashPassword(request.Password);

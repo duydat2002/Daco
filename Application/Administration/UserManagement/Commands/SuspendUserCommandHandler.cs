@@ -26,13 +26,13 @@
 
             var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             if (user.Status == UserStatus.Suspended)
-                return ResponseDTO.Failure(ErrorCodes.Auth.AccountSuspended, "User is already suspended");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.AccountSuspended, "User is already suspended");
 
             if (user.Status == UserStatus.Banned)
-                return ResponseDTO.Failure(ErrorCodes.Auth.AccountBanned, "Cannot suspend a banned user");
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.AccountBanned, "Cannot suspend a banned user");
 
             user.Suspend(request.Reason);
             _unitOfWork.TrackEntity(user);

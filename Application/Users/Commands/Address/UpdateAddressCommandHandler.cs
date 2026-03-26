@@ -23,10 +23,10 @@
 
             var address = await _addressRepository.GetByIdAsync(request.AddressId, cancellationToken);
             if (address is null)
-                return ResponseDTO.Failure(ErrorCodes.Address.NotFound, "Address not found");
+                return ResponseDTO.Failure(ErrorCodes.AddressErrors.NotFound, "Address not found");
 
             if (address.UserId != request.UserId)
-                return ResponseDTO.Failure(ErrorCodes.Address.NotFound, "Address not found");
+                return ResponseDTO.Failure(ErrorCodes.AddressErrors.NotFound, "Address not found");
 
             address.Update(
                 recipientName: request.RecipientName,

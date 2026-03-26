@@ -25,18 +25,18 @@
 
             var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
             if (user is null)
-                return ResponseDTO.Failure(ErrorCodes.User.NotFound, "User not found");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             var accounts = await _bankAccountRepository.GetByUserIdAsync(request.UserId, cancellationToken);
 
             if (accounts.Count >= 5)
-                return ResponseDTO.Failure(ErrorCodes.BankAccount.LimitExceeded, "Cannot have more than 5 active bank accounts");
+                return ResponseDTO.Failure(ErrorCodes.BankAccountErrors.LimitExceeded, "Cannot have more than 5 active bank accounts");
 
             var isDuplicate = accounts.Any(b =>
                 b.BankCode == request.BankCode.ToUpperInvariant() &&
                 b.AccountNumber == request.AccountNumber);
             if (isDuplicate)
-                return ResponseDTO.Failure(ErrorCodes.BankAccount.AlreadyExists, "Bank account already exists");
+                return ResponseDTO.Failure(ErrorCodes.BankAccountErrors.AlreadyExists, "Bank account already exists");
 
             var isDefault = request.IsDefault || !accounts.Any();
 

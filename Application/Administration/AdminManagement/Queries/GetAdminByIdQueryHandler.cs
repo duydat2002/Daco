@@ -21,7 +21,7 @@
                 request.AdminId, cancellationToken);
 
             if (admin is null)
-                return ResponseDTO.Failure(ErrorCodes.Admin.NotFound, "Admin not found");
+                return ResponseDTO.Failure(ErrorCodes.AdminErrors.NotFound, "Admin not found");
 
             return ResponseDTO.Success(admin);
         }

@@ -16,3 +16,7 @@ global using Daco.Domain.Administration.Entities;
 global using Daco.Domain.Administration.Enums;
 global using Daco.Domain.Administration.Constants;
 global using Daco.Domain.Administration.Events;
+global using Daco.Domain.Orders.Enums;
+global using Daco.Domain.Orders.Entities;
+global using Daco.Domain.Orders.Events;
+global using Daco.Domain.Orders.ValueObjects;
