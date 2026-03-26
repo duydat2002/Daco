@@ -61,27 +61,5 @@
         {
             return HandleResult(await _mediator.Send(new GetUserByIdQuery { UserId = userId }, cancellationToken));
         }
-
-        [HttpGet("{userId:guid}/orders")]
-        [RequirePermission(AdminPermissions.Users.View)]
-        public async Task<ActionResult<ResponseDTO>> GetUserOrders(
-            Guid userId,
-            [FromQuery] GetUserOrdersQuery query,
-            CancellationToken cancellationToken)
-        {
-            query = query with { UserId = userId };
-            return HandleResult(await _mediator.Send(query, cancellationToken));
-        }
-
-        [HttpGet("{userId:guid}/transactions")]
-        [RequirePermission(AdminPermissions.Users.View)]
-        public async Task<ActionResult<ResponseDTO>> GetUserTransactions(
-            Guid userId,
-            [FromQuery] GetUserTransactionsQuery query,
-            CancellationToken cancellationToken)
-        {
-            query = query with { UserId = userId };
-            return HandleResult(await _mediator.Send(query, cancellationToken));
-        }
     }
 }

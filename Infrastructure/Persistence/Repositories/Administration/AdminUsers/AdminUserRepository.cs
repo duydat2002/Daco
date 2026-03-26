@@ -462,44 +462,47 @@
         public async Task<UserDetailDTO?> GetUserDetailAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             var user = await _context.Users
-            .Include(u => u.AuthProviders)
-            .Where(u => u.Id == userId && u.DeletedAt == null)
-            .Select(u => new
-            {
-                u.Id,
-                Username = u.Username.Value,
-                Email = u.Email.Value,
-                Phone = u.Phone.Value,
-                u.Name,
-                u.Avatar,
-                u.Gender,
-                u.DateOfBirth,
-                u.Status,
-                u.EmailVerified,
-                u.PhoneVerified,
-                u.CreatedAt,
-                u.UpdatedAt,
-                AuthProviders = u.AuthProviders
-                    .Where(p => p.DeletedAt == null)
-                    .Select(p => new UserAuthProviderDTO
-                    {
-                        ProviderType = p.ProviderType,
-                        IsVerified = p.IsVerified,
-                        CreatedAt = p.CreatedAt
-                    }).ToList()
-            })
-            .FirstOrDefaultAsync(cancellationToken);
+                .Include(u => u.AuthProviders)
+                .Where(u => u.Id == userId && u.DeletedAt == null)
+                .Select(u => new
+                {
+                    u.Id,
+                    Username = u.Username.Value,
+                    Email = u.Email.Value,
+                    Phone = u.Phone.Value,
+                    u.Name,
+                    u.Avatar,
+                    u.Gender,
+                    u.DateOfBirth,
+                    u.Status,
+                    u.EmailVerified,
+                    u.PhoneVerified,
+                    u.CreatedAt,
+                    u.UpdatedAt,
+                    AuthProviders = u.AuthProviders
+                        .Where(p => p.DeletedAt == null)
+                        .Select(p => new UserAuthProviderDTO
+                        {
+                            ProviderType = p.ProviderType,
+                            IsVerified = p.IsVerified,
+                            CreatedAt = p.CreatedAt
+                        }).ToList()
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (user is null) return null;
 
-            var roles = await GetUserRolesAsync(userId, cancellationToken);
+            var isSeller = await _context.Sellers
+                .AnyAsync(s => s.UserId == userId
+                            && s.Status == SellerStatus.Active
+                            && s.DeletedAt == null, cancellationToken);
 
-            var totalOrders = await _context.Set<Order>()
+            var isAdmin = await _context.AdminUsers
+                .AnyAsync(a => a.UserId == userId
+                            && a.Status == AdminStatus.Active, cancellationToken);
+
+            var totalOrders = await _context.Orders
                 .CountAsync(o => o.UserId == userId, cancellationToken);
-
-            var totalSpent = await _context.Set<Order>()
-                .Where(o => o.UserId == userId && o.Status == OrderStatus.Completed)
-                .SumAsync(o => (decimal?)o.TotalAmount ?? 0, cancellationToken);
 
             var totalAddresses = await _context.UserAddresses
                 .CountAsync(a => a.UserId == userId && a.DeletedAt == null, cancellationToken);
@@ -516,154 +519,22 @@
                 Name = user.Name,
                 Avatar = user.Avatar,
                 Gender = user.Gender.ToString().ToLower(),
-                DateOfBirth = user.DateOfBirth,
+                DateOfBirth = user.DateOfBirth?.ToString("dd/MM/yyyy"),
                 Status = user.Status.ToString().ToLower(),
                 EmailVerified = user.EmailVerified,
                 PhoneVerified = user.PhoneVerified,
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt,
                 AuthProviders = user.AuthProviders,
-                IsSeller = roles.IsSeller,
-                IsAdmin = roles.IsAdmin,
-                Stats = new UserStatsDTO
-                {
-                    TotalOrders = totalOrders,
-                    TotalSpent = totalSpent,
-                    TotalAddresses = totalAddresses,
-                    TotalBankAccounts = totalBankAccounts
-                }
+                IsSeller = isSeller,
+                IsAdmin = isAdmin,
+                TotalOrders = totalOrders,
+                TotalAddresses = totalAddresses,
+                TotalBankAccounts = totalBankAccounts
             };
         }
 
-        public async Task<PagedResult<UserOrderListItemDTO>> GetUserOrdersAsync(
-            GetUserOrdersQuery query,
-            CancellationToken cancellationToken = default)
-        {
-            var sql = new StringBuilder(@"
-            SELECT
-                o.id,
-                o.order_code,
-                s.shop_name,
-                o.status,
-                o.payment_status,
-                o.payment_method,
-                o.subtotal,
-                o.shipping_fee,
-                o.discount_amount  AS discount,
-                o.total_amount,
-                COUNT(oi.id)       AS total_items,
-                o.created_at,
-                o.completed_at,
-                o.cancelled_at
-            FROM orders o
-            JOIN shops s  ON s.id = o.shop_id
-            JOIN order_items oi ON oi.order_id = o.id
-            WHERE o.user_id = @UserId");
-
-            if (!string.IsNullOrEmpty(query.Status))
-                sql.Append(" AND o.status = @Status");
-
-            sql.Append(" GROUP BY o.id, s.shop_name");
-            sql.Append(query.SortOrder == "asc"
-                ? " ORDER BY o.created_at ASC"
-                : " ORDER BY o.created_at DESC");
-
-            var countSql = $@"
-            SELECT COUNT(DISTINCT o.id)
-            FROM orders o
-            WHERE o.user_id = @UserId
-            {(string.IsNullOrEmpty(query.Status) ? "" : "AND o.status = @Status")}";
-
-            var parameters = new DapperParameterBuilder()
-                .Add("UserId", query.UserId)
-                .Add("Status", query.Status)
-                .Add("Limit", query.PageSize)
-                .Add("Offset", (query.Page - 1) * query.PageSize)
-                .Build();
-
-            sql.Append(" LIMIT @Limit OFFSET @Offset");
-
-            var total = await _executor.ExecuteFunctionScalarAsync<int>(
-                countSql, parameters, cancellationToken);
-
-            var items = (await _executor.ExecuteFunctionQueryAsync<UserOrderListItemDTO>(
-                sql.ToString(), parameters, cancellationToken)).ToList();
-
-            return new PagedResult<UserOrderListItemDTO>
-            {
-                Items = items,
-                Total = total,
-                Page = query.Page,
-                PageSize = query.PageSize
-            };
-        }
-
-        public async Task<PagedResult<UserTransactionListItemDTO>> GetUserTransactionsAsync(
-            GetUserTransactionsQuery query,
-            CancellationToken cancellationToken = default)
-        {
-            var whereClauses = new List<string> { "t.user_id = @UserId" };
-
-            if (!string.IsNullOrEmpty(query.TransactionType))
-                whereClauses.Add("t.transaction_type = @TransactionType");
-
-            if (!string.IsNullOrEmpty(query.Status))
-                whereClauses.Add("t.status = @Status");
-
-            if (query.FromDate.HasValue)
-                whereClauses.Add("t.created_at >= @FromDate");
-
-            if (query.ToDate.HasValue)
-                whereClauses.Add("t.created_at <= @ToDate");
-
-            var where = string.Join(" AND ", whereClauses);
-
-            var sql = $@"
-            SELECT
-                t.id,
-                t.transaction_type,
-                t.amount,
-                t.balance_before,
-                t.balance_after,
-                t.status,
-                t.reference_type,
-                t.reference_id,
-                t.description,
-                t.created_at
-            FROM buyer_wallet_transactions t
-            WHERE {where}
-            ORDER BY t.created_at {(query.SortOrder == "asc" ? "ASC" : "DESC")}
-            LIMIT @Limit OFFSET @Offset";
-
-            var countSql = $@"
-            SELECT COUNT(*) 
-            FROM buyer_wallet_transactions t 
-            WHERE {where}";
-
-            var parameters = new DapperParameterBuilder()
-                .Add("UserId", query.UserId)
-                .Add("TransactionType", query.TransactionType)
-                .Add("Status", query.Status)
-                .Add("FromDate", query.FromDate)
-                .Add("ToDate", query.ToDate)
-                .Add("Limit", query.PageSize)
-                .Add("Offset", (query.Page - 1) * query.PageSize)
-                .Build();
-
-            var total = await _executor.ExecuteFunctionScalarAsync<int>(
-                countSql, parameters, cancellationToken);
-
-            var items = (await _executor.ExecuteFunctionQueryAsync<UserTransactionListItemDTO>(
-                sql, parameters, cancellationToken)).ToList();
-
-            return new PagedResult<UserTransactionListItemDTO>
-            {
-                Items = items,
-                Total = total,
-                Page = query.Page,
-                PageSize = query.PageSize
-            };
-        }
+        
         #endregion
         #endregion
     }

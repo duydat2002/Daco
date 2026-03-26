@@ -17,9 +17,9 @@
         {
             _logger.LogInformation("Getting users list");
 
-            //var result = await _adminRepository.GetAdminsAsync(request, cancellationToken);
+            var result = await _adminRepository.GetUsersAsync(request, cancellationToken);
 
-            return ResponseDTO.Success(null);
+            return ResponseDTO.Success(result);
         }
     }
 }

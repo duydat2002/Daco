@@ -7,8 +7,5 @@
         Task AddAsync(Order order, CancellationToken cancellationToken = default);
         Task UpdateAsync(Order order, CancellationToken cancellationToken = default);
 
-        Task<PagedResult<UserOrderListItemDTO>> GetUserOrdersAsync(
-            GetUserOrdersQuery query,
-            CancellationToken cancellationToken = default);
     }
 }

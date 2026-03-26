@@ -25,16 +25,6 @@
         #region User Management
         Task<PagedResult<UserListItemDTO>> GetUsersAsync(GetUsersQuery query, CancellationToken cancellationToken = default);
         Task<UserDetailDTO?> GetUserDetailAsync(Guid userId, CancellationToken cancellationToken = default);
-
-        //Task<UserDetailDTO?> GetUserDetailAsync(Guid userId, CancellationToken cancellationToken = default);
-
-        //Task<PagedResult<UserOrderListItemDTO>> GetUserOrdersAsync(
-        //    GetUserOrdersQuery query, 
-        //    CancellationToken cancellationToken = default);
-
-        //Task<PagedResult<UserTransactionListItemDTO>> GetUserTransactionsAsync(
-        //    GetUserTransactionsQuery query, 
-        //    CancellationToken cancellationToken = default);
         #endregion
     }
 }

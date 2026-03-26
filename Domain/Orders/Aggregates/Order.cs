@@ -2,7 +2,7 @@
 {
     public class Order : AggregateRoot
     {
-        private readonly       List<OrderItem> _items = new();
+        private readonly       List<OrderItem> _orderItems = new();
         private readonly       List<OrderStatusHistory> _statusHistory = new();
 
         // --- Identity        ---
@@ -39,7 +39,7 @@
         public DateTime?       CompletedAt      { get; private set; }
 
         // --- Collections ---
-        public IReadOnlyCollection<OrderItem> Items => _items.AsReadOnly();
+        public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
         public IReadOnlyCollection<OrderStatusHistory> StatusHistory => _statusHistory.AsReadOnly();
 
         protected Order() { }
@@ -114,7 +114,7 @@
                 productName, variantName, productImage, sku,
                 price, quantity, discountAmount);
 
-            _items.Add(item);
+            _orderItems.Add(item);
             RecalculateTotals();
             UpdatedAt = DateTime.UtcNow;
         }
@@ -306,7 +306,7 @@
 
         private void RecalculateTotals()
         {
-            Subtotal = _items.Sum(i => i.TotalAmount);
+            Subtotal = _orderItems.Sum(i => i.TotalAmount);
             TotalAmount = Subtotal + ShippingFee - DiscountAmount;
 
             Guard.Against(TotalAmount < 0, "Total amount cannot be negative");
