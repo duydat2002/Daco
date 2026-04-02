@@ -10,6 +10,7 @@
     <Folder Include="Administration\Auth\Queries\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
+    <Folder Include="Shops\Queries\" />
     <Folder Include="Users\Commands\Session\" />
     <Folder Include="Users\Queries\" />
   </ItemGroup>

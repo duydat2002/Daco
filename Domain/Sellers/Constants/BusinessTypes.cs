@@ -1,8 +1,8 @@
-﻿namespace Daco.Domain.Shops.Constants
+﻿namespace Daco.Domain.Sellers.Constants
 {
     public static class BusinessTypes
     {
         public const string Individual = "individual";
-        public const string Company    = "company";
+        public const string Company = "company";
     }
 }

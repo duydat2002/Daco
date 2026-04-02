@@ -9,12 +9,7 @@
                 .When(x => x.Name is not null);
 
             RuleFor(x => x.DateOfBirth)
-                .Must(dob => DateTime.TryParseExact(
-                    dob, "dd/MM/yyyy",
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.None,
-                    out _))
-                .WithMessage("Date of birth must be in dd/MM/yyyy format")
+                .ValidDateFormat()
                 .Must(dob =>
                 {
                     if (!DateTime.TryParseExact(dob, "dd/MM/yyyy",

@@ -7,19 +7,19 @@
         private readonly List<BankAccount> _bankAccounts = new();
         private readonly List<LoginSession> _loginSessions = new();
 
-        public Username Username { get; private set; }
-        public Email? Email { get; private set; }
-        public PhoneNumber? Phone { get; private set; }
-        public string? Name { get; private set; }
-        public string? Avatar { get; private set; }
-        public DateTime? DateOfBirth { get; private set; }
-        public UserGender Gender { get; private set; }
-        public UserStatus Status { get; private set; }
-        public bool EmailVerified { get; private set; }
-        public bool PhoneVerified { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime? UpdatedAt { get; private set; }
-        public DateTime? DeletedAt { get; private set; }
+        public Username     Username      { get; private set; }
+        public Email?       Email         { get; private set; }
+        public PhoneNumber? Phone         { get; private set; }
+        public string?      Name          { get; private set; }
+        public string?      Avatar        { get; private set; }
+        public DateTime?    DateOfBirth   { get; private set; }
+        public UserGender   Gender        { get; private set; }
+        public UserStatus   Status        { get; private set; }
+        public bool         EmailVerified { get; private set; }
+        public bool         PhoneVerified { get; private set; }
+        public DateTime     CreatedAt     { get; private set; }
+        public DateTime?    UpdatedAt     { get; private set; }
+        public DateTime?    DeletedAt     { get; private set; }
 
         // Navigation Properties (Entities - Read-only collections)
         public IReadOnlyCollection<AuthProvider> AuthProviders => _authProviders.AsReadOnly();

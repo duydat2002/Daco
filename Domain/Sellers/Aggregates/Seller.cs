@@ -1,35 +1,92 @@
-﻿namespace Daco.Domain.Shops.Aggregates
+﻿namespace Daco.Domain.Sellers.Aggregates
 {
     public class Seller : AggregateRoot
     {
         // Identity
-        public Guid UserId { get; private set; }
-        public string BusinessType { get; private set; }  // "individual" | "company"
-        public SellerStatus Status { get; private set; } //'pending', 'active', 'suspended', 'banned'
-        public bool IsVerified { get; private set; }
-        public bool IsOfficial { get; private set; }
-        public DateTime? VerifiedAt { get; private set; }
-
+        public Guid         UserId                { get; private set; }
+        public string       BusinessType          { get; private set; } // "individual" | "company"
+        public SellerStatus Status                { get; private set; } //'pending', 'active', 'suspended', 'banned'
+        public bool         IsVerified            { get; private set; }
+        public bool         IsOfficial            { get; private set; }
+        public DateTime?    VerifiedAt            { get; private set; }
         // Individual KYC
-        public string? IdentityNumber { get; private set; }
-        public string? IdentityFrontUrl { get; private set; }
-        public string? IdentityBackUrl { get; private set; }
-        public bool IdentityVerified { get; private set; }
-
+        public string?      IdentityNumber        { get; private set; }
+        public string?      IdentityFrontUrl      { get; private set; }
+        public string?      IdentityBackUrl       { get; private set; }
+        public bool         IdentityVerified      { get; private set; }
         // Company KYC
-        public string? CompanyName { get; private set; }
-        public string? BusinessLicenseNumber { get; private set; }
-        public string? BusinessLicenseUrl { get; private set; }
-        public string? TaxCode { get; private set; }
-
+        public string?      CompanyName           { get; private set; }
+        public string?      BusinessLicenseNumber { get; private set; }
+        public string?      BusinessLicenseUrl    { get; private set; }
+        public string?      TaxCode               { get; private set; }
         // Timestamps
-        public DateTime CreatedAt { get; private set; }
-        public DateTime? UpdatedAt { get; private set; }
-        public DateTime? DeletedAt { get; private set; }
+        public DateTime     CreatedAt             { get; private set; }
+        public DateTime?    UpdatedAt             { get; private set; }
+        public DateTime?    DeletedAt             { get; private set; }
 
         protected Seller() { }
 
         #region Register
+        public static Seller Onboard(Guid userId)
+        {
+            Guard.Against(userId == Guid.Empty, "UserId is required");
+
+            var seller = new Seller
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                BusinessType = null!,
+                Status = SellerStatus.Pending,
+                IsVerified = false,
+                IsOfficial = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            return seller;
+        }
+
+        public void SubmitIndividualKyc(
+            string identityNumber,
+            string identityFrontUrl,
+            string identityBackUrl)
+        {
+            Guard.AgainstNullOrEmpty(identityNumber, nameof(identityNumber));
+            Guard.AgainstNullOrEmpty(identityFrontUrl, nameof(identityFrontUrl));
+            Guard.AgainstNullOrEmpty(identityBackUrl, nameof(identityBackUrl));
+
+            BusinessType = BusinessTypes.Individual;
+            IdentityNumber = identityNumber;
+            IdentityFrontUrl = identityFrontUrl;
+            IdentityBackUrl = identityBackUrl;
+            IdentityVerified = false;
+            Status = SellerStatus.Pending;
+            UpdatedAt = DateTime.UtcNow;
+
+            AddDomainEvent(new SellerKycSubmittedEvent(Id, UserId, BusinessTypes.Individual));
+        }
+
+        public void SubmitCompanyKyc(
+            string companyName,
+            string businessLicenseNumber,
+            string businessLicenseUrl,
+            string taxCode)
+        {
+            Guard.AgainstNullOrEmpty(companyName, nameof(companyName));
+            Guard.AgainstNullOrEmpty(businessLicenseNumber, nameof(businessLicenseNumber));
+            Guard.AgainstNullOrEmpty(businessLicenseUrl, nameof(businessLicenseUrl));
+            Guard.AgainstNullOrEmpty(taxCode, nameof(taxCode));
+
+            BusinessType = BusinessTypes.Company;
+            CompanyName = companyName;
+            BusinessLicenseNumber = businessLicenseNumber;
+            BusinessLicenseUrl = businessLicenseUrl;
+            TaxCode = taxCode;
+            Status = SellerStatus.Pending;
+            UpdatedAt = DateTime.UtcNow;
+
+            AddDomainEvent(new SellerKycSubmittedEvent(Id, UserId, BusinessTypes.Company));
+        }
+
         public static Seller RegisterIndividual(
             Guid userId,
             string identityNumber,

@@ -2,10 +2,10 @@
 {
     public class Order : AggregateRoot
     {
-        private readonly       List<OrderItem> _orderItems = new();
-        private readonly       List<OrderStatusHistory> _statusHistory = new();
+        private readonly List<OrderItem> _orderItems = new();
+        private readonly List<OrderStatusHistory> _statusHistory = new();
 
-        // --- Identity        ---
+        // --- Identity ---
         public Guid            UserId           { get; private set; }
         public Guid            ShopId           { get; private set; }
         public string          OrderCode        { get; private set; }

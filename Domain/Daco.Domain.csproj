@@ -13,7 +13,7 @@
     <Folder Include="Shipping\" />
     <Folder Include="Notifications\" />
     <Folder Include="Reviews\" />
-    <Folder Include="Shops\Entities\" />
+    <Folder Include="Shops\Constants\" />
     <Folder Include="Users\Exceptions\" />
     <Folder Include="Users\Services\" />
     <Folder Include="Users\Specifications\" />

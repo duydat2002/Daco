@@ -1,4 +1,4 @@
-﻿namespace Daco.Domain.Shops.Events
+﻿namespace Daco.Domain.Sellers.Events
 {
     public class SellerRegisteredEvent : DomainEvent
     {
@@ -7,6 +7,20 @@
         public string BusinessType { get; init; }
 
         public SellerRegisteredEvent(Guid sellerId, Guid userId, string businessType)
+        {
+            SellerId = sellerId;
+            UserId = userId;
+            BusinessType = businessType;
+        }
+    }
+
+    public class SellerKycSubmittedEvent : DomainEvent
+    {
+        public Guid SellerId { get; init; }
+        public Guid UserId { get; init; }
+        public string BusinessType { get; init; }
+
+        public SellerKycSubmittedEvent(Guid sellerId, Guid userId, string businessType)
         {
             SellerId = sellerId;
             UserId = userId;
