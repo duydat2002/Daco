@@ -4,45 +4,26 @@
     {
         private readonly List<ShopAddress> _addresses = new();
 
-        // ─── Identity ─────────────────────────────────────────────────────────
-
-        public Guid SellerId { get; private set; }
-        public string ShopName { get; private set; }
-        public string ShopSlug { get; private set; }
-
-        // ─── Branding ─────────────────────────────────────────────────────────
-
-        public string? ShopLogo { get; private set; }
-        public string? ShopCover { get; private set; }
-        public string? Description { get; private set; }
-
-        // ─── Contact ──────────────────────────────────────────────────────────
-
-        public string? ShopEmail { get; private set; }
-        public string? ShopPhone { get; private set; }
-
-        // ─── Classification ───────────────────────────────────────────────────
-
-        public ShopStatus ShopStatus { get; private set; }
-        public ShopType ShopType { get; private set; }
-        public bool IsOfficial { get; private set; }
-
-        // ─── Timestamps ───────────────────────────────────────────────────────
-
-        public DateTime JoinedAt { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime? UpdatedAt { get; private set; }
-        public DateTime? DeletedAt { get; private set; }
-
-        // ─── Navigations ──────────────────────────────────────────────────────
-
-        public ShopMetrics Metrics { get; private set; } = null!;
+        public Guid        SellerId    { get; private set; }
+        public string      ShopName    { get; private set; }
+        public string      ShopSlug    { get; private set; }
+        public string?     ShopLogo    { get; private set; }
+        public string?     ShopCover   { get; private set; }
+        public string?     Description { get; private set; }
+        public string?     ShopEmail   { get; private set; }
+        public string?     ShopPhone   { get; private set; }
+        public ShopStatus  ShopStatus  { get; private set; }
+        public ShopType    ShopType    { get; private set; }
+        public bool        IsOfficial  { get; private set; }
+        public DateTime    JoinedAt    { get; private set; }
+        public DateTime    CreatedAt   { get; private set; }
+        public DateTime?   UpdatedAt   { get; private set; }
+        public DateTime?   DeletedAt   { get; private set; }
+        public ShopMetrics Metrics     { get; private set; } = null!;
 
         public IReadOnlyCollection<ShopAddress> Addresses => _addresses.AsReadOnly();
 
         protected Shop() { }
-
-        // ─── Factory ──────────────────────────────────────────────────────────
 
         public static Shop Create(
             Guid sellerId,
@@ -79,8 +60,6 @@
             return shop;
         }
 
-        // ─── Profile ──────────────────────────────────────────────────────────
-
         public void UpdateProfile(
             string shopName,
             string? description = null,
@@ -114,8 +93,6 @@
             ShopCover = coverUrl;
             UpdatedAt = DateTime.UtcNow;
         }
-
-        // ─── Address ──────────────────────────────────────────────────────────
 
         public void AddAddress(ShopAddress address)
         {
@@ -190,8 +167,6 @@
             UpdatedAt = DateTime.UtcNow;
         }
 
-        // ─── Status ───────────────────────────────────────────────────────────
-
         public void Suspend(string reason)
         {
             Guard.Against(ShopStatus == ShopStatus.Suspended, "Shop is already suspended");
@@ -233,8 +208,6 @@
             ShopType = ShopType.Official;
             UpdatedAt = DateTime.UtcNow;
         }
-
-        // ─── Helpers ──────────────────────────────────────────────────────────
 
         public bool IsActive => ShopStatus == ShopStatus.Active;
 

@@ -4,6 +4,7 @@
     {
         private readonly List<OrderItem> _orderItems = new();
         private readonly List<OrderStatusHistory> _statusHistory = new();
+        private readonly List<Payment> _payments = new();
 
         // --- Identity ---
         public Guid            UserId           { get; private set; }
@@ -41,7 +42,7 @@
         // --- Collections ---
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
         public IReadOnlyCollection<OrderStatusHistory> StatusHistory => _statusHistory.AsReadOnly();
-
+        public IReadOnlyCollection<Payment> Payments => _payments.AsReadOnly();
         protected Order() { }
 
         
@@ -119,8 +120,24 @@
             UpdatedAt = DateTime.UtcNow;
         }
 
-        
+
         // Payment
+        public Payment AddPayment(string? paymentGateway = null)
+        {
+            Guard.Against(
+                Status != OrderStatus.PendingPayment,
+                "Cannot add payment to this order status");
+
+            Guard.Against(
+                _payments.Any(p => p.Status == PaymentStatus.Pending),
+                "There is already a pending payment");
+
+            var payment = Payment.Create(Id, PaymentMethod, TotalAmount, paymentGateway);
+            _payments.Add(payment);
+
+            return payment;
+        }
+
         public void MarkAsPaid()
         {
             Guard.Against(

@@ -7,17 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Carts\" />
-    <Folder Include="Messaging\" />
+    <Folder Include="Analytics\Enums\" />
     <Folder Include="Payments\" />
-    <Folder Include="Shipping\" />
-    <Folder Include="Notifications\" />
-    <Folder Include="Reviews\" />
-    <Folder Include="Shops\Constants\" />
     <Folder Include="Users\Exceptions\" />
     <Folder Include="Users\Services\" />
     <Folder Include="Users\Specifications\" />
-    <Folder Include="Wallets\" />
     <Folder Include="Projects\" />
   </ItemGroup>
 

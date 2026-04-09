@@ -18,6 +18,7 @@
         public DbSet<AdminPermission> AdminPermissions => Set<AdminPermission>();
         public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
         public DbSet<Order> Orders => Set<Order>();
+        public DbSet<Payment> Payments => Set<Payment>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -147,6 +147,15 @@
             builder.Navigation(o => o.OrderItems)
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasField("_orderItems");
+
+            builder.HasMany(o => o.Payments)
+                .WithOne()
+                .HasForeignKey(p => p.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Navigation(o => o.Payments)
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasField("_payments");
         }
     }
 }

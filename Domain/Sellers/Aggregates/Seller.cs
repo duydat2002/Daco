@@ -2,6 +2,9 @@
 {
     public class Seller : AggregateRoot
     {
+        private readonly List<SellerPenalty> _sellerPenalties = new();
+        private readonly List<SellerPenaltyScore> _sellerPenaltyScores = new();
+
         // Identity
         public Guid         UserId                { get; private set; }
         public string       BusinessType          { get; private set; } // "individual" | "company"
@@ -23,6 +26,9 @@
         public DateTime     CreatedAt             { get; private set; }
         public DateTime?    UpdatedAt             { get; private set; }
         public DateTime?    DeletedAt             { get; private set; }
+
+        public IReadOnlyCollection<SellerPenalty> SellerPenalties => _sellerPenalties.AsReadOnly();
+        public IReadOnlyCollection<SellerPenaltyScore> SellerPenaltyScores => _sellerPenaltyScores.AsReadOnly();
 
         protected Seller() { }
 
