@@ -2,7 +2,7 @@
 {
     public class AdminActivityLog : Entity
     {
-        public Guid     AdminId           { get; private set; }
+        public Guid?     AdminId           { get; private set; }
         public string   ActionType        { get; private set; } //'user.ban', 'shop.approve', 'product.delete'
         public string?  ActionDescription { get; private set; }
         public string?  TargetType        { get; private set; } //'user', 'shop', 'product', 'order'

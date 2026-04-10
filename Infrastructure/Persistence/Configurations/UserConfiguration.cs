@@ -52,30 +52,6 @@
                     .HasDatabaseName("idx_users_phone");
             });
 
-            //builder.Property(a => a.Username)
-            //    .HasColumnName("username")
-            //    .HasMaxLength(50)
-            //    .IsRequired()
-            //    .HasConversion(
-            //        v => v.Value,
-            //        v => Username.Create(v));
-
-            //builder.Property(a => a.Email)
-            //    .HasColumnName("email")
-            //    .HasMaxLength(100)
-            //    .IsRequired(false)
-            //    .HasConversion(
-            //        v => v == null ? null : v.Value,
-            //        v => v == null ? null : Email.Create(v));
-
-            //builder.Property(a => a.Phone)
-            //    .HasColumnName("phone")
-            //    .HasMaxLength(20)
-            //    .IsRequired(false)
-            //    .HasConversion(
-            //        v => v == null ? null : v.Value,
-            //        v => v == null ? null : PhoneNumber.Create(v));
-
             // Primitive Properties
             builder.Property(a => a.Name)
                 .HasColumnName("name")
