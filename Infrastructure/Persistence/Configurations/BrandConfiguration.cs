@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Brands.Aggregates;
-
-namespace Daco.Infrastructure.Persistence.Configurations
+﻿namespace Daco.Infrastructure.Persistence.Configurations
 {
     public class BrandConfiguration : IEntityTypeConfiguration<Brand>
     {
@@ -62,12 +60,6 @@ namespace Daco.Infrastructure.Persistence.Configurations
             builder.HasIndex(a => a.BrandName)
               .HasFilter("is_active = TRUE")
               .HasDatabaseName("idx_brands_name");
-
-            builder.HasIndex()
-               .HasDatabaseName("idx_brands_search")
-               .HasMethod("gin")
-               .HasAnnotation("Npgsql:IndexExpression",
-                   "to_tsvector('simple', brand_name)");
         }
     }
 }

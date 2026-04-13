@@ -1,8 +1,4 @@
-﻿using Daco.Domain.Analytics.Entities;
-using Daco.Domain.Products.Aggregates;
-using Microsoft.EntityFrameworkCore;
-
-namespace Daco.Infrastructure.Persistence.Configurations
+﻿namespace Daco.Infrastructure.Persistence.Configurations
 {
     public class SearchHistoryConfiguration : IEntityTypeConfiguration<SearchHistory>
     {

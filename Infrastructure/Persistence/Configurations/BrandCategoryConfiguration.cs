@@ -1,8 +1,4 @@
-﻿using Daco.Domain.Brands.Aggregates;
-using Daco.Domain.Brands.Entities;
-using Daco.Domain.Categories.Aggregates;
-
-namespace Daco.Infrastructure.Persistence.Configurations
+﻿namespace Daco.Infrastructure.Persistence.Configurations
 {
     public class BrandCategoryConfiguration : IEntityTypeConfiguration<BrandCategory>
     {

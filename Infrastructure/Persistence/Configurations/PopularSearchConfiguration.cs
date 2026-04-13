@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Analytics.Entities;
-
-namespace Daco.Infrastructure.Persistence.Configurations
+﻿namespace Daco.Infrastructure.Persistence.Configurations
 {
     public class PopularSearchConfiguration : IEntityTypeConfiguration<PopularSearch>
     {

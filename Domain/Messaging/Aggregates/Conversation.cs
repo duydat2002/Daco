@@ -1,11 +1,8 @@
-﻿using Daco.Domain.Users.Entities;
-
-namespace Daco.Domain.Messaging.Aggregates
+﻿namespace Daco.Domain.Messaging.Aggregates
 {
     public class Conversation : AggregateRoot
     {
         private readonly List<Message> _messages = new();
-        private readonly List<ChatBlock> _chatBlocks = new();
 
         public Guid      BuyerId            { get; private set; }
         public Guid      ShopId             { get; private set; }
@@ -19,7 +16,6 @@ namespace Daco.Domain.Messaging.Aggregates
         public DateTime? UpdatedAt          { get; private set; }
 
         public IReadOnlyCollection<Message> Messages => _messages.AsReadOnly();
-        public IReadOnlyCollection<ChatBlock> ChatBlocks => _chatBlocks.AsReadOnly();
 
         protected Conversation() { }
     }

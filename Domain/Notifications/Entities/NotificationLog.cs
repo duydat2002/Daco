@@ -1,4 +1,4 @@
-﻿namespace Daco.Domain.Notifications.Entites
+﻿namespace Daco.Domain.Notifications.Entities
 {
     public class NotificationLog : Entity
     {

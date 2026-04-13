@@ -12,7 +12,6 @@
     <Folder Include="Users\Exceptions\" />
     <Folder Include="Users\Services\" />
     <Folder Include="Users\Specifications\" />
-    <Folder Include="Projects\" />
   </ItemGroup>
 
   <ItemGroup>
