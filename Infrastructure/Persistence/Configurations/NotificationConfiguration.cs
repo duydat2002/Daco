@@ -89,34 +89,34 @@
             // FK
             builder.HasOne<User>()
                 .WithMany()
-                .HasForeignKey(c => c.UserId)
+                .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne<Shop>()
                 .WithMany()
-                .HasForeignKey(c => c.ShopId)
+                .HasForeignKey(a => a.ShopId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Indexes
-            builder.HasIndex(c => new { c.UserId, c.CreatedAt })
+            builder.HasIndex(a => new { a.UserId, a.CreatedAt })
                 .IsDescending(false, true)
                 .HasFilter("user_id IS NOT NULL")
                 .HasDatabaseName("idx_notifications_user");
 
-            builder.HasIndex(c => new { c.ShopId, c.CreatedAt })
+            builder.HasIndex(a => new { a.ShopId, a.CreatedAt })
                 .IsDescending(false, true)
                 .HasFilter("shop_id IS NOT NULL")
                 .HasDatabaseName("idx_notifications_shop");
 
-            builder.HasIndex(c => new { c.UserId, c.IsRead })
+            builder.HasIndex(a => new { a.UserId, a.IsRead })
                 .HasFilter("is_read = FALSE AND user_id IS NOT NULL")
                 .HasDatabaseName("idx_notifications_unread_user");
 
-            builder.HasIndex(c => new { c.ShopId, c.IsRead })
+            builder.HasIndex(a => new { a.ShopId, a.IsRead })
                 .HasFilter("is_read = FALSE AND shop_id IS NOT NULL")
                 .HasDatabaseName("idx_notifications_unread_shop");
 
-            builder.HasIndex(c => new { c.NotificationType, c.CreatedAt })
+            builder.HasIndex(a => new { a.NotificationType, a.CreatedAt })
                 .IsDescending(false, true)
                 .HasDatabaseName("idx_notifications_type");
         }
