@@ -2,7 +2,7 @@
 {
     public class Shop : AggregateRoot
     {
-        private readonly List<ShopAddress> _addresses = new();
+        private readonly List<ShopAddress> _shopAddresses = new();
 
         public Guid        SellerId    { get; private set; }
         public string      ShopName    { get; private set; }
@@ -12,16 +12,18 @@
         public string?     Description { get; private set; }
         public string?     ShopEmail   { get; private set; }
         public string?     ShopPhone   { get; private set; }
-        public ShopStatus  ShopStatus  { get; private set; }
+        public ShopStatus  Status  { get; private set; }
         public ShopType    ShopType    { get; private set; }
         public bool        IsOfficial  { get; private set; }
         public DateTime    JoinedAt    { get; private set; }
         public DateTime    CreatedAt   { get; private set; }
         public DateTime?   UpdatedAt   { get; private set; }
         public DateTime?   DeletedAt   { get; private set; }
-        public ShopMetrics Metrics     { get; private set; } = null!;
 
-        public IReadOnlyCollection<ShopAddress> Addresses => _addresses.AsReadOnly();
+        public IReadOnlyCollection<ShopAddress> ShopAddresses => _shopAddresses.AsReadOnly();
+        public ShopMetrics ShopMetrics     { get; private set; } = null!;
+        public ShopChatSetting ShopChatSetting { get; private set; }
+        public ShopNotificationSetting ShopNotificationSetting { get; private set; }
 
         protected Shop() { }
 
@@ -46,7 +48,7 @@
                 Description = description,
                 ShopEmail = shopEmail,
                 ShopPhone = shopPhone,
-                ShopStatus = ShopStatus.Active,
+                Status = ShopStatus.Active,
                 ShopType = ShopType.Normal,
                 IsOfficial = false,
                 JoinedAt = DateTime.UtcNow,
@@ -66,7 +68,7 @@
             string? shopEmail = null,
             string? shopPhone = null)
         {
-            Guard.Against(ShopStatus == ShopStatus.Closed, "Cannot update a closed shop");
+            Guard.Against(Status == ShopStatus.Closed, "Cannot update a closed shop");
             Guard.AgainstNullOrEmpty(shopName, nameof(shopName));
 
             ShopName = shopName.Trim();
@@ -79,7 +81,7 @@
         public void UpdateLogo(string logoUrl)
         {
             Guard.AgainstNullOrEmpty(logoUrl, nameof(logoUrl));
-            Guard.Against(ShopStatus == ShopStatus.Closed, "Cannot update a closed shop");
+            Guard.Against(Status == ShopStatus.Closed, "Cannot update a closed shop");
 
             ShopLogo = logoUrl;
             UpdatedAt = DateTime.UtcNow;
@@ -88,7 +90,7 @@
         public void UpdateCover(string coverUrl)
         {
             Guard.AgainstNullOrEmpty(coverUrl, nameof(coverUrl));
-            Guard.Against(ShopStatus == ShopStatus.Closed, "Cannot update a closed shop");
+            Guard.Against(Status == ShopStatus.Closed, "Cannot update a closed shop");
 
             ShopCover = coverUrl;
             UpdatedAt = DateTime.UtcNow;
@@ -169,11 +171,11 @@
 
         public void Suspend(string reason)
         {
-            Guard.Against(ShopStatus == ShopStatus.Suspended, "Shop is already suspended");
-            Guard.Against(ShopStatus == ShopStatus.Closed, "Cannot suspend a closed shop");
+            Guard.Against(Status == ShopStatus.Suspended, "Shop is already suspended");
+            Guard.Against(Status == ShopStatus.Closed, "Cannot suspend a closed shop");
             Guard.AgainstNullOrEmpty(reason, nameof(reason));
 
-            ShopStatus = ShopStatus.Suspended;
+            Status = ShopStatus.Suspended;
             UpdatedAt = DateTime.UtcNow;
 
             AddDomainEvent(new ShopSuspendedEvent(Id, SellerId, reason));
@@ -181,9 +183,9 @@
 
         public void Reinstate()
         {
-            Guard.Against(ShopStatus != ShopStatus.Suspended, "Only suspended shops can be reinstated");
+            Guard.Against(Status != ShopStatus.Suspended, "Only suspended shops can be reinstated");
 
-            ShopStatus = ShopStatus.Active;
+            Status = ShopStatus.Active;
             UpdatedAt = DateTime.UtcNow;
 
             AddDomainEvent(new ShopReinstatedEvent(Id, SellerId));
@@ -191,10 +193,10 @@
 
         public void Close(string reason)
         {
-            Guard.Against(ShopStatus == ShopStatus.Closed, "Shop is already closed");
+            Guard.Against(Status == ShopStatus.Closed, "Shop is already closed");
             Guard.AgainstNullOrEmpty(reason, nameof(reason));
 
-            ShopStatus = ShopStatus.Closed;
+            Status = ShopStatus.Closed;
             UpdatedAt = DateTime.UtcNow;
 
             AddDomainEvent(new ShopClosedEvent(Id, SellerId, reason));
@@ -202,14 +204,14 @@
 
         public void MarkAsOfficial()
         {
-            Guard.Against(ShopStatus != ShopStatus.Active, "Shop must be active to be marked as official");
+            Guard.Against(Status != ShopStatus.Active, "Shop must be active to be marked as official");
 
             IsOfficial = true;
             ShopType = ShopType.Official;
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public bool IsActive => ShopStatus == ShopStatus.Active;
+        public bool IsActive => Status == ShopStatus.Active;
 
         public ShopAddress? GetDefaultAddress(ShopAddressType type)
             => _addresses.FirstOrDefault(a => !a.IsDeleted && a.AddressType == type && a.IsDefault);

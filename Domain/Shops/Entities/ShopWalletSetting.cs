@@ -9,7 +9,7 @@
         public bool      AutoWithdrawalEnabled   { get; private set; }
         public string    WithdrawalFrequency     { get; private set; }
         public int?      WithdrawalDayOfMonth    { get; private set; }
-        public int?      WithdrawalDaysOfMonth   { get; private set; }
+        public int[]?    WithdrawalDaysOfMonth   { get; private set; }
         public decimal   MinWithdrawalAmount     { get; private set; }
         public int       HoldPeriodDays          { get; private set; }
         public bool      NotifyWithdrawalSuccess { get; private set; }

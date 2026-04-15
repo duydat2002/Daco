@@ -5,6 +5,7 @@
         public Guid ShopId { get; private set; }
 
         public int     FollowerCount     { get; private set; }
+        public int     RatingCount       { get; private set; }
         public int     TotalProducts     { get; private set; }
         public int     TotalOrders       { get; private set; }
         public int     TotalSold         { get; private set; }

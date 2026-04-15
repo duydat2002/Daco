@@ -114,3 +114,5 @@ global using Daco.Domain.Vouchers.Entities;
 global using Daco.Domain.Wallets.Aggregates;
 global using Daco.Domain.Wallets.Enums;
 global using Daco.Domain.Wallets.Entities;
+global using Daco.Domain.Shops.ValueObjects;
+global using Newtonsoft.Json;
