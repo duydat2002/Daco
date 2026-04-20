@@ -20,17 +20,20 @@
 
         public static class Sellers
         {
-            public const string View    = "sellers.view";
-            public const string Approve = "sellers.approve";
-            public const string Reject  = "sellers.reject";
-            public const string Suspend = "sellers.suspend";
+            public const string View      = "sellers.view";
+            public const string Approve   = "sellers.approve";
+            public const string Reject    = "sellers.reject";
+            public const string Suspend   = "sellers.suspend";
+            public const string Reinstate = "sellers.reinstate";
         }
 
         public static class Products
         {
-            public const string View    = "products.view";
-            public const string Approve = "products.approve";
-            public const string Remove  = "products.remove";
+            public const string View       = "products.view";
+            public const string Approve    = "products.approve";
+            public const string Suspend    = "products.suspend";
+            public const string UnSuspend  = "products.unsuspend";
+            public const string Remove     = "products.remove";
         }
 
         public static class Orders

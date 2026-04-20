@@ -200,7 +200,7 @@
         #endregion
 
         #region Verification 
-        public void Approve(Guid approvedByAdminId)
+        public void Approve(Guid approvedBy)
         {
             Guard.Against(Status != SellerStatus.Pending, "Only pending sellers can be approved");
 
@@ -209,10 +209,10 @@
             VerifiedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
 
-            AddDomainEvent(new SellerApprovedEvent(Id, UserId, approvedByAdminId));
+            AddDomainEvent(new SellerApprovedEvent(Id, UserId, approvedBy));
         }
 
-        public void Reject(string reason)
+        public void Reject(Guid rejectedBy, string reason)
         {
             Guard.Against(Status != SellerStatus.Pending, "Only pending sellers can be rejected");
             Guard.AgainstNullOrEmpty(reason, nameof(reason));
@@ -220,10 +220,10 @@
             Status = SellerStatus.Banned;
             UpdatedAt = DateTime.UtcNow;
 
-            AddDomainEvent(new SellerRejectedEvent(Id, UserId, reason));
+            AddDomainEvent(new SellerRejectedEvent(Id, UserId, rejectedBy, reason));
         }
 
-        public void Suspend(string reason)
+        public void Suspend(Guid suspendedBy, string reason)
         {
             Guard.Against(Status != SellerStatus.Active, "Only active sellers can be suspended");
             Guard.AgainstNullOrEmpty(reason, nameof(reason));
@@ -231,17 +231,17 @@
             Status = SellerStatus.Suspended;
             UpdatedAt = DateTime.UtcNow;
 
-            AddDomainEvent(new SellerSuspendedEvent(Id, UserId, reason));
+            AddDomainEvent(new SellerSuspendedEvent(Id, UserId, suspendedBy, reason));
         }
 
-        public void Reinstate()
+        public void Reinstate(Guid reinstatedBy)
         {
             Guard.Against(Status != SellerStatus.Suspended, "Only suspended sellers can be reinstated");
 
             Status = SellerStatus.Active;
             UpdatedAt = DateTime.UtcNow;
 
-            AddDomainEvent(new SellerReinstatedEvent(Id, UserId));
+            AddDomainEvent(new SellerReinstatedEvent(Id, UserId, reinstatedBy));
         }
 
         public void MarkAsOfficial()

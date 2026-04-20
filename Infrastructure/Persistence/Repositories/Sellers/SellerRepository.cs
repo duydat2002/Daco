@@ -23,6 +23,14 @@
                 async () => await _context.Sellers.AddAsync(seller, cancellationToken));
         }
 
+        public async Task<Seller?> GetByIdAsync(Guid sellerId, CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { sellerId },
+                () => _context.Sellers
+                    .FirstOrDefaultAsync(s => s.Id == sellerId && s.DeletedAt == null,
+                        cancellationToken));
+        }
+
         public async Task<Seller?> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             return await RepositoryLogger.ExecuteAsync(_logger, new { userId },

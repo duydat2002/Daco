@@ -26,7 +26,18 @@
             public const string InvalidPhone         = "USER.INVALID_PHONE";
             public const string InvalidUsername      = "USER.INVALID_USERNAME";
             public const string AlreadyExists        = "USER.ALREADY_EXISTS";
+            public const string AlreadyActivated     = "USER.ALREADY_ACTIVATED";
             public const string AddressLimitExceeded = "USER.ADDRESS_LIMIT_EXCEEDED";
+        }
+
+        // Sellers
+        public static class SellerErrors
+        {
+            public const string NotFound = "SELLER.NOT_FOUND";
+            public const string AlreadyExists = "SELLER.ALREADY_EXISTS";
+            public const string AlreadyActivated = "SELLER.ALREADY_ACTIVATED";
+            public const string AlreadySuppended = "SELLER.ALREADY_SUPPENDED";
+            public const string AlreadyBanned = "SELLER.ALREADY_BANNED";
         }
 
         // Admin
@@ -67,6 +78,7 @@
             public const string OutOfStock        = "PRODUCT.OUT_OF_STOCK";
             public const string InsufficientStock = "PRODUCT.INSUFFICIENT_STOCK";
             public const string InvalidPrice      = "PRODUCT.INVALID_PRICE";
+            public const string InvalidStatus     = "PRODUCT.INVALID_STATUS";
             public const string AlreadyExists     = "PRODUCT.ALREADY_EXISTS";
         }
 

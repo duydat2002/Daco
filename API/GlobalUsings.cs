@@ -22,3 +22,5 @@ global using Daco.Application.Administration.AdminManagement.Queries;
 global using Daco.Infrastructure.Authorization;
 global using Daco.Application.Administration.UserManagement.Commands;
 global using Daco.Application.Administration.UserManagement.Queries;
+global using Daco.Application.Administration.SellerManagement;
+global using Daco.Application.Administration.ProductManagement.Commands;

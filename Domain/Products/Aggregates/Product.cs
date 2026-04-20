@@ -8,7 +8,6 @@
         private readonly List<ProductVariantGroup> _productVariantGroups = new();
         private readonly List<ProductVariant> _productVariants = new();
         
-
         public Guid          ShopId               { get; private set; }
         public Guid          CategoryId           { get; private set; }
         public string        ProductName          { get; private set; }
@@ -49,5 +48,49 @@
         public IReadOnlyCollection<ProductVariant> ProductVariants => _productVariants.AsReadOnly();
 
         protected Product() { }
+
+        public void Approve(Guid approvedBy)
+        {
+            Guard.Against(Status != ProductStatus.Pending, "Only pending products can be approved");
+
+            Status      = ProductStatus.Active;
+            PublishedAt = DateTime.UtcNow;
+            UpdatedAt   = DateTime.UtcNow;
+
+            AddDomainEvent(new ProductApprovedEvent(Id, ShopId, approvedBy));
+        }
+
+        public void Suspend(Guid suspendedBy, string reason)
+        {
+            Guard.Against(Status != ProductStatus.Pending, "Only pending products can be approved");
+
+            Status = ProductStatus.Active;
+            PublishedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+
+            AddDomainEvent(new ProductSuspendedEvent(Id, ShopId, suspendedBy, reason));
+        }
+
+        public void UnSuspend(Guid unsuspendedBy, string reason)
+        {
+            Guard.Against(Status != ProductStatus.Suspended, "Only suspend products can be unsuspend");
+            Guard.AgainstNullOrEmpty(reason, nameof(reason));
+
+            Status = ProductStatus.Active;
+            UpdatedAt = DateTime.UtcNow;
+
+            AddDomainEvent(new ProductUnSuspendedEvent(Id, ShopId, unsuspendedBy, reason));
+        }
+
+        public void Remove(Guid removedBy, string reason)
+        {
+            Guard.Against(Status == ProductStatus.Deleted, "Product already deleted");
+            Guard.AgainstNullOrEmpty(reason, nameof(reason));
+
+            Status = ProductStatus.Deleted;
+            DeletedAt = DateTime.UtcNow;
+
+            AddDomainEvent(new ProductRemovedEvent(Id, ShopId, removedBy, reason));
+        }
     }
 }

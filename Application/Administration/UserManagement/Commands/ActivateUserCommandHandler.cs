@@ -28,7 +28,7 @@
                 return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");
 
             if (user.Status == UserStatus.Active)
-                return ResponseDTO.Failure(ErrorCodes.AuthErrors.Unauthorized, "User is already active");
+                return ResponseDTO.Failure(ErrorCodes.UserErrors.AlreadyActivated, "User is already active");
 
             if (user.Status == UserStatus.Deleted)
                 return ResponseDTO.Failure(ErrorCodes.UserErrors.NotFound, "User not found");

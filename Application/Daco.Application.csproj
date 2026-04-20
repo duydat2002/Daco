@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Administration\Auth\Queries\" />
+    <Folder Include="Administration\ProductManagement\Queries\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
     <Folder Include="Shops\Queries\" />
