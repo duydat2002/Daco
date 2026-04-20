@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Shops.Aggregates;
-
-namespace Daco.Domain.Products.Events
+﻿namespace Daco.Domain.Products.Events
 {
     public class ProductApprovedEvent : DomainEvent
     {

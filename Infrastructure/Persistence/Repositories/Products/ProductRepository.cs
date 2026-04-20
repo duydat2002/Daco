@@ -1,6 +1,4 @@
-﻿using Daco.Domain.Administration.Aggregates;
-
-namespace Daco.Infrastructure.Persistence.Repositories.Products
+﻿namespace Daco.Infrastructure.Persistence.Repositories.Products
 {
     public class ProductRepository : IProductRepository
     {

@@ -135,4 +135,20 @@
             Amount = amount;
         }
     }
+
+    public class OrderRefundCompletedEvent : DomainEvent
+    {
+        public Guid OrderId { get; init; }
+        public Guid UserId { get; init; }
+        public Guid ShopId { get; init; }
+        public decimal Amount { get; init; }
+
+        public OrderRefundCompletedEvent(Guid orderId, Guid userId, Guid shopId, decimal amount)
+        {
+            OrderId = orderId;
+            UserId = userId;
+            ShopId = shopId;
+            Amount = amount;
+        }
+    }
 }

@@ -9,4 +9,3 @@
         public Guid   SuspendedBy { get; init; }
     }
 }
-}

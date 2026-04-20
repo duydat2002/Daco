@@ -24,3 +24,5 @@ global using Daco.Application.Administration.UserManagement.Commands;
 global using Daco.Application.Administration.UserManagement.Queries;
 global using Daco.Application.Administration.SellerManagement;
 global using Daco.Application.Administration.ProductManagement.Commands;
+global using Daco.Application.Administration.OrderManagement.Commands;
+global using Daco.Application.Administration.WithdrawalManagement.Commands;

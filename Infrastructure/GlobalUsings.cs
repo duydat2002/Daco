@@ -116,3 +116,7 @@ global using Daco.Domain.Wallets.Enums;
 global using Daco.Domain.Wallets.Entities;
 global using Daco.Domain.Shops.ValueObjects;
 global using Newtonsoft.Json;
+global using Daco.Infrastructure.Persistence.Repositories.SellerWallets;
+global using Daco.Infrastructure.Persistence.Repositories.Withdrawals;
+global using Daco.Application.Administration.WithdrawalManagement.DTOs;
+global using Daco.Application.Administration.WithdrawalManagement.Queries;

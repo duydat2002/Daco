@@ -19,5 +19,25 @@
         public IReadOnlyCollection<SellerWalletTransaction> SellerWalletTransactions => _sellerWalletTransactions.AsReadOnly();
 
         protected SellerWallet() { }
+
+        public void RefundWithdrawal(decimal amount)
+        {
+            Guard.AgainstNegativeOrZero(amount, nameof(amount));
+
+            var transaction = SellerWalletTransaction.Create(
+                walletId: Id,
+                sellerId: SellerId,
+                transactionType: SellerTransactionType.Adjustment,
+                amount: amount,
+                balanceBefore: AvailableBalance,
+                balanceAfter: AvailableBalance + amount,
+                referenceType: "withdrawal_rejected",
+                description: "Withdrawal rejected - amount refunded");
+
+            AvailableBalance += amount;
+            UpdatedAt = DateTime.UtcNow;
+
+            _sellerWalletTransactions.Add(transaction);
+        }
     }
 }

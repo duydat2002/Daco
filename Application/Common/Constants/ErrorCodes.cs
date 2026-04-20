@@ -88,6 +88,7 @@
             public const string NotFound      = "ORDER.NOT_FOUND";
             public const string CannotCancel  = "ORDER.CANNOT_CANCEL";
             public const string AlreadyPaid   = "ORDER.ALREADY_PAID";
+            public const string CannotRefund  = "ORDER.CANNOT_REFUND";
             public const string PaymentFailed = "ORDER.PAYMENT_FAILED";
             public const string InvalidStatus = "ORDER.INVALID_STATUS";
         }
@@ -95,6 +96,7 @@
         // Wallet
         public static class WalletErrors
         {
+            public const string NotFound            = "WALLET.NOT_FOUND";
             public const string InsufficientBalance = "WALLET.INSUFFICIENT_BALANCE";
             public const string TransactionFailed   = "WALLET.TRANSACTION_FAILED";
             public const string InvalidAmount       = "WALLET.INVALID_AMOUNT";
@@ -107,6 +109,12 @@
             public const string AlreadyExists = "SHOP.ALREADY_EXISTS";
             public const string Suspended     = "SHOP.SUSPENDED";
             public const string NotVerified   = "SHOP.NOT_VERIFIED";
+        }
+
+        public static class WithdrawalErrors
+        {
+            public const string NotFound      = "WITHDRAWAL.NOT_FOUND";
+            public const string InvalidStatus = "WITHDRAWAL.INVALID_STATUS";
         }
 
         // Validation

@@ -40,6 +40,8 @@
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddScoped<ISellerRepository, SellerRepository>();
             services.AddScoped<IAdminUserRepository, AdminUserRepository>();
+            services.AddScoped<IWithdrawalRepository, WithdrawalRepository>(); 
+            services.AddScoped<ISellerWalletRepository, SellerWalletRepository>();
 
             // External Services
             services.AddScoped<IEmailService, EmailService>();

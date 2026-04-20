@@ -20,7 +20,9 @@
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<Payment> Payments => Set<Payment>();
         public DbSet<Product> Products => Set<Product>();
-
+        public DbSet<SellerWithdrawalRequest> SellerWithdrawalRequests => Set<SellerWithdrawalRequest>();
+        public DbSet<SellerWallet> SellerWallets => Set<SellerWallet>();
+        public DbSet<SellerWalletTransaction> SellerWalletTransactions => Set<SellerWalletTransaction>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

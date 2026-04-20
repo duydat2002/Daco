@@ -55,7 +55,7 @@
                 CreatedAt = DateTime.UtcNow
             };
 
-            shop.Metrics = ShopMetrics.CreateEmpty(shop.Id);
+            shop.ShopMetrics = ShopMetrics.CreateEmpty(shop.Id);
 
             shop.AddDomainEvent(new ShopCreatedEvent(shop.Id, sellerId));
 
@@ -100,7 +100,7 @@
         {
             Guard.AgainstNull(address, nameof(address));
 
-            var activeOfType = _addresses
+            var activeOfType = _shopAddresses
                 .Where(a => !a.IsDeleted && a.AddressType == address.AddressType)
                 .ToList();
 
@@ -118,7 +118,7 @@
                     existing.RemoveDefault();
             }
 
-            _addresses.Add(address);
+            _shopAddresses.Add(address);
             UpdatedAt = DateTime.UtcNow;
         }
 
@@ -144,7 +144,7 @@
         {
             var address = GetActiveAddress(addressId);
 
-            foreach (var a in _addresses.Where(a => !a.IsDeleted && a.AddressType == address.AddressType && a.IsDefault))
+            foreach (var a in _shopAddresses.Where(a => !a.IsDeleted && a.AddressType == address.AddressType && a.IsDefault))
                 a.RemoveDefault();
 
             address.SetAsDefault();
@@ -161,7 +161,7 @@
             // Tự động set default cho address tiếp theo cùng loại
             if (wasDefault)
             {
-                var next = _addresses
+                var next = _shopAddresses
                     .FirstOrDefault(a => !a.IsDeleted && a.AddressType == address.AddressType);
                 next?.SetAsDefault();
             }
@@ -214,11 +214,11 @@
         public bool IsActive => Status == ShopStatus.Active;
 
         public ShopAddress? GetDefaultAddress(ShopAddressType type)
-            => _addresses.FirstOrDefault(a => !a.IsDeleted && a.AddressType == type && a.IsDefault);
+            => _shopAddresses.FirstOrDefault(a => !a.IsDeleted && a.AddressType == type && a.IsDefault);
 
         private ShopAddress GetActiveAddress(Guid addressId)
         {
-            var address = _addresses.FirstOrDefault(a => a.Id == addressId && !a.IsDeleted);
+            var address = _shopAddresses.FirstOrDefault(a => a.Id == addressId && !a.IsDeleted);
             Guard.Against(address is null, "Address not found");
             return address!;
         }

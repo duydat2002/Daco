@@ -298,6 +298,8 @@
             UpdatedAt = DateTime.UtcNow;
 
             RecordHistory(Status, note: "Refund completed");
+
+            AddDomainEvent(new OrderRefundCompletedEvent(Id, UserId, ShopId, TotalAmount));
         }
 
         // Notes

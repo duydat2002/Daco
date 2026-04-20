@@ -23,5 +23,43 @@
         public DateTime?        UpdatedAt         { get; private set; }
 
         protected SellerWithdrawalRequest() { }
+
+        public void Approve(Guid approvedBy, string? adminNote = null)
+        {
+            Guard.Against(Status != WithdrawalStatus.Pending, "Only pending withdrawals can be approved");
+
+            Status = WithdrawalStatus.Approved;
+            ApprovedBy = approvedBy;
+            ApprovedAt = DateTime.UtcNow;
+            AdminNote = adminNote;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Reject(string reason, string? adminNote = null)
+        {
+            Guard.Against(
+                Status != WithdrawalStatus.Pending && Status != WithdrawalStatus.Approved,
+                "Cannot reject a withdrawal at this status");
+            Guard.AgainstNullOrEmpty(reason, nameof(reason));
+
+            Status = WithdrawalStatus.Rejected;
+            RejectedReason = reason;
+            AdminNote = adminNote;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Complete(string transactionCode, string? adminNote = null)
+        {
+            Guard.Against(
+                Status != WithdrawalStatus.Approved && Status != WithdrawalStatus.Processing,
+                "Only approved or processing withdrawals can be completed");
+            Guard.AgainstNullOrEmpty(transactionCode, nameof(transactionCode));
+
+            Status = WithdrawalStatus.Completed;
+            TransactionCode = transactionCode;
+            AdminNote = adminNote;
+            CompletedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }
