@@ -16,7 +16,7 @@
             _logger = logger;
         }
 
-        public async Task<ResponseDTO> IRequestHandler<RemoveProductCommand, ResponseDTO>.Handle(RemoveProductCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDTO> Handle(RemoveProductCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation(
                 "Admin {AdminId} remove product {ProductId}",

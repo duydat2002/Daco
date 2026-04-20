@@ -51,6 +51,7 @@ global using Daco.Domain.Shops.Enums;
 global using Daco.Domain.Shops.Entities;
 global using Daco.Domain.Shops.Events;
 global using Daco.Domain.Shops.ValueObjects;
+global using Daco.Domain.Sellers.Aggregates;
 global using Daco.Domain.Sellers.Events;
 global using Daco.Domain.Sellers.Entities;
 global using Daco.Domain.Categories.Enums;
