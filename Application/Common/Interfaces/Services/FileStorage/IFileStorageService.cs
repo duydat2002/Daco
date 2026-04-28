@@ -9,6 +9,7 @@
             string contentType,
             CancellationToken cancellationToken = default);
         Task<string> UploadAvatarAsync(Guid userId, Stream fileStream, string fileName, string contentType, CancellationToken cancellationToken = default);
+        Task<string> UploadShopLogoAsync(Guid userId, Guid shopId, Stream fileStream, string fileName, string contentType, CancellationToken cancellationToken = default);
         Task DeleteAsync(string fileUrl, CancellationToken cancellationToken = default);
     }
 }

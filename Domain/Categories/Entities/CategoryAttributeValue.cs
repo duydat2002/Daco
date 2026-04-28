@@ -9,5 +9,24 @@
         public DateTime CreatedAt   { get; private set; }
 
         protected CategoryAttributeValue() { }
+
+        public static CategoryAttributeValue Create(
+            Guid attributeId,
+            string value,
+            int sortOrder = 0)
+        {
+            Guard.AgainstNullOrEmpty(value, nameof(value));
+            Guard.Against(attributeId == Guid.Empty, "AttributeId is required");
+
+            return new CategoryAttributeValue
+            {
+                Id = Guid.NewGuid(),
+                AttributeId = attributeId,
+                Value = value.Trim(),
+                SortOrder = sortOrder,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+        }
     }
 }

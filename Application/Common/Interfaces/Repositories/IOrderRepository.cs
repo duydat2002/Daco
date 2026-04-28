@@ -6,6 +6,5 @@
         Task<Order?> GetByOrderCodeAsync(string orderCode, CancellationToken cancellationToken = default);
         Task AddAsync(Order order, CancellationToken cancellationToken = default);
         Task UpdateAsync(Order order, CancellationToken cancellationToken = default);
-
     }
 }

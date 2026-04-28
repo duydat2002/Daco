@@ -42,6 +42,12 @@
             services.AddScoped<IAdminUserRepository, AdminUserRepository>();
             services.AddScoped<IWithdrawalRepository, WithdrawalRepository>(); 
             services.AddScoped<ISellerWalletRepository, SellerWalletRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IShopRepository, ShopRepository>();
+            services.AddScoped<IBrandRepository, BrandRepository>();
+            services.AddScoped<ICategoryAttributeRepository, CategoryAttributeRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
             // External Services
             services.AddScoped<IEmailService, EmailService>();

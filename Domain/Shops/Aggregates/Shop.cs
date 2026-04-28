@@ -12,7 +12,7 @@
         public string?     Description { get; private set; }
         public string?     ShopEmail   { get; private set; }
         public string?     ShopPhone   { get; private set; }
-        public ShopStatus  Status  { get; private set; }
+        public ShopStatus  Status      { get; private set; }
         public ShopType    ShopType    { get; private set; }
         public bool        IsOfficial  { get; private set; }
         public DateTime    JoinedAt    { get; private set; }
@@ -107,7 +107,6 @@
             Guard.Against(activeOfType.Count >= 5,
                 $"Cannot have more than 5 active {address.AddressType} addresses");
 
-            // Nếu chưa có address nào cùng loại thì tự đặt default
             if (!activeOfType.Any())
             {
                 address.SetAsDefault();

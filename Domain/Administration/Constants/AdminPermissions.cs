@@ -27,6 +27,22 @@
             public const string Reinstate = "sellers.reinstate";
         }
 
+        public static class Categories
+        {
+            public const string View   = "categories.view";
+            public const string Create = "categories.create";
+            public const string Update = "categories.update";
+            public const string Delete = "categories.delete";
+        }
+
+        public static class Brands
+        {
+            public const string View   = "brands.view";
+            public const string Create = "brands.create";
+            public const string Update = "brands.update";
+            public const string Delete = "brands.delete";
+        }
+
         public static class Products
         {
             public const string View       = "products.view";

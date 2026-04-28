@@ -77,7 +77,7 @@
             CancellationToken cancellationToken = default)
         {
             var extension = Path.GetExtension(fileName).ToLowerInvariant();
-            var key = $"avatars/{userId}/{Guid.NewGuid()}{extension}";
+            var key = $"users/{userId}/avatars/{Guid.NewGuid()}{extension}";
 
             _logger.LogInformation("Uploading avatar to R2: {Key}", key);
 
@@ -96,6 +96,38 @@
             var url = $"{_settings.PublicUrl.TrimEnd('/')}/{key}";
 
             _logger.LogInformation("Avatar uploaded successfully: {Url}", url);
+
+            return url;
+        }
+
+        public async Task<string> UploadShopLogoAsync(
+            Guid userId, 
+            Guid shopId, 
+            Stream fileStream, 
+            string fileName, 
+            string contentType, 
+            CancellationToken cancellationToken = default)
+        {
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+            var key = $"users/{userId}/shops/{shopId}/logos/{Guid.NewGuid()}{extension}";
+
+            _logger.LogInformation("Uploading shop logo to R2: {Key}", key);
+
+            var request = new PutObjectRequest
+            {
+                BucketName = _settings.BucketName,
+                Key = key,
+                InputStream = fileStream,
+                ContentType = contentType,
+                DisablePayloadSigning = true,
+                Headers = { CacheControl = "public, max-age=2592000" }
+            };
+
+            await _s3Client.PutObjectAsync(request, cancellationToken);
+
+            var url = $"{_settings.PublicUrl.TrimEnd('/')}/{key}";
+
+            _logger.LogInformation("Shop logo uploaded successfully: {Url}", url);
 
             return url;
         }

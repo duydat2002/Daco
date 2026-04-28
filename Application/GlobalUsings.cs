@@ -93,3 +93,6 @@ global using Daco.Domain.Contents.Enums;
 global using Daco.Application.Administration.WithdrawalManagement.DTOs;
 global using Daco.Application.Administration.WithdrawalManagement.Queries;
 global using Daco.Domain.Orders.Constants;
+global using Daco.Domain.Brands.Aggregates;
+global using Daco.Application.Administration.CategoryManagement.DTOs;
+global using Daco.Application.Administration.CategoryManagement.Queries;

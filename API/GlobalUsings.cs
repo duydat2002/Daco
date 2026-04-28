@@ -26,3 +26,6 @@ global using Daco.Application.Administration.SellerManagement;
 global using Daco.Application.Administration.ProductManagement.Commands;
 global using Daco.Application.Administration.OrderManagement.Commands;
 global using Daco.Application.Administration.WithdrawalManagement.Commands;
+global using Daco.Application.Shops.Commands;
+global using Daco.Application.Administration.BrandManagement.Commands;
+global using Daco.Application.Administration.CategoryManagement.Commands;

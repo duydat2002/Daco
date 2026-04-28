@@ -71,6 +71,36 @@
             public const string AlreadyDefault = "BANK_ACCOUNT.ALREADY_DEFAULT";
         }
 
+        // Categories
+        public static class CategoryErrors
+        {
+            public const string NotFound                    = "CATEGORY.NOT_FOUND";
+            public const string AlreadyExists               = "CATEGORY.ALREADY_EXISTS";
+            public const string SlugAlreadyExists           = "CATEGORY.SLUG_ALREADY_EXISTS";
+            public const string InvalidStatus               = "CATEGORY.INVALID_STATUS";
+            public const string LimitExceeded               = "CATEGORY.LIMIT_EXCEEDED";
+            public const string InvalidLevel                = "CATEGORY.INVALID_LEVEL";
+            public const string HasChildren                 = "CATEGORY.HAS_CHILDREN";
+            public const string HasProducts                 = "CATEGORY.HAS_PRODUCTS";
+            public const string IsInactive                  = "CATEGORY.IS_INACTIVE";
+            public const string AttributeNotFound           = "CATEGORY.ATTRIBUTE_NOT_FOUND";
+            public const string AttributeSlugAlreadyExists  = "CATEGORY.ATTRIBUTE_SLUG_ALREADY_EXISTS";
+            public const string InvalidInputType            = "CATEGORY.INVALID_INPUT_TYPE";
+            public const string AttributeValueAlreadyExists = "CATEGORY.ATTRIBUTE_VALUE_ALREADY_EXISTS";
+            public const string NotLeaf                     = "CATEGORY.NOT_LEAF";
+        }
+
+        // Brands
+        public static class BrandErrors
+        {
+            public const string NotFound          = "BRAND.NOT_FOUND";
+            public const string NameAlreadyExists = "BRAND.NAME_ALREADY_EXISTS";
+            public const string SlugAlreadyExists = "BRAND.SLUG_ALREADY_EXISTS";
+            public const string HasProducts       = "BRAND.HAS_PRODUCTS";
+            public const string AlreadyAssigned   = "BRAND.ALREADY_ASSIGNED";
+            public const string NotAssigned       = "BRAND.NOT_ASSIGNED";
+        }
+
         // Products
         public static class ProductErrors
         {
@@ -105,10 +135,11 @@
         // Shop
         public static class ShopErrors
         {
-            public const string NotFound      = "SHOP.NOT_FOUND";
-            public const string AlreadyExists = "SHOP.ALREADY_EXISTS";
-            public const string Suspended     = "SHOP.SUSPENDED";
-            public const string NotVerified   = "SHOP.NOT_VERIFIED";
+            public const string NotFound             = "SHOP.NOT_FOUND";
+            public const string AlreadyExists        = "SHOP.ALREADY_EXISTS";
+            public const string Suspended            = "SHOP.SUSPENDED";
+            public const string NotVerified          = "SHOP.NOT_VERIFIED";
+            public const string AddressLimitExceeded = "SHOP.ADDRESS_LIMIT_EXCEEDED";
         }
 
         public static class WithdrawalErrors

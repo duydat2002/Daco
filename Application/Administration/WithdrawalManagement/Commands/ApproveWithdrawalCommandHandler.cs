@@ -4,12 +4,12 @@
     {
         private readonly IWithdrawalRepository _withdrawalRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger _logger;
+        private readonly ILogger<ApproveWithdrawalCommandHandler> _logger;
 
         public ApproveWithdrawalCommandHandler(
             IWithdrawalRepository withdrawalRepository,
             IUnitOfWork unitOfWork,
-            ILogger logger)
+            ILogger<ApproveWithdrawalCommandHandler> logger)
         {
             _withdrawalRepository = withdrawalRepository;
             _unitOfWork = unitOfWork;

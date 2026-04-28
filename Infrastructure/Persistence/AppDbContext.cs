@@ -23,6 +23,9 @@
         public DbSet<SellerWithdrawalRequest> SellerWithdrawalRequests => Set<SellerWithdrawalRequest>();
         public DbSet<SellerWallet> SellerWallets => Set<SellerWallet>();
         public DbSet<SellerWalletTransaction> SellerWalletTransactions => Set<SellerWalletTransaction>();
+        public DbSet<Category> Categories => Set<Category>();
+        public DbSet<CategoryAttribute> CategoryAttributes => Set<CategoryAttribute>();
+        public DbSet<CategoryAttributeValue> CategoryAttributeValues => Set<CategoryAttributeValue>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
