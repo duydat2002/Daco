@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Onboarding
 {
     public record OnboardSellerCommand : IRequest<ResponseDTO>
     {

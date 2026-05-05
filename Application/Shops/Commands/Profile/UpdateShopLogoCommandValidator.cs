@@ -1,11 +1,11 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Profile
 {
     public class UpdateShopLogoCommandValidator : BaseValidator<UpdateShopLogoCommand>
     {
         private static readonly string[] AllowedTypes = ["image/jpeg", "image/png", "image/webp"];
         private const long MaxFileSize = 2 * 1024 * 1024; // 5MB
 
-        public UpdateShopLogoCommandValidator() 
+        public UpdateShopLogoCommandValidator()
         {
             RuleFor(x => x.FileSize)
                 .GreaterThan(0).WithMessage("File is empty")

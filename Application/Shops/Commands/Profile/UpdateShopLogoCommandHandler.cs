@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Profile
 {
     public class UpdateShopLogoCommandHandler : IRequestHandler<UpdateShopLogoCommand, ResponseDTO>
     {

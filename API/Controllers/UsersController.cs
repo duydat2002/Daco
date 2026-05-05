@@ -1,4 +1,6 @@
-﻿namespace Daco.API.Controllers
+﻿
+
+namespace Daco.API.Controllers
 {
     [ApiController]
     [Route("api/users")]

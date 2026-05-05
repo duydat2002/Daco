@@ -1,8 +1,8 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Addresses
 {
     public class AddShopAddressCommandValidator : BaseValidator<AddShopAddressCommand>
     {
-        public AddShopAddressCommandValidator() 
+        public AddShopAddressCommandValidator()
         {
             RuleFor(x => x.Label)
                 .MaximumLength(100)

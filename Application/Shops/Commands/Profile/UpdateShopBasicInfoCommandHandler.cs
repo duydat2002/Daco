@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Profile
 {
     public class UpdateShopBasicInfoCommandHandler : IRequestHandler<UpdateShopBasicInfoCommand, ResponseDTO>
     {
@@ -55,7 +55,7 @@
                     ErrorCodes.ShopErrors.Suspended,
                     ex.Message);
             }
-                
+
             _unitOfWork.TrackEntity(shop);
 
             _logger.LogInformation(

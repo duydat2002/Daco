@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Profile
 {
     public class UpdateShopBasicInfoCommandValidator : BaseValidator<UpdateShopBasicInfoCommand>
     {

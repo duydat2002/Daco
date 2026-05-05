@@ -1,6 +1,6 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Profile
 {
-    public record UpdateShopBasicInfoCommand :IRequest<ResponseDTO>
+    public record UpdateShopBasicInfoCommand : IRequest<ResponseDTO>
     {
         [JsonIgnore]
         public Guid    UserId      { get; init; }

@@ -1,9 +1,10 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Uploads.Commands
 {
-    public record UpdateShopLogoCommand : IRequest<ResponseDTO>
+    public class UploadVideoCommand : IRequest<ResponseDTO>
     {
         [JsonIgnore]
         public Guid   UserId      { get; init; }
+        public string Type        { get; init; }
         [JsonIgnore]
         public Stream FileStream  { get; init; } = null!;
         public string FileName    { get; init; } = null!;

@@ -69,6 +69,19 @@
             await _s3Client.DeleteObjectAsync(request, cancellationToken);
         }
 
+        public async Task CopyAsync(string sourceKey, string destinationKey)
+        {
+            var request = new CopyObjectRequest
+            {
+                SourceBucket = _settings.BucketName,
+                SourceKey = sourceKey,
+                DestinationBucket = _settings.BucketName,
+                DestinationKey = destinationKey
+            };
+
+            await _s3Client.CopyObjectAsync(request);
+        }
+
         public async Task<string> UploadAvatarAsync(
             Guid userId,
             Stream fileStream,

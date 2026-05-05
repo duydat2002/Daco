@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Addresses
 {
     public record AddShopAddressCommand : IRequest<ResponseDTO>
     {

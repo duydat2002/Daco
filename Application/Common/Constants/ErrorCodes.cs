@@ -138,6 +138,7 @@
             public const string NotFound             = "SHOP.NOT_FOUND";
             public const string AlreadyExists        = "SHOP.ALREADY_EXISTS";
             public const string Suspended            = "SHOP.SUSPENDED";
+            public const string Closed               = "SHOP.CLOSED";
             public const string NotVerified          = "SHOP.NOT_VERIFIED";
             public const string AddressLimitExceeded = "SHOP.ADDRESS_LIMIT_EXCEEDED";
         }

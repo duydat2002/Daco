@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Onboarding
 {
     public class OnboardSellerCommandHandler : IRequestHandler<OnboardSellerCommand, ResponseDTO>
     {
@@ -9,8 +9,8 @@
 
         public OnboardSellerCommandHandler(
             IUserRepository userRepository,
-            ISellerRepository sellerRepository, 
-            IUnitOfWork unitOfWork, 
+            ISellerRepository sellerRepository,
+            IUnitOfWork unitOfWork,
             ILogger<OnboardSellerCommand> logger)
         {
             _userRepository = userRepository;

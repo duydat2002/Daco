@@ -49,6 +49,74 @@
 
         protected Product() { }
 
+        public static Product Create(
+            Guid shopId,
+            Guid categoryId,
+            string productName,
+            string productSlug,
+            decimal weight,
+            string? description = null,
+            Guid? brandId = null,
+            decimal? basePrice = null,
+            decimal? compareAtPrice = null,
+            int stockQuantity = 0,
+            string? sku = null,
+            string? gtin = null,
+            bool isPreOrder = false,
+            int preOrderLeadTime = 0,
+            decimal length = 0,
+            decimal width = 0,
+            decimal height = 0,
+            string? metaTitle = null,
+            string? metaDescription = null,
+            string? metaKeywords = null)
+        {
+            Guard.Against(shopId == Guid.Empty, "ShopId is required");
+            Guard.Against(categoryId == Guid.Empty, "CategoryId is required");
+            Guard.AgainstNullOrEmpty(productName, nameof(productName));
+            Guard.AgainstNullOrEmpty(productSlug, nameof(productSlug));
+            Guard.AgainstNegativeOrZero(weight, nameof(weight));
+
+            if (basePrice.HasValue)
+                Guard.AgainstNegative(basePrice.Value, nameof(basePrice));
+
+            if (compareAtPrice.HasValue)
+            {
+                Guard.AgainstNegative(compareAtPrice.Value, nameof(compareAtPrice));
+                Guard.Against(
+                    basePrice.HasValue && compareAtPrice.Value <= basePrice.Value,
+                    "Compare at price must be greater than base price");
+            }
+
+            return new Product
+            {
+                Id = Guid.NewGuid(),
+                ShopId = shopId,
+                CategoryId = categoryId,
+                ProductName = productName.Trim(),
+                ProductSlug = productSlug.Trim().ToLowerInvariant(),
+                Description = description,
+                BrandId = brandId ?? Guid.Empty,
+                BasePrice = basePrice,
+                CompareAtPrice = compareAtPrice,
+                StockQuantity = stockQuantity,
+                Sku = sku,
+                Gtin = gtin,
+                Status = ProductStatus.Pending,
+                HasVariants = false,
+                IsPreOrder = isPreOrder,
+                PreOrderLeadTime = preOrderLeadTime,
+                Weight = weight,
+                Length = length,
+                Width = width,
+                Height = height,
+                MetaTitle = metaTitle,
+                MetaDescription = metaDescription,
+                MetaKeywords = metaKeywords,
+                CreatedAt = DateTime.UtcNow
+            };
+        }
+
         public void Approve(Guid approvedBy)
         {
             Guard.Against(Status != ProductStatus.Pending, "Only pending products can be approved");
@@ -92,5 +160,6 @@
 
             AddDomainEvent(new ProductRemovedEvent(Id, ShopId, removedBy, reason));
         }
+
     }
 }

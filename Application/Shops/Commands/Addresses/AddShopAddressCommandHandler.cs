@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Shops.Commands
+﻿namespace Daco.Application.Shops.Commands.Addresses
 {
     public class AddShopAddressCommandHandler : IRequestHandler<AddShopAddressCommand, ResponseDTO>
     {
@@ -28,7 +28,7 @@
             var seller = await _sellerRepository.GetByUserIdAsync(request.UserId, cancellationToken);
 
             if (seller is null || !seller.IsActive)
-                return ResponseDTO.Failure(ErrorCodes.ShopErrors.NotFound, "Seller not found or not active");
+                return ResponseDTO.Failure(ErrorCodes.SellerErrors.NotFound, "Seller not found or not active");
 
             var shop = await _shopRepository.GetBySellerIdAsync(seller.Id, cancellationToken);
 
@@ -36,7 +36,7 @@
                 return ResponseDTO.Failure(ErrorCodes.ShopErrors.NotFound, "Shop not found");
 
             if (shop.Status == ShopStatus.Closed)
-                return ResponseDTO.Failure(ErrorCodes.ShopErrors.NotFound, "Cannot add address to a closed shop");
+                return ResponseDTO.Failure(ErrorCodes.ShopErrors.Closed, "Cannot add address to a closed shop");
 
             var address = ShopAddress.Create(
                 shopId: shop.Id,
