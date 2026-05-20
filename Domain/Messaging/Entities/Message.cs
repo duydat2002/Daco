@@ -4,7 +4,7 @@
     {
         public Guid        ConversationId { get; private set; }
         public SenderType  SenderType     { get; private set; }
-        public Guid        SenderId       { get; private set; }
+        public Guid?       SenderId       { get; private set; }
         public MessageType MessageType    { get; private set; }
         public string?     Content        { get; private set; }
         public string?     Attachments    { get; private set; } //Array of {type, url, metadata}

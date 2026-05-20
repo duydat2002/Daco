@@ -11,6 +11,7 @@
             _mediator = mediator;
         }
 
+        [Authorize]
         [HttpPost("image")]
         public async Task<ActionResult<ResponseDTO>> UploadImage(
             IFormFile image,
@@ -30,6 +31,7 @@
             return HandleResult(await _mediator.Send(command, cancellationToken));
         }
 
+        [Authorize]
         [HttpPost("video")]
         public async Task<ActionResult<ResponseDTO>> UploadVideo(
             IFormFile video,

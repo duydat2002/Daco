@@ -8,7 +8,7 @@
         public Guid?     VariantId     { get; private set; }
         public int       Quantity      { get; private set; }
         public bool      IsSelected    { get; private set; }
-        public decimal   PriceSnapshot { get; private set; }
+        public decimal?  PriceSnapshot { get; private set; }
         public DateTime  AddedAt       { get; private set; }
         public DateTime? UpdatedAt     { get; private set; }
 

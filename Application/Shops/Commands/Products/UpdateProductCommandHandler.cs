@@ -1,6 +1,8 @@
-﻿namespace Daco.Application.Shops.Commands.Products
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace Daco.Application.Shops.Commands.Products
 {
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, ResponseDTO>
+    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, ResponseDTO>
     {
         private readonly ISellerRepository _sellerRepository;
         private readonly IShopRepository _shopRepository;
@@ -9,9 +11,9 @@
         private readonly IBrandRepository _brandRepository;
         private readonly IFileStorageService _fileStorageService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<CreateProductCommandHandler> _logger;
+        private readonly ILogger<UpdateProductCommandHandler> _logger;
 
-        public CreateProductCommandHandler(
+        public UpdateProductCommandHandler(
             ISellerRepository sellerRepository,
             IShopRepository shopRepository,
             IProductRepository productRepository,
@@ -19,7 +21,7 @@
             IBrandRepository brandRepository,
             IFileStorageService fileStorageService,
             IUnitOfWork unitOfWork,
-            ILogger<CreateProductCommandHandler> logger)
+            ILogger<UpdateProductCommandHandler> logger)
         {
             _sellerRepository = sellerRepository;
             _shopRepository = shopRepository;
@@ -31,7 +33,7 @@
             _logger = logger;
         }
 
-        public async Task<ResponseDTO> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDTO> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("User {UserId} creating product '{ProductName}'",
                 request.UserId, request.ProductName);
@@ -46,6 +48,13 @@
 
             if (shop.Status != ShopStatus.Active)
                 return ResponseDTO.Failure(ErrorCodes.ShopErrors.Suspended, "Shop is not active");
+
+            var product = await _productRepository.GetByIdWithMediasAsync(request.ProductId, cancellationToken);
+            if (product is null || product.DeletedAt != null)
+                return ResponseDTO.Failure(ErrorCodes.ProductErrors.NotFound, "Product not found");
+
+            if (product.ShopId != shop.Id)
+                return ResponseDTO.Failure(ErrorCodes.AuthErrors.Unauthorized, "You do not have permission to update this product");
 
             var category = await _categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
             if (category is null || !category.IsActive)
@@ -62,7 +71,13 @@
                     return ResponseDTO.Failure(ErrorCodes.BrandErrors.NotFound, "Brand not found");
             }
 
-            var product = Product.Create(
+            if (!request.Images.Any())
+                return ResponseDTO.Failure(ErrorCodes.ProductErrors.MustLeastOneImage, "Product must have at least 1 image");
+
+            if (!request.Images.Any(i => i.SortOrder == 0))
+                return ResponseDTO.Failure(ErrorCodes.ProductErrors.MustHaveOrderZero, "Must have an image with sortOrder = 0");
+
+            product.Update(
                 shopId: shop.Id,
                 categoryId: request.CategoryId,
                 productName: request.ProductName,
@@ -84,49 +99,100 @@
                 metaDescription: request.MetaDescription,
                 metaKeywords: request.MetaKeywords);
 
-            if (request.Images.Any())
+            await _productRepository.AddAsync(product, cancellationToken);
+
+            #region Images
+            var existingImages = product.ProductImages.ToList();
+
+            var keepImageIds = request.Images
+                .Where(i => i.Id.HasValue)
+                .Select(i => i.Id!.Value)
+                .ToHashSet();
+
+            var imagesToRemove = existingImages
+                .Where(i => !keepImageIds.Contains(i.Id))
+                .ToList();
+
+            foreach (var image in imagesToRemove)
             {
-                var sortedImages = request.Images.OrderBy(i => i.SortOrder).ToList();
-
-                foreach (var imageInput in sortedImages)
+                try
                 {
-                    try
-                    {
-                        var permanentUrl = await _fileStorageService.MoveProductMediaAsync(
-                            "image",
-                            imageInput.TempUrl,
-                            shop.Id,
-                            product.Id,
-                            cancellationToken);
-
-                        var image = ProductImage.Create(
-                            productId: product.Id,
-                            imageUrl: permanentUrl,
-                            sortOrder: imageInput.SortOrder);
-
-                        product.AddImage(image);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Failed to move image {TempUrl} for product {ProductId}",
-                            imageInput.TempUrl, product.Id);
-                    }
+                    await _fileStorageService.DeleteAsync(image.ImageUrl, cancellationToken);
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to delete image {ImageUrl}", image.ImageUrl);
+                }
+
+                product.RemoveImage(image.Id);
             }
 
-            if (request.Video != null)
+            foreach (var imageInput in request.Images.Where(i => i.Id.HasValue))
+            {
+                var existing = existingImages.FirstOrDefault(i => i.Id == imageInput.Id!.Value);
+                if (existing is null) continue;
+
+                if (existing.SortOrder != imageInput.SortOrder)
+                    product.UpdateImageSortOrder(existing.Id, imageInput.SortOrder);
+            }
+
+            foreach (var imageInput in request.Images.Where(i => !i.Id.HasValue))
+            {
+                try
+                {
+                    var permanentUrl = await _fileStorageService.MoveProductMediaAsync(
+                        "image",
+                        imageInput.TempUrl, 
+                        shop.Id,
+                        product.Id,
+                        cancellationToken);
+
+                    var image = ProductImage.Create(
+                        productId: product.Id,
+                        imageUrl: permanentUrl,
+                        sortOrder: imageInput.SortOrder);
+
+                    product.AddImage(image);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to move image {TempUrl} for product {ProductId}",
+                        imageInput.TempUrl, product.Id);
+                }
+            }
+            #endregion
+
+            #region Video
+            var currentVideo = product.ProductVideos.FirstOrDefault();
+            var existingVideo = product.ProductVideos.FirstOrDefault(x => x.VideoUrl == request.Video?.TempUrl);
+
+            if (existingVideo != null && currentVideo != null)
+            {
+                try
+                {
+                    await _fileStorageService.DeleteAsync(currentVideo.VideoUrl, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to delete videos {VideoId}", currentVideo.Id);
+                }
+
+                product.RemoveVideo(currentVideo.Id);
+            }
+
+            if (!string.IsNullOrEmpty(request.Video?.TempUrl))
             {
                 try
                 {
                     var permanentVideoUrl = await _fileStorageService.MoveProductMediaAsync(
-                        "video",
+                        "image",
                         request.Video.TempUrl,
                         shop.Id,
                         product.Id,
                         cancellationToken);
 
                     var permanentThumbUrl = await _fileStorageService.MoveProductMediaAsync(
-                        "video",
+                        "image",
                         request.Video.TempThumbUrl,
                         shop.Id,
                         product.Id,
@@ -145,13 +211,12 @@
                         request.Video.TempUrl, product.Id);
                 }
             }
-
-            await _productRepository.AddAsync(product, cancellationToken);
+            #endregion
 
             _unitOfWork.TrackEntity(shop);
 
-            _logger.LogInformation("Product {ProductId} created for shop {ShopId}",
-                product.Id, shop.Id);
+            _logger.LogInformation("Product {ProductId} updated by user {UserId}",
+                product.Id, request.UserId);
 
             return ResponseDTO.Success(new
             {
@@ -172,7 +237,7 @@
                     i.SortOrder
                 }),
                 product.CreatedAt
-            }, "Product created successfully. Awaiting admin review.");
+            }, "Product updated successfully");
         }
     }
 }

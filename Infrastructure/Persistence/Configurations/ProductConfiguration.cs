@@ -66,10 +66,6 @@
                 .HasConversion<int>()
                 .HasDefaultValue(ProductStatus.Draft);
 
-            builder.Property(a => a.CategoryId)
-                .HasColumnName("category_id")
-                .IsRequired(false);
-
             builder.Property(a => a.HasVariants)
                 .HasColumnName("has_variants")
                 .HasDefaultValue(false);

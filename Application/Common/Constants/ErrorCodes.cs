@@ -110,6 +110,8 @@
             public const string InvalidPrice      = "PRODUCT.INVALID_PRICE";
             public const string InvalidStatus     = "PRODUCT.INVALID_STATUS";
             public const string AlreadyExists     = "PRODUCT.ALREADY_EXISTS";
+            public const string MustLeastOneImage = "PRODUCT.MUST_LEAST_ONE_IMAGE";
+            public const string MustHaveOrderZero = "PRODUCT.MUST_HAVE_ORDER_ZERO";
         }
 
         // Orders

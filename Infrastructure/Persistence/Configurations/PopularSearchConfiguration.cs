@@ -4,7 +4,7 @@
     {
         public void Configure(EntityTypeBuilder<PopularSearch> builder)
         {
-            builder.ToTable("admin_activity_logs");
+            builder.ToTable("popular_searches");
 
             builder.HasKey(a => a.Id);
             builder.Property(a => a.Id)

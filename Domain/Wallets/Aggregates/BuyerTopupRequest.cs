@@ -19,7 +19,7 @@
         public string?     TransferReference    { get; private set; }
         public string?     TransferProofUrl     { get; private set; }
         public TopupStatus Status               { get; private set; }
-        public DateTime    ExpiresAt            { get; private set; }
+        public DateTime?   ExpiresAt            { get; private set; }
         public DateTime?   CreatedAt            { get; private set; }
         public DateTime?   UpdatedAt            { get; private set; }
         public DateTime?   CompletedAt          { get; private set; }

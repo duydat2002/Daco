@@ -42,7 +42,6 @@
 
             builder.Property(a => a.IpAddress)
                 .HasColumnName("ip_address")
-                .HasMaxLength(50)
                 .IsRequired();
 
             // Status

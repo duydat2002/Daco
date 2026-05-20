@@ -17,8 +17,8 @@
         public int?           Height         { get; private set; }
         public string?        TargetAudience { get; private set; } //{"user_type": "all", "location": "VN"}
         public bool           IsActive       { get; private set; }
-        public DateTime       StartDate      { get; private set; }
-        public DateTime       EndDate        { get; private set; }
+        public DateTime?      StartDate      { get; private set; }
+        public DateTime?      EndDate        { get; private set; }
         public int            ViewCount      { get; private set; }
         public int            ClickCount     { get; private set; }
         public string?        AltText        { get; private set; }

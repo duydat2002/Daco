@@ -15,7 +15,7 @@
         public ReturnStatus Status         { get; private set; }
         public Guid?        ReviewedBy     { get; private set; }
         public DateTime?    ReviewedAt     { get; private set; }
-        public string       RejectReason   { get; private set; }
+        public string?      RejectReason   { get; private set; }
         public DateTime     CreatedAt      { get; private set; }
         public DateTime?    UpdatedAt      { get; private set; }
         public DateTime?    ApprovedAt     { get; private set; }

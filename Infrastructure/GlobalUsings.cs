@@ -128,3 +128,4 @@ global using Daco.Application.Administration.CategoryManagement.Queries;
 global using Daco.Infrastructure.Persistence.Repositories.Brands;
 global using Daco.Infrastructure.Persistence.Repositories.Categories;
 global using Daco.Infrastructure.Persistence.Repositories.CategoryAttributes;
+global using Daco.Application.Common.Constants;

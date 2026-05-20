@@ -37,6 +37,14 @@
             return await _context.Products
                 .FirstOrDefaultAsync(a => a.Id == id && a.DeletedAt == null, cancellationToken);
         }
+
+        public async Task<Product?> GetByIdWithMediasAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductVideos)
+                .FirstOrDefaultAsync(p => p.Id == id && p.DeletedAt == null, cancellationToken);
+        }
         #endregion
     }
 }

@@ -31,7 +31,7 @@
             builder.Property(a => a.Severity)
                 .HasColumnName("severity")
                 .HasMaxLength(20)
-                .IsRequired(false);
+                .IsRequired();
 
             builder.Property(a => a.AutoHideProduct)
                 .HasColumnName("auto_hide_product")

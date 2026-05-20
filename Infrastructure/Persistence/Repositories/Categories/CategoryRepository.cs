@@ -1,4 +1,6 @@
 ﻿
+using Org.BouncyCastle.Crypto;
+
 namespace Daco.Infrastructure.Persistence.Repositories.Categories
 {
     public class CategoryRepository : ICategoryRepository
@@ -65,7 +67,7 @@ namespace Daco.Infrastructure.Persistence.Repositories.Categories
             CancellationToken cancellationToken = default)
         {
             return await RepositoryLogger.ExecuteAsync(_logger, new { ids },
-                () => _context.Set<Category>()
+                () => _context.Categories
                     .Where(c => ids.Contains(c.Id))
                     .ToListAsync(cancellationToken));
         }
@@ -78,6 +80,15 @@ namespace Daco.Infrastructure.Persistence.Repositories.Categories
         public Task<Category?> GetByOrderCodeAsync(string categoryId, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<Category?> GetByIdWithAttributesAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { id },
+            () => _context.Categories
+                .Include(c => c.CategoryAttributes.Where(a => a.IsActive))
+                .ThenInclude(a => a.CategoryAttributeValues.Where(v => v.IsActive))
+                .FirstOrDefaultAsync(c => c.Id == id, cancellationToken));
         }
 
         public Task UpdateAsync(Category order, CancellationToken cancellationToken = default)

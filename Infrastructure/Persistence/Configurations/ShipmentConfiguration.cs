@@ -112,7 +112,7 @@
 
             builder.HasIndex(a => new { a.OrderId, a.CreatedAt })
                 .IsDescending(false, true)
-                .HasDatabaseName("idx_shipments_order");
+                .HasDatabaseName("idx_shipments_shop");
 
             builder.HasIndex(a => a.TrackingNumber)
                 .HasDatabaseName("idx_shipments_tracking");

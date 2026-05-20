@@ -47,7 +47,6 @@
             var oldLogoUrl = shop.ShopLogo;
 
             var newLogoUrl = await _fileStorageService.UploadShopLogoAsync(
-                request.UserId,
                 shop.Id,
                 request.FileStream,
                 request.FileName,

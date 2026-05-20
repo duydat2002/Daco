@@ -24,13 +24,19 @@
         public string?                  MetaDescription  { get; init; }
         public string?                  MetaKeywords     { get; init; }
         public List<ProductImageInput>  Images           { get; init; } = new();
-        public string                   Video            { get; init; } = null!;
+        public ProductVideoInput?       Video            { get; init; } = new();
     }
 
     public record ProductImageInput
     {
         public Guid?  Id        { get; init; }
-        public string TempUrl   { get; init; } = null!; // URL từ bước upload temp
+        public string TempUrl   { get; init; } = null!; 
         public int    SortOrder { get; init; }
+    }
+
+    public record ProductVideoInput
+    {
+        public string TempUrl      { get; init; } = null!;
+        public string TempThumbUrl { get; init; } = null!;
     }
 }

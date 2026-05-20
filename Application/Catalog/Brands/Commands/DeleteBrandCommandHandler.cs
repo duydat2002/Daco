@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.BrandManagement.Commands
+﻿namespace Daco.Application.Catalog.Brands.Commands
 {
     public class DeleteBrandCommandHandler : IRequestHandler<DeleteBrandCommand, ResponseDTO>
     {

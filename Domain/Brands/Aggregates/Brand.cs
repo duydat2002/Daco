@@ -1,18 +1,20 @@
-﻿namespace Daco.Domain.Brands.Aggregates
+﻿using Daco.Domain.Products.Entities;
+
+namespace Daco.Domain.Brands.Aggregates
 {
     public class Brand : AggregateRoot
     {
         private readonly List<BrandCategory> _brandCategories = new();
 
-        public string    BrandName    { get; private set; }
-        public string    BrandSlug    { get; private set; }
-        public string?   Description  { get; private set; }
-        public string?   WebsiteUrl   { get; private set; }
-        public string?   LogoUrl      { get; private set; }
-        public string[]? SampleImages { get; private set; }
-        public bool      IsActive     { get; private set; }
-        public DateTime  CreatedAt    { get; private set; }
-        public DateTime? UpdatedAt    { get; private set; }
+        public string        BrandName    { get; private set; }
+        public string        BrandSlug    { get; private set; }
+        public string?       Description  { get; private set; }
+        public string?       WebsiteUrl   { get; private set; }
+        public string?       LogoUrl      { get; private set; }
+        public List<string>? SampleImages { get; private set; }
+        public bool          IsActive     { get; private set; }
+        public DateTime      CreatedAt    { get; private set; }
+        public DateTime?     UpdatedAt    { get; private set; }
 
         public IReadOnlyCollection<BrandCategory> BrandCategories => _brandCategories.AsReadOnly();
 
@@ -22,15 +24,10 @@
             string brandName,
             string brandSlug,
             string? description = null,
-            string? websiteUrl = null,
-            string? logoUrl = null,
-            string[]? sampleImages = null)
+            string? websiteUrl = null)
         {
             Guard.AgainstNullOrEmpty(brandName, nameof(brandName));
             Guard.AgainstNullOrEmpty(brandSlug, nameof(brandSlug));
-            Guard.Against(
-                sampleImages is { Length: > 10 },
-                "Sample images must not exceed 10 items");
 
             return new Brand
             {
@@ -39,8 +36,6 @@
                 BrandSlug = brandSlug.Trim().ToLowerInvariant(),
                 Description = description,
                 WebsiteUrl = websiteUrl,
-                LogoUrl = logoUrl,
-                SampleImages = sampleImages,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
@@ -52,12 +47,12 @@
             string? description = null,
             string? websiteUrl = null,
             string? logoUrl = null,
-            string[]? sampleImages = null)
+            List<string>? sampleImages = null)
         {
             Guard.AgainstNullOrEmpty(brandName, nameof(brandName));
             Guard.AgainstNullOrEmpty(brandSlug, nameof(brandSlug));
             Guard.Against(
-                sampleImages is { Length: > 10 },
+                sampleImages is { Count: > 10 },
                 "Sample images must not exceed 10 items");
 
             BrandName = brandName.Trim();
@@ -93,6 +88,25 @@
             Guard.Against(brandCategory is null, "Category is not assigned to this brand");
 
             _brandCategories.Remove(brandCategory!);
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void AddLogo(string logoUrl)
+        {
+            Guard.AgainstNull(logoUrl, nameof(logoUrl));
+
+            LogoUrl = logoUrl;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void AddSample(string sampleUrl)
+        {
+            Guard.AgainstNull(sampleUrl, nameof(sampleUrl));
+            Guard.Against(
+                SampleImages is { Count: > 10 },
+                "Sample images must not exceed 10 items");
+
+            SampleImages.Add(sampleUrl);
             UpdatedAt = DateTime.UtcNow;
         }
     }

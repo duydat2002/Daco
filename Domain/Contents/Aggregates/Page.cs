@@ -14,7 +14,7 @@
         public string?    MetaDescription { get; private set; }
         public string?    MetaKeywords    { get; private set; }
         public bool       ShowInFooter    { get; private set; }
-        public int        FooterOrder     { get; private set; }
+        public int?       FooterOrder     { get; private set; }
         public Guid?      AuthorId        { get; private set; }
         public DateTime   CreatedAt       { get; private set; }
         public DateTime?  UpdatedAt       { get; private set; }

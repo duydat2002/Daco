@@ -30,7 +30,7 @@
 
             builder.Property(a => a.CreatedAt)
                 .HasColumnName("created_at")
-                .HasDefaultValue("NOW()");
+                .HasDefaultValueSql("NOW()");
 
             // Indexes
             builder.HasIndex(a => a.AttributeId)

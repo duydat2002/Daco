@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.BrandManagement.Commands
+﻿namespace Daco.Application.Catalog.Brands.Commands
 {
     public record UnassignBrandFromCategoryCommand : IRequest<ResponseDTO>
     {

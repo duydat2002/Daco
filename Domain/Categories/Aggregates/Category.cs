@@ -4,7 +4,7 @@
     {
         private readonly List<CategoryAttribute> _categoryAttributes = new();
 
-        public Guid      ParentId     { get; private set; }
+        public Guid?     ParentId     { get; private set; }
         public string    CategoryName { get; private set; }
         public string    CategorySlug { get; private set; }
         public string?   Description  { get; private set; }

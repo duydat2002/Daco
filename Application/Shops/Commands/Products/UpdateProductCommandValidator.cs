@@ -1,8 +1,8 @@
 ﻿namespace Daco.Application.Shops.Commands.Products
 {
-    public class CreateProductCommandValidator : BaseValidator<CreateProductCommand>
+    public class UpdateProductCommandValidator : BaseValidator<UpdateProductCommand>
     {
-        public CreateProductCommandValidator() 
+        public UpdateProductCommandValidator()
         {
             RuleFor(x => x.ProductName)
                 .NotEmpty().WithMessage("Product name is required")

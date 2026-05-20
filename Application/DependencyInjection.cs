@@ -6,6 +6,7 @@
         {
             services.Configure<OtpSettings>(configuration.GetSection("Otp"));
             services.Configure<SessionSettings>(configuration.GetSection("Session"));
+            services.Configure<UploadSettings>(configuration.GetSection("UploadSettings"));
 
             var assembly = Assembly.GetExecutingAssembly();
 

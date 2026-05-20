@@ -9,7 +9,7 @@
         public string   PeriodType      { get; private set; } //'daily', 'weekly', 'monthly'
         public DateTime PeriodStart     { get; private set; }
         public DateTime PeriodEnd       { get; private set; }
-        public int      Rank            { get; private set; }
+        public int?     Rank            { get; private set; }
         public DateTime LastUpdated     { get; private set; }
 
         protected PopularSearch() { }

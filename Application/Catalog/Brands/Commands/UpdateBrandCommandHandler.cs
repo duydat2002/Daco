@@ -1,24 +1,28 @@
-﻿namespace Daco.Application.Administration.BrandManagement.Commands
+﻿namespace Daco.Application.Catalog.Brands.Commands
 {
-    public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, ResponseDTO>
+    public class UpdateBrandCommandHandler : IRequestHandler<UpdateBrandCommand, ResponseDTO>
     {
         private readonly IBrandRepository _brandRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<CreateBrandCommandHandler> _logger;
+        private readonly ILogger<UpdateBrandCommandHandler> _logger;
 
-        public CreateBrandCommandHandler(
+        public UpdateBrandCommandHandler(
             IBrandRepository brandRepository,
             IUnitOfWork unitOfWork,
-            ILogger<CreateBrandCommandHandler> logger)
+            ILogger<UpdateBrandCommandHandler> logger)
         {
             _brandRepository = brandRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public async Task<ResponseDTO> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
+        public async Task<ResponseDTO> Handle(UpdateBrandCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Creating brand {BrandName}", request.BrandName);
+            _logger.LogInformation("Updating brand {BrandId}", request.BrandId);
+
+            var brand = await _brandRepository.GetByIdAsync(request.BrandId);
+            if (brand == null)
+                return ResponseDTO.Failure(ErrorCodes.BrandErrors.NotFound, "Brand not found");
 
             var nameExists = await _brandRepository.NameExistsAsync(request.BrandName, null, cancellationToken);
             if (nameExists)
@@ -30,7 +34,7 @@
                 return ResponseDTO.Failure(ErrorCodes.BrandErrors.SlugAlreadyExists,
                     "Brand slug already exists");
 
-            var brand = Brand.Create(
+            brand.Update(
                 brandName: request.BrandName,
                 brandSlug: request.BrandSlug,
                 description: request.Description,
@@ -40,7 +44,7 @@
 
             await _brandRepository.AddAsync(brand, cancellationToken);
 
-            _logger.LogInformation("Brand {BrandId} created successfully", brand.Id);
+            _logger.LogInformation("Brand {BrandId} updated successfully", brand.Id);
 
             return ResponseDTO.Success(new
             {
@@ -52,8 +56,9 @@
                 brand.LogoUrl,
                 brand.SampleImages,
                 brand.IsActive,
-                brand.CreatedAt
-            }, "Brand created successfully");
+                brand.CreatedAt,
+                brand.UpdatedAt
+            }, "Brand updated successfully");
         }
     }
 }

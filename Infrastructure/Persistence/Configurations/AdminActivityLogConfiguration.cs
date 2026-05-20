@@ -47,7 +47,6 @@
 
             builder.Property(a => a.IpAddress)
                 .HasColumnName("ip_address")
-                .HasColumnType("inet")
                 .IsRequired(false);
 
             builder.Property(a => a.UserAgent)

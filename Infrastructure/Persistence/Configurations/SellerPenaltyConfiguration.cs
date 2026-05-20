@@ -47,7 +47,7 @@
 
             builder.Property(a => a.IssuedBy)
                 .HasColumnName("issued_by")
-                .IsRequired(false);
+                .IsRequired();
 
             builder.Property(a => a.AppealNote)
                 .HasColumnName("appeal_note")

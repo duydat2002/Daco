@@ -41,10 +41,6 @@
 
             builder.Property(a => a.GatewayProvider)
                 .HasColumnName("gateway_provider")
-                .IsRequired();
-
-            builder.Property(a => a.NotificationId)
-                .HasColumnName("notification_id")
                 .HasMaxLength(100)
                 .IsRequired(false);
 

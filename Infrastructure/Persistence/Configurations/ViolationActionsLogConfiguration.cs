@@ -27,7 +27,7 @@
 
             builder.Property(a => a.PerformedBy)
                 .HasColumnName("performed_by")
-                .IsRequired(false);
+                .IsRequired();
 
             builder.Property(a => a.PerformedAt)
                 .HasColumnName("performed_at")

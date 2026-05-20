@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.BrandManagement.Commands
+﻿namespace Daco.Application.Catalog.Brands.Commands
 {
     public class AssignBrandToCategoryCommandHandler : IRequestHandler<AssignBrandToCategoryCommand, ResponseDTO>
     {

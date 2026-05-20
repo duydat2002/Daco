@@ -56,11 +56,11 @@
 
             builder.Property(a => a.DeletedByBuyer)
                 .HasColumnName("deleted_by_buyer")
-                .IsRequired(false);
+                .HasDefaultValue(false);
 
             builder.Property(a => a.DeletedByShop)
                 .HasColumnName("deleted_by_shop")
-                .IsRequired(false);
+                .HasDefaultValue(false);
 
             builder.Property(a => a.CreatedAt)
                 .HasColumnName("created_at")

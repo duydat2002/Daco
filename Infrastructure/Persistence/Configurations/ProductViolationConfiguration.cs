@@ -38,10 +38,6 @@
 
             builder.Property(a => a.EvidenceUrls)
                 .HasColumnName("evidence_urls")
-                .IsRequired();
-
-            builder.Property(a => a.ViolationTypeId)
-                .HasColumnName("violation_type_id")
                 .HasColumnType("jsonb")
                 .IsRequired(false);
 

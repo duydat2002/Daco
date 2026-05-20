@@ -10,9 +10,12 @@
     <Folder Include="Administration\Auth\Queries\" />
     <Folder Include="Administration\OrderManagement\Queries\" />
     <Folder Include="Administration\ProductManagement\Queries\" />
+    <Folder Include="Catalog\Attributes\Commands\" />
+    <Folder Include="Catalog\Brands\Queries\" />
+    <Folder Include="Catalog\Categories\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
-    <Folder Include="Shops\Queries\" />
+    <Folder Include="Shops\Queries\Products\" />
     <Folder Include="Users\Commands\Session\" />
     <Folder Include="Users\Queries\" />
   </ItemGroup>

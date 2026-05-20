@@ -125,7 +125,7 @@
 
             builder.HasIndex(a => new { a.StartDate, a.EndDate })
                 .HasFilter("is_active = TRUE")
-                .HasDatabaseName("idx_vouchers_code");
+                .HasDatabaseName("idx_vouchers_dates");
         }
     }
 }
