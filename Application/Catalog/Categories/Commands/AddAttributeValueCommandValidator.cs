@@ -1,8 +1,8 @@
-﻿namespace Daco.Application.Administration.CategoryManagement.Commands
+﻿namespace Daco.Application.Catalog.Categories.Commands
 {
     public class AddAttributeValueCommandValidator : BaseValidator<AddAttributeValueCommand>
     {
-        public AddAttributeValueCommandValidator() 
+        public AddAttributeValueCommandValidator()
         {
             RuleFor(x => x.AttributeId)
                 .NotEmpty().WithMessage("AttributeId is required");

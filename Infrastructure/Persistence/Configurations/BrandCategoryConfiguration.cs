@@ -28,11 +28,6 @@
                 .HasDatabaseName("uq_brand_category");
 
             // FK
-            builder.HasOne<Brand>()
-                .WithMany()
-                .HasForeignKey(a => a.BrandId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasOne<Category>()
                 .WithMany()
                 .HasForeignKey(a => a.CategoryId)

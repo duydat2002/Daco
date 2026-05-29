@@ -43,12 +43,6 @@
                 .HasColumnName("updated_at")
                 .HasDefaultValueSql("NOW()");
 
-            // FK
-            builder.HasOne<Seller>()
-               .WithMany()
-               .HasForeignKey(a => a.SellerId)
-               .OnDelete(DeleteBehavior.Cascade);
-
             // Indexes
             builder.HasIndex(a => a.RiskLevel)
                 .HasDatabaseName("idx_penalty_scores_risk");

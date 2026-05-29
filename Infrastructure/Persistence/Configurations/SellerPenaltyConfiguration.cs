@@ -75,11 +75,6 @@
                 .HasDefaultValueSql("NOW()");
 
             // FK
-            builder.HasOne<Seller>()
-               .WithMany()
-               .HasForeignKey(a => a.SellerId)
-               .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasOne<ProductViolation>()
                .WithMany()
                .HasForeignKey(a => a.ViolationId)

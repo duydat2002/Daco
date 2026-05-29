@@ -71,12 +71,6 @@
 
             builder.HasIndex(s => s.GatewayTransactionId)
                 .HasDatabaseName("idx_payments_gateway_txn");
-
-            // Relation
-            builder.HasOne<Order>()
-                .WithMany()
-                .HasForeignKey(p => p.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

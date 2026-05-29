@@ -32,12 +32,6 @@
                 .HasColumnName("created_at")
                 .HasDefaultValueSql("NOW()");
 
-            // FK
-            builder.HasOne<Order>()
-               .WithMany()
-               .HasForeignKey(a => a.OrderId)
-               .OnDelete(DeleteBehavior.Cascade);
-
             // Indexes
             builder.HasIndex(a => new { a.OrderId, a.CreatedAt })
                 .IsDescending(false, true)

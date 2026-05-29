@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.CategoryManagement.Queries
+﻿namespace Daco.Application.Catalog.Categories.Queries
 {
     public record GetBrandsQuery : IRequest<ResponseDTO>
     {

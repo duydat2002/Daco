@@ -15,11 +15,11 @@
                 .MustBeValidUrl().WithMessage("Logo URL is invalid"));
 
             RuleFor(x => x.SampleImages)
-                .Must(images => images.Count >= 1)
-                .WithMessage("Sample images must at least 1 images");
+                .Must(images => images is { Count: >= 1 })
+                .WithMessage("Sample images must contain at least one image.");
 
             RuleFor(x => x.SampleImages)
-                .Must(images => images == null || images.Count <= 10)
+                .Must(images => images is { Count: <= 10 })
                 .WithMessage("Sample images must not exceed 10 items")
                 .When(x => x.SampleImages is not null);
 

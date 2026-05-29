@@ -45,11 +45,6 @@
                 .IsRequired(false);
 
             // FK
-            builder.HasOne<Product>()
-               .WithMany()
-               .HasForeignKey(a => a.ProductId)
-               .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasOne<CategoryAttribute>()
                .WithMany()
                .HasForeignKey(a => a.AttributeId)

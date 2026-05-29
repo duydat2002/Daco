@@ -41,8 +41,8 @@
 
             builder.Property(a => a.SampleImages)
                 .HasColumnName("sample_images")
-                .HasColumnType("jsonb")
-                .HasDefaultValueSql("'[]'::jsonb");
+                .HasColumnType("text[]")
+                .HasDefaultValueSql("'{}'");
 
             builder.Property(a => a.IsActive)
                 .HasColumnName("is_active")
@@ -55,6 +55,20 @@
             builder.Property(a => a.UpdatedAt)
                 .HasColumnName("updated_at")
                 .IsRequired(false);
+
+            builder.Property(a => a.DeletedAt)
+                .HasColumnName("deleted_at")
+                .IsRequired(false);
+
+            // FK
+            builder.HasMany(o => o.BrandCategories)
+                .WithOne()
+                .HasForeignKey(p => p.BrandId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Navigation(o => o.BrandCategories)
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasField("_brandCategories");
 
             // Indexes
             builder.HasIndex(a => a.BrandName)

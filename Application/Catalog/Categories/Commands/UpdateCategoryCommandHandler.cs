@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.CategoryManagement.Commands
+﻿namespace Daco.Application.Catalog.Categories.Commands
 {
     public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, ResponseDTO>
     {

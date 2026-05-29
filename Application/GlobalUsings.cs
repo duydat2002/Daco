@@ -94,5 +94,5 @@ global using Daco.Application.Administration.WithdrawalManagement.DTOs;
 global using Daco.Application.Administration.WithdrawalManagement.Queries;
 global using Daco.Domain.Orders.Constants;
 global using Daco.Domain.Brands.Aggregates;
-global using Daco.Application.Administration.CategoryManagement.DTOs;
-global using Daco.Application.Administration.CategoryManagement.Queries;
+global using Daco.Application.Catalog.Categories.DTOs;
+global using Daco.Application.Catalog.Categories.Queries;

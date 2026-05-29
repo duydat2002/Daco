@@ -1,4 +1,6 @@
-﻿namespace Daco.Infrastructure.Persistence.Repositories.Brands
+﻿
+
+namespace Daco.Infrastructure.Persistence.Repositories.Brands
 {
     public class BrandRepository : IBrandRepository
     {
@@ -16,13 +18,30 @@
         public async Task AddAsync(Brand brand, CancellationToken cancellationToken = default)
         {
             await RepositoryLogger.ExecuteAsync(_logger, brand,
-                async () => await _context.Set<Brand>().AddAsync(brand, cancellationToken));
+                async () => await _context.Brands.AddAsync(brand, cancellationToken));
+        }
+
+        public async Task UpdateAsync(Brand brand, CancellationToken cancellationToken = default)
+        {
+            await RepositoryLogger.ExecuteAsync(_logger, brand,
+                () =>
+                {
+                    _context.Brands.Update(brand);
+                    return Task.CompletedTask;
+                });
         }
 
         public async Task<Brand?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await RepositoryLogger.ExecuteAsync(_logger, new { id },
-                () => _context.Set<Brand>()
+                () => _context.Brands
+                    .FirstOrDefaultAsync(b => b.Id == id && b.DeletedAt == null, cancellationToken));
+        }
+
+        public async Task<Brand?> GetByIdIncludeDeletedAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { id },
+                () => _context.Brands
                     .FirstOrDefaultAsync(b => b.Id == id, cancellationToken));
         }
 
@@ -31,9 +50,9 @@
             CancellationToken cancellationToken = default)
         {
             return await RepositoryLogger.ExecuteAsync(_logger, new { id },
-                () => _context.Set<Brand>()
+                () => _context.Brands
                     .Include(b => b.BrandCategories)
-                    .FirstOrDefaultAsync(b => b.Id == id, cancellationToken));
+                    .FirstOrDefaultAsync(b => b.Id == id && b.DeletedAt == null, cancellationToken));
         }
 
         public async Task<bool> NameExistsAsync(
@@ -42,7 +61,7 @@
             CancellationToken cancellationToken = default)
         {
             return await RepositoryLogger.ExecuteAsync(_logger, new { name, excludeId },
-                () => _context.Set<Brand>()
+                () => _context.Brands
                     .AnyAsync(b => b.BrandName == name
                                 && (excludeId == null || b.Id != excludeId),
                               cancellationToken));
@@ -54,7 +73,7 @@
             CancellationToken cancellationToken = default)
         {
             return await RepositoryLogger.ExecuteAsync(_logger, new { slug, excludeId },
-                () => _context.Set<Brand>()
+                () => _context.Brands
                     .AnyAsync(b => b.BrandSlug == slug
                                 && (excludeId == null || b.Id != excludeId),
                               cancellationToken));
@@ -75,7 +94,7 @@
             GetBrandsQuery query,
             CancellationToken cancellationToken = default)
         {
-            var q = _context.Set<Brand>().AsQueryable();
+            var q = _context.Brands.AsQueryable();
 
             if (!string.IsNullOrEmpty(query.Search))
             {
@@ -111,11 +130,6 @@
                 Page = query.Page,
                 PageSize = query.PageSize
             };
-        }
-
-        public void Delete(Brand brand)
-        {
-            _context.Set<Brand>().Remove(brand);
         }
     }
 }

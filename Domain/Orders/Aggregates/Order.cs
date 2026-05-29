@@ -3,7 +3,7 @@
     public class Order : AggregateRoot
     {
         private readonly List<OrderItem> _orderItems = new();
-        private readonly List<OrderStatusHistory> _statusHistory = new();
+        private readonly List<OrderStatusHistory> _statusHistories = new();
         private readonly List<Payment> _payments = new();
 
         // --- Identity ---
@@ -41,7 +41,7 @@
 
         // --- Collections ---
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems.AsReadOnly();
-        public IReadOnlyCollection<OrderStatusHistory> StatusHistory => _statusHistory.AsReadOnly();
+        public IReadOnlyCollection<OrderStatusHistory> StatusHistories => _statusHistories.AsReadOnly();
         public IReadOnlyCollection<Payment> Payments => _payments.AsReadOnly();
         protected Order() { }
 
@@ -333,7 +333,7 @@
 
         private void RecordHistory(OrderStatus status, Guid? createdBy = null, string? note = null)
         {
-            _statusHistory.Add(OrderStatusHistory.Create(Id, status, createdBy, note));
+            _statusHistories.Add(OrderStatusHistory.Create(Id, status, createdBy, note));
         }
     }
 }

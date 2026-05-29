@@ -11,10 +11,11 @@ namespace Daco.Domain.Brands.Aggregates
         public string?       Description  { get; private set; }
         public string?       WebsiteUrl   { get; private set; }
         public string?       LogoUrl      { get; private set; }
-        public List<string>? SampleImages { get; private set; }
+        public List<string>  SampleImages { get; private set; } = [];
         public bool          IsActive     { get; private set; }
         public DateTime      CreatedAt    { get; private set; }
         public DateTime?     UpdatedAt    { get; private set; }
+        public DateTime?     DeletedAt    { get; private set; }
 
         public IReadOnlyCollection<BrandCategory> BrandCategories => _brandCategories.AsReadOnly();
 
@@ -46,27 +47,35 @@ namespace Daco.Domain.Brands.Aggregates
             string brandSlug,
             string? description = null,
             string? websiteUrl = null,
-            string? logoUrl = null,
-            List<string>? sampleImages = null)
+            string? logoUrl = null)
         {
             Guard.AgainstNullOrEmpty(brandName, nameof(brandName));
             Guard.AgainstNullOrEmpty(brandSlug, nameof(brandSlug));
-            Guard.Against(
-                sampleImages is { Count: > 10 },
-                "Sample images must not exceed 10 items");
 
             BrandName = brandName.Trim();
             BrandSlug = brandSlug.Trim().ToLowerInvariant();
             Description = description;
             WebsiteUrl = websiteUrl;
             LogoUrl = logoUrl;
-            SampleImages = sampleImages;
             UpdatedAt = DateTime.UtcNow;
         }
 
         public void SetActive(bool isActive)
         {
             IsActive = isActive;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Delete()
+        {
+            IsActive = false;
+            DeletedAt = DateTime.UtcNow;
+        }
+
+        public void Restore()
+        {
+            IsActive = true;
+            DeletedAt = null;
             UpdatedAt = DateTime.UtcNow;
         }
 
@@ -105,8 +114,25 @@ namespace Daco.Domain.Brands.Aggregates
             Guard.Against(
                 SampleImages is { Count: > 10 },
                 "Sample images must not exceed 10 items");
+            Guard.Against(
+                SampleImages is { Count: < 1 },
+                "Sample images must contain at least one image");
 
             SampleImages.Add(sampleUrl);
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void DeleteSample(string sampleUrl)
+        {
+            Guard.AgainstNull(sampleUrl, nameof(sampleUrl));
+            Guard.Against(
+                SampleImages is { Count: > 10 },
+                "Sample images must not exceed 10 items");
+            Guard.Against(
+                SampleImages is { Count: <= 1 },
+                "Sample images must contain at least one image");
+
+            SampleImages.Remove(sampleUrl);
             UpdatedAt = DateTime.UtcNow;
         }
     }

@@ -1,8 +1,8 @@
-﻿namespace Daco.Application.Administration.CategoryManagement.Commands
+﻿namespace Daco.Application.Catalog.Categories.Commands
 {
     public class DeleteCategoryCommandValidator : BaseValidator<DeleteCategoryCommand>
     {
-        public DeleteCategoryCommandValidator() 
+        public DeleteCategoryCommandValidator()
         {
             RuleFor(x => x.CategoryId)
                 .NotEmpty();

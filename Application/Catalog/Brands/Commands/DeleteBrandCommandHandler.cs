@@ -30,7 +30,9 @@
                 return ResponseDTO.Failure(ErrorCodes.BrandErrors.HasProducts,
                     "Cannot delete brand that has products");
 
-            _brandRepository.Delete(brand);
+            brand.Delete();
+
+            await _brandRepository.UpdateAsync(brand, cancellationToken);
 
             _logger.LogInformation("Brand {BrandId} deleted successfully", request.BrandId);
 

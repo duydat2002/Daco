@@ -42,6 +42,16 @@
             return HandleResult(await _mediator.Send(command, cancellationToken));
         }
 
+        [HttpPost("{brandId:guid}/restore")]
+        [RequirePermission(AdminPermissions.Brands.Update)]
+        public async Task<ActionResult<ResponseDTO>> Restore(
+            Guid brandId,
+            CancellationToken cancellationToken)
+        {
+            var command = new RestoreBrandCommand { BrandId = brandId };
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
+
         [HttpPost("{brandId:guid}/categories")]
         [RequirePermission(AdminPermissions.Brands.Update)]
         public async Task<ActionResult<ResponseDTO>> AssignCategories(

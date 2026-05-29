@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Administration.CategoryManagement.Commands
+﻿namespace Daco.Application.Catalog.Categories.Commands
 {
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, ResponseDTO>
     {
@@ -21,15 +21,14 @@
             _logger.LogInformation("Admin {AdminId} creating category '{CategoryName}'",
                 request.CreatedBy, request.CategoryName);
 
-            var slugExists = await _categoryRepository.ExistsBySlugAsync(request.CategorySlug, null, cancellationToken);
+            var slug = SlugGenerator.FromName(request.CategoryName);
+            var attempt = 0;
 
-            if (slugExists)
-                return ResponseDTO.Failure(
-                    ErrorCodes.CategoryErrors.SlugAlreadyExists, $"Slug '{request.CategorySlug}' is already taken");
+            while (await _categoryRepository.ExistsBySlugAsync(slug, null, cancellationToken))
+                slug = SlugGenerator.WithSuffix(request.CategoryName, ++attempt);
 
             int level = 1;
             string? path = null;
-            bool isLeaf = request.IsLeaf;
 
             if (request.ParentId.HasValue)
             {
@@ -52,7 +51,7 @@
 
             var category = Category.Create(
                 categoryName: request.CategoryName,
-                categorySlug: request.CategorySlug,
+                categorySlug: slug,
                 level: level,
                 parentId: request.ParentId,
                 description: request.Description,
@@ -60,7 +59,7 @@
                 iconUrl: request.IconUrl,
                 imageUrl: request.ImageUrl,
                 sortOrder: request.SortOrder,
-                isLeaf: isLeaf);
+                isLeaf: false);
 
             await _categoryRepository.AddAsync(category, cancellationToken);
             _unitOfWork.TrackEntity(category);

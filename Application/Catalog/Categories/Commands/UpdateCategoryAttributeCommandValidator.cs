@@ -1,8 +1,8 @@
-﻿namespace Daco.Application.Administration.CategoryManagement.Commands
+﻿namespace Daco.Application.Catalog.Categories.Commands
 {
     public class UpdateCategoryAttributeCommandValidator : BaseValidator<UpdateCategoryAttributeCommand>
     {
-        public UpdateCategoryAttributeCommandValidator() 
+        public UpdateCategoryAttributeCommandValidator()
         {
             RuleFor(x => x.AttributeId)
                 .NotEmpty().WithMessage("AttributeId is required");

@@ -88,6 +88,25 @@
                 .HasColumnName("deleted_at")
                 .IsRequired(false);
 
+            //FK
+            builder.HasMany(o => o.SellerPenalties)
+                .WithOne()
+                .HasForeignKey(p => p.SellerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Navigation(o => o.SellerPenalties)
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasField("_sellerPenalties");
+
+            builder.HasMany(o => o.SellerPenaltyScores)
+                .WithOne()
+                .HasForeignKey(p => p.SellerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Navigation(o => o.SellerPenaltyScores)
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasField("_sellerPenaltyScores");
+
             // Indexes
             builder.HasIndex(s => s.UserId)
                 .HasFilter("deleted_at IS NULL")

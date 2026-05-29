@@ -99,6 +99,8 @@
             public const string HasProducts       = "BRAND.HAS_PRODUCTS";
             public const string AlreadyAssigned   = "BRAND.ALREADY_ASSIGNED";
             public const string NotAssigned       = "BRAND.NOT_ASSIGNED";
+            public const string AlreadyDelete     = "BRAND.ALREADY_DELETE";
+            public const string AlreadyActive     = "BRAND.ALREADY_ACTIVE";
         }
 
         // Products

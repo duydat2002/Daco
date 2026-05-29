@@ -26,6 +26,7 @@
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<CategoryAttribute> CategoryAttributes => Set<CategoryAttribute>();
         public DbSet<CategoryAttributeValue> CategoryAttributeValues => Set<CategoryAttributeValue>();
+        public DbSet<Brand> Brands => Set<Brand>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

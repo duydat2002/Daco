@@ -156,6 +156,15 @@
             builder.Navigation(o => o.Payments)
                 .UsePropertyAccessMode(PropertyAccessMode.Field)
                 .HasField("_payments");
+
+            builder.HasMany(o => o.StatusHistories)
+                .WithOne()
+                .HasForeignKey(p => p.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Navigation(o => o.StatusHistories)
+                .UsePropertyAccessMode(PropertyAccessMode.Field)
+                .HasField("_statusHistories");
         }
     }
 }

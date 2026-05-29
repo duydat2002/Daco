@@ -12,7 +12,6 @@
     <Folder Include="Administration\ProductManagement\Queries\" />
     <Folder Include="Catalog\Attributes\Commands\" />
     <Folder Include="Catalog\Brands\Queries\" />
-    <Folder Include="Catalog\Categories\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
     <Folder Include="Shops\Queries\Products\" />

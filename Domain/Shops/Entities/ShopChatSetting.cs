@@ -9,7 +9,7 @@
         public bool             EnableAutoReply          { get; private set; }
         public string?          AutoReplyMessage         { get; private set; }
         public int              AutoReplyDelaySeconds    { get; private set; }
-        public List<QuickReply> QuickReplies             { get; private set; } = new();
+        public List<QuickReply> QuickReplies             { get; private set; } = [];
         public string           EnableWorkingHours       { get; private set; }
         public WorkingHours?    WorkingHours             { get; private set; }
         public string?          OutsideHoursMessage      { get; private set; }

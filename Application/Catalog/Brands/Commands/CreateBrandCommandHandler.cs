@@ -39,7 +39,7 @@
                 description:  request.Description,
                 websiteUrl:   request.WebsiteUrl);
 
-            if (request.LogoUrl != null)
+            if (!string.IsNullOrEmpty(request.LogoUrl))
             {
                 try
                 {

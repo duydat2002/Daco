@@ -1,4 +1,6 @@
-﻿namespace Daco.Infrastructure.Persistence.Configurations
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+
+namespace Daco.Infrastructure.Persistence.Configurations
 {
     public class ShopChatSettingConfiguration : IEntityTypeConfiguration<ShopChatSetting>
     {
@@ -49,7 +51,11 @@
                 .HasConversion(
                     v => JsonConvert.SerializeObject(v),
                     v => JsonConvert.DeserializeObject<List<QuickReply>>(v) ?? new List<QuickReply>()
-                );
+                )
+                .Metadata.SetValueComparer(new ValueComparer<List<QuickReply>>(
+                    (c1, c2) => c1!.SequenceEqual(c2!),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList())); ;
 
             builder.Property(a => a.WorkingHours)
                 .HasColumnName("working_hours")

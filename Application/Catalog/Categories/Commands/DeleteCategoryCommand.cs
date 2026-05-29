@@ -1,10 +1,10 @@
-﻿namespace Daco.Application.Administration.CategoryManagement.Commands
+﻿namespace Daco.Application.Catalog.Categories.Commands
 {
     public record DeleteCategoryCommand : IRequest<ResponseDTO>
     {
         [JsonIgnore]
         public Guid CategoryId { get; init; }
         [JsonIgnore]
-        public Guid DeletedBy { get; init; }
+        public Guid DeletedBy  { get; init; }
     }
 }
