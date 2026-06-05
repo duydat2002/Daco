@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Catalog.Categories.Commands
+﻿namespace Daco.Application.Catalog.Attributes.Commands
 {
     public record CreateCategoryAttributeCommand : IRequest<ResponseDTO>
     {

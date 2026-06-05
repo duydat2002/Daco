@@ -1,4 +1,4 @@
-﻿namespace Daco.Application.Catalog.Categories.Commands
+﻿namespace Daco.Application.Catalog.Attributes.Commands
 {
     public class UpdateCategoryAttributeCommandHandler : IRequestHandler<UpdateCategoryAttributeCommand, ResponseDTO>
     {
@@ -58,7 +58,6 @@
                         .ToList());
             }
 
-            await _attributeRepository.UpdateAsync(attribute, cancellationToken);
             _unitOfWork.TrackEntity(attribute);
             _logger.LogInformation("Category attribute {AttributeId} updated successfully", request.AttributeId);
 

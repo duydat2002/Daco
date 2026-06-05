@@ -10,7 +10,6 @@
     <Folder Include="Administration\Auth\Queries\" />
     <Folder Include="Administration\OrderManagement\Queries\" />
     <Folder Include="Administration\ProductManagement\Queries\" />
-    <Folder Include="Catalog\Attributes\Commands\" />
     <Folder Include="Catalog\Brands\Queries\" />
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />

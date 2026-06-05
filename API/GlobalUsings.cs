@@ -32,3 +32,4 @@ global using Daco.Application.Shops.Commands.Onboarding;
 global using Daco.Application.Uploads.Commands;
 global using Daco.Application.Catalog.Brands.Commands;
 global using Daco.Application.Catalog.Categories.Commands;
+global using Daco.Application.Catalog.Attributes.Commands;

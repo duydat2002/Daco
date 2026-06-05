@@ -19,7 +19,10 @@
             services.AddScoped<IDbSession, NpgsqlDbSession>();
 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(connectionString));
+            {
+                options.EnableSensitiveDataLogging();
+                options.UseNpgsql(connectionString);
+            });
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
