@@ -5,13 +5,16 @@ namespace Daco.Application.Catalog.Attributes.Queries
     public class GetCategoryAttributesQueryHandler : IRequestHandler<GetCategoryAttributesQuery, ResponseDTO>
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ICategoryAttributeRepository _categoryAttributeRepository;
         private readonly ILogger<GetCategoryAttributesQueryHandler> _logger;
 
         public GetCategoryAttributesQueryHandler(
             ICategoryRepository categoryRepository,
+            ICategoryAttributeRepository categoryAttributeRepository,
             ILogger<GetCategoryAttributesQueryHandler> logger)
         {
             _categoryRepository = categoryRepository;
+            _categoryAttributeRepository = categoryAttributeRepository;
             _logger = logger;
         }
 
@@ -19,7 +22,7 @@ namespace Daco.Application.Catalog.Attributes.Queries
         {
             _logger.LogInformation("Getting attributes for category {CategoryId}", request.CategoryId);
 
-            var category = await _categoryRepository.GetByIdWithAttributesAsync(request.CategoryId, cancellationToken);
+            var category = await _categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
 
             if (category is null)
                 return ResponseDTO.Failure(ErrorCodes.CategoryErrors.NotFound, "Category not found");
@@ -28,7 +31,9 @@ namespace Daco.Application.Catalog.Attributes.Queries
                 return ResponseDTO.Failure(ErrorCodes.CategoryErrors.NotLeaf,
                     "Attributes only available for leaf categories");
 
-            var result = category.CategoryAttributes
+            var attributes = await _categoryAttributeRepository.GetByCategoryIdAsync(category.Id);
+
+            var result = attributes
                 .Where(a => a.IsActive)
                 .OrderBy(a => a.SortOrder)
                 .Select(a => new CategoryAttributeDTO

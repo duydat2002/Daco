@@ -13,11 +13,11 @@
 
             RuleFor(x => x.IconUrl)
                 .MustBeValidUrl()
-                .When(x => x.IconUrl is not null);
+                .When(x => !string.IsNullOrEmpty(x.IconUrl));
 
             RuleFor(x => x.ImageUrl)
                 .MustBeValidUrl()
-                .When(x => x.ImageUrl is not null);
+                .When(x => !string.IsNullOrEmpty(x.ImageUrl));
         }
     }
 }

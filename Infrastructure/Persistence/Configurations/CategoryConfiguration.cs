@@ -75,15 +75,6 @@
                 .HasForeignKey(c => c.ParentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(a => a.CategoryAttributes)
-                .WithOne()
-                .HasForeignKey(a => a.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Navigation(a => a.CategoryAttributes)
-                .UsePropertyAccessMode(PropertyAccessMode.Field)
-                .HasField("_categoryAttributes");
-
             // Indexes 
             builder.HasIndex(a => a.ParentId)
                 .HasDatabaseName("idx_categories_parent");

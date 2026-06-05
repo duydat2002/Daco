@@ -1,4 +1,6 @@
 ﻿
+using Daco.Domain.Administration.Aggregates;
+using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Crypto;
 
 namespace Daco.Infrastructure.Persistence.Repositories.Categories
@@ -82,18 +84,14 @@ namespace Daco.Infrastructure.Persistence.Repositories.Categories
             throw new NotImplementedException();
         }
 
-        public async Task<Category?> GetByIdWithAttributesAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync(Category category, CancellationToken cancellationToken = default)
         {
-            return await RepositoryLogger.ExecuteAsync(_logger, new { id },
-            () => _context.Categories
-                .Include(c => c.CategoryAttributes.Where(a => a.IsActive))
-                .ThenInclude(a => a.CategoryAttributeValues.Where(v => v.IsActive))
-                .FirstOrDefaultAsync(c => c.Id == id, cancellationToken));
-        }
-
-        public Task UpdateAsync(Category order, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+            await RepositoryLogger.ExecuteAsync(_logger, category,
+            () =>
+            {
+                _context.Categories.Update(category);
+                return Task.CompletedTask;
+            });
         }
 
         public void Delete(Category category)
@@ -118,6 +116,37 @@ namespace Daco.Infrastructure.Persistence.Repositories.Categories
                 () => _context.Set<Product>()
                     .AnyAsync(p => p.CategoryId == categoryId
                                 && p.DeletedAt == null, cancellationToken));
+        }
+
+        public async Task UpdateDescendantsPathAsync(
+            string oldPath,
+            string newPath,
+            int oldLevel,
+            int newLevel,
+            CancellationToken cancellationToken = default)
+        {
+            var levelDiff = newLevel - oldLevel;
+            var likePattern = oldPath + "/%";
+
+            await _context.Database.ExecuteSqlInterpolatedAsync($@"
+                UPDATE categories 
+                SET path       = {newPath} || SUBSTRING(path, LENGTH({oldPath}) + 1),
+                    level      = level + {levelDiff},
+                    updated_at = NOW()
+                WHERE path LIKE {likePattern}",
+                cancellationToken);
+        }
+
+        public async Task<int> CountChildrenAsync(
+            Guid parentId,
+            Guid? excludeId = null,
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.Categories
+                .Where(c => c.ParentId == parentId
+                         && c.IsActive
+                         && (excludeId == null || c.Id != excludeId))
+                .CountAsync(cancellationToken);
         }
     }
 }

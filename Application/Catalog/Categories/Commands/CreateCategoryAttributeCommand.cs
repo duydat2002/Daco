@@ -7,7 +7,6 @@
         [JsonIgnore]
         public Guid               CreatedBy         { get; init; }
         public string             AttributeName     { get; init; } = null!;
-        public string             AttributeSlug     { get; init; } = null!;
         public string?            Description       { get; init; }
         public AttributeInputType InputType         { get; init; }
         public bool               IsRequired        { get; init; } = false;

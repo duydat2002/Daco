@@ -25,8 +25,8 @@
                 .HasDefaultValue(0);
 
             builder.Property(a => a.IsActive)
-                .HasColumnName("true")
-                .HasDefaultValue(255);
+                .HasColumnName("is_active")
+                .HasDefaultValue(true);
 
             builder.Property(a => a.CreatedAt)
                 .HasColumnName("created_at")

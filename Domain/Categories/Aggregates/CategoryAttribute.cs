@@ -1,38 +1,38 @@
-﻿namespace Daco.Domain.Categories.Entities
+﻿namespace Daco.Domain.Categories.Aggregates
 {
-    public class CategoryAttribute : Entity
+    public class CategoryAttribute : AggregateRoot
     {
         private readonly List<CategoryAttributeValue> _categoryAttributeValues = new();
 
-        public Guid                CategoryId        { get; private set; }
-        public string              AttributeName     { get; private set; }
-        public string              AttributeSlug     { get; private set; }
-        public string?             Description       { get; private set; }
-        public AttributeInputType  InputType         { get; private set; }
-        public string[]?           AttributeUnitList { get; private set; }
-        public bool                IsRequired        { get; private set; }
-        public bool                IsVariation       { get; private set; }
-        public int                 SortOrder         { get; private set; }
-        public string?             Unit              { get; private set; }
-        public bool                IsActive          { get; private set; }
-        public DateTime            CreatedAt         { get; private set; }
-        public DateTime?           UpdatedAt         { get; private set; }
+        public Guid CategoryId { get; private set; }
+        public string AttributeName { get; private set; }
+        public string AttributeSlug { get; private set; }
+        public string? Description { get; private set; }
+        public AttributeInputType InputType { get; private set; }
+        public string[]? AttributeUnitList { get; private set; }
+        public bool IsRequired { get; private set; }
+        public bool IsVariation { get; private set; }
+        public int SortOrder { get; private set; }
+        public string? Unit { get; private set; }
+        public bool IsActive { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime? UpdatedAt { get; private set; }
 
         public IReadOnlyCollection<CategoryAttributeValue> CategoryAttributeValues => _categoryAttributeValues.AsReadOnly();
 
         protected CategoryAttribute() { }
 
-        public                 static CategoryAttribute Create(
-            Guid               categoryId,
-            string             attributeName,
-            string             attributeSlug,
+        public static CategoryAttribute Create(
+            Guid categoryId,
+            string attributeName,
+            string attributeSlug,
             AttributeInputType inputType,
-            bool               isRequired = false,
-            bool               isVariation = false,
-            int                sortOrder = 0,
-            string?            description = null,
-            string?            unit = null,
-            string[]?          attributeUnitList = null)
+            bool isRequired = false,
+            bool isVariation = false,
+            int sortOrder = 0,
+            string? description = null,
+            string? unit = null,
+            string[]? attributeUnitList = null)
         {
             Guard.AgainstNullOrEmpty(attributeName, nameof(attributeName));
             Guard.AgainstNullOrEmpty(attributeSlug, nameof(attributeSlug));
@@ -40,19 +40,19 @@
 
             return new CategoryAttribute
             {
-                Id                = Guid.NewGuid(),
-                CategoryId        = categoryId,
-                AttributeName     = attributeName.Trim(),
-                AttributeSlug     = attributeSlug.Trim().ToLowerInvariant(),
-                InputType         = inputType,
-                IsRequired        = isRequired,
-                IsVariation       = isVariation,
-                SortOrder         = sortOrder,
-                Description       = description,
-                Unit              = unit,
+                Id = Guid.NewGuid(),
+                CategoryId = categoryId,
+                AttributeName = attributeName.Trim(),
+                AttributeSlug = attributeSlug.Trim().ToLowerInvariant(),
+                InputType = inputType,
+                IsRequired = isRequired,
+                IsVariation = isVariation,
+                SortOrder = sortOrder,
+                Description = description,
+                Unit = unit,
                 AttributeUnitList = attributeUnitList ?? Array.Empty<string>(),
-                IsActive          = true,
-                CreatedAt         = DateTime.UtcNow
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
             };
         }
 

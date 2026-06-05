@@ -58,6 +58,8 @@
                         .ToList());
             }
 
+            await _attributeRepository.UpdateAsync(attribute, cancellationToken);
+            _unitOfWork.TrackEntity(attribute);
             _logger.LogInformation("Category attribute {AttributeId} updated successfully", request.AttributeId);
 
             return ResponseDTO.Success(new

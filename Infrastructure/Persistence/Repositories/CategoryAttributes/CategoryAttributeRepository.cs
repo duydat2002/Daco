@@ -22,6 +22,18 @@
                     .AddAsync(attribute, cancellationToken));
         }
 
+        public async Task UpdateAsync(
+            CategoryAttribute attribute,
+            CancellationToken cancellationToken = default)
+        {
+            await RepositoryLogger.ExecuteAsync(_logger, attribute,
+            () =>
+            {
+                _context.CategoryAttributes.Update(attribute);
+                return Task.CompletedTask;
+            });
+        }
+
         public async Task<CategoryAttribute?> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken = default)

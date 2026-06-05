@@ -29,27 +29,28 @@
                 request.CategoryId, cancellationToken);
 
             if (category is null)
-                return ResponseDTO.Failure(ErrorCodes.CategoryErrors.NotFound,
-                    "Category not found");
+                return ResponseDTO.Failure(ErrorCodes.CategoryErrors.NotFound, "Category not found");
 
             if (!category.IsActive)
                 return ResponseDTO.Failure(ErrorCodes.CategoryErrors.IsInactive,
                     "Cannot add attribute to an inactive category");
 
-            var slugExists = await _attributeRepository.SlugExistsInCategoryAsync(
-                request.CategoryId,
-                request.AttributeSlug,
-                null,
-                cancellationToken);
+            if (!category.IsLeaf)
+            {
+                return ResponseDTO.Failure(ErrorCodes.CategoryErrors.NotLeaf,
+                    "Attributes can only be added to leaf categories");
+            }
 
-            if (slugExists)
-                return ResponseDTO.Failure(ErrorCodes.CategoryErrors.SlugAlreadyExists,
-                    $"Attribute slug '{request.AttributeSlug}' already exists in this category");
+            var slug = category.CategorySlug + "-" + SlugGenerator.FromName(request.AttributeName);
+            var attempt = 0;
+
+            while (await _attributeRepository.SlugExistsInCategoryAsync(request.CategoryId, slug, null, cancellationToken))
+                slug = category.CategorySlug + "-" + SlugGenerator.WithSuffix(request.AttributeName, ++attempt);
 
             var attribute = CategoryAttribute.Create(
                 categoryId: request.CategoryId,
                 attributeName: request.AttributeName,
-                attributeSlug: request.AttributeSlug,
+                attributeSlug: slug,
                 inputType: request.InputType,
                 isRequired: request.IsRequired,
                 isVariation: request.IsVariation,

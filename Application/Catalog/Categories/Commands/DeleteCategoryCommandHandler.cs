@@ -26,13 +26,11 @@
 
             var hasChildren = await _categoryRepository.HasChildrenAsync(request.CategoryId, cancellationToken);
             if (hasChildren)
-                return ResponseDTO.Failure(ErrorCodes.CategoryErrors.HasChildren,
-                    "Cannot delete category that has subcategories");
+                return ResponseDTO.Failure(ErrorCodes.CategoryErrors.HasChildren, "Cannot delete category that has subcategories");
 
             var hasProducts = await _categoryRepository.HasProductsAsync(request.CategoryId, cancellationToken);
             if (hasProducts)
-                return ResponseDTO.Failure(ErrorCodes.CategoryErrors.HasProducts,
-                    "Cannot delete category that has products");
+                return ResponseDTO.Failure(ErrorCodes.CategoryErrors.HasProducts, "Cannot delete category that has products");
 
             _categoryRepository.Delete(category);
 

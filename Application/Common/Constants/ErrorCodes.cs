@@ -76,6 +76,7 @@
         {
             public const string NotFound                    = "CATEGORY.NOT_FOUND";
             public const string AlreadyExists               = "CATEGORY.ALREADY_EXISTS";
+            public const string InvalidParent               = "CATEGORY.INVALID_PARENT";
             public const string SlugAlreadyExists           = "CATEGORY.SLUG_ALREADY_EXISTS";
             public const string InvalidStatus               = "CATEGORY.INVALID_STATUS";
             public const string LimitExceeded               = "CATEGORY.LIMIT_EXCEEDED";

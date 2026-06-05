@@ -6,7 +6,6 @@
         Task<Category?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);
         Task<Category?> GetByOrderCodeAsync(string categoryId, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<Category>> GetByIdsAsync(List<Guid> ids, CancellationToken cancellationToken = default);
-        Task<Category?> GetByIdWithAttributesAsync(Guid id, CancellationToken cancellationToken = default);
         Task<bool> ExistsBySlugAsync(string slug, Guid? excludeId = null, CancellationToken cancellationToken = default);
         Task<bool> HasChildrenAsync(Guid categoryId, CancellationToken cancellationToken = default);
         Task<bool> HasProductsAsync(Guid categoryId, CancellationToken cancellationToken = default);
@@ -15,5 +14,7 @@
         Task AddAsync(Category category, CancellationToken cancellationToken = default);
         Task UpdateAsync(Category category, CancellationToken cancellationToken = default);
         void Delete(Category category);
+        Task<int> CountChildrenAsync(Guid parentId, Guid? excludeId, CancellationToken cancellationToken = default);
+        Task UpdateDescendantsPathAsync(string oldPath, string newPath, int oldLevel, int newLevel, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Daco.Application.Catalog.Categories.Commands
+﻿using Daco.Domain.Orders.Entities;
+
+namespace Daco.Application.Catalog.Categories.Commands
 {
     public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, ResponseDTO>
     {
@@ -28,11 +30,11 @@
                 slug = SlugGenerator.WithSuffix(request.CategoryName, ++attempt);
 
             int level = 1;
-            string? path = null;
+            Category? parent = null;
 
             if (request.ParentId.HasValue)
             {
-                var parent = await _categoryRepository.GetByIdAsync(request.ParentId.Value, cancellationToken);
+                parent = await _categoryRepository.GetByIdAsync(request.ParentId.Value, cancellationToken);
 
                 if (parent is null)
                     return ResponseDTO.Failure(ErrorCodes.CategoryErrors.NotFound, "Parent category not found");
@@ -44,9 +46,8 @@
                     return ResponseDTO.Failure(ErrorCodes.CategoryErrors.LimitExceeded, "Cannot create category deeper than level 4");
 
                 level = parent.Level + 1;
-                path = string.IsNullOrEmpty(parent.Path)
-                    ? $"/{parent.Id}"
-                    : $"{parent.Path}/{parent.Id}";
+                
+                parent.UnmarkLeaf();
             }
 
             var category = Category.Create(
@@ -55,13 +56,18 @@
                 level: level,
                 parentId: request.ParentId,
                 description: request.Description,
-                path: path,
-                iconUrl: request.IconUrl,
+                iconUrl: request.IconUrl,   
                 imageUrl: request.ImageUrl,
-                sortOrder: request.SortOrder,
-                isLeaf: false);
+                sortOrder: request.SortOrder);
+
+            category.SetPath(parent == null ? $"/{category.Id}" : $"{parent.Path}/{category.Id}");
 
             await _categoryRepository.AddAsync(category, cancellationToken);
+            if (parent != null)
+            {
+                await _categoryRepository.UpdateAsync(parent, cancellationToken);
+                _unitOfWork.TrackEntity(parent);
+            }
             _unitOfWork.TrackEntity(category);
 
             _logger.LogInformation("Category {CategoryId} '{CategoryName}' created at level {Level}",

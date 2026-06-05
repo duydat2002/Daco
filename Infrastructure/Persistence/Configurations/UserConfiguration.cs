@@ -32,6 +32,8 @@
                   .HasMaxLength(100)
                   .IsRequired(false);
 
+                eb.WithOwner();
+
                 eb.HasIndex(a => a.Value)
                     .IsUnique()
                     .HasFilter("deleted_at IS NULL")
@@ -45,6 +47,8 @@
                   .HasColumnName("phone")
                   .HasMaxLength(20)
                   .IsRequired(false);
+
+                pb.WithOwner();
 
                 pb.HasIndex(a => a.Value)
                     .IsUnique()

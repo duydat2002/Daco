@@ -13,11 +13,6 @@
                 .NotEmpty()
                 .MaximumLength(255);
 
-            RuleFor(x => x.AttributeSlug)
-                .NotEmpty()
-                .MaximumLength(255)
-                .MustBeValidSlug();
-
             RuleFor(x => x.InputType)
                 .IsInEnum().WithMessage("Invalid input type");
 
