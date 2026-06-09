@@ -78,10 +78,5 @@
                                 && (excludeId == null || a.Id != excludeId),
                               cancellationToken));
         }
-
-        public void Delete(CategoryAttribute attribute)
-        {
-            _context.CategoryAttributes.Remove(attribute);
-        }
     }
 }

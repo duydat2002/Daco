@@ -37,9 +37,29 @@
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var count = await _context.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Saved {Count} changes", count);
-            return count;
+            try
+            {
+                var count = await _context.SaveChangesAsync(cancellationToken);
+                _logger.LogInformation("Saved {Count} changes", count);
+                return count;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                foreach (var entry in ex.Entries)
+                {
+                    var keyValues = entry.Properties
+                        .Where(p => p.Metadata.IsPrimaryKey())
+                        .ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
+
+                    _logger.LogError(
+                        "Concurrency exception. Entity={Entity}, State={State}, Keys={@Keys}",
+                        entry.Metadata.ClrType.Name,
+                        entry.State,
+                        keyValues);
+                }
+
+                throw;
+            }
         }
 
         public async Task CommitAsync(CancellationToken cancellationToken = default)

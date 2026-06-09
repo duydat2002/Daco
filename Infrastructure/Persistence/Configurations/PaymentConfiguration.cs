@@ -9,7 +9,7 @@
             builder.HasKey(s => s.Id);
             builder.Property(s => s.Id)
                 .HasColumnName("id")
-                .HasDefaultValueSql("gen_random_uuid()");
+                .ValueGeneratedNever();
 
             builder.Property(s => s.OrderId)
                 .HasColumnName("order_id")

@@ -11,7 +11,7 @@ namespace Daco.Infrastructure.Persistence.Configurations
             builder.HasKey(a => a.Id);
             builder.Property(a => a.Id)
                 .HasColumnName("id")
-                .HasDefaultValueSql("gen_random_uuid()");
+                .ValueGeneratedNever();
 
             builder.Property(a => a.ShopId)
                 .HasColumnName("shop_id")

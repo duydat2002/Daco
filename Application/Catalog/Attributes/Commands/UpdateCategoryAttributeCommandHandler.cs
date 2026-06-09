@@ -54,8 +54,8 @@
                     request.PredefinedValues
                         .Where(v => !string.IsNullOrWhiteSpace(v))
                         .Select(v => v.Trim())
-                        .Distinct()
-                        .ToList());
+                    .Distinct()
+                    .ToList());
             }
 
             _unitOfWork.TrackEntity(attribute);
