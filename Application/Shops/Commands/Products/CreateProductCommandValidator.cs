@@ -8,11 +8,6 @@
                 .NotEmpty().WithMessage("Product name is required")
                 .MaximumLength(500);
 
-            RuleFor(x => x.ProductSlug)
-                .NotEmpty().WithMessage("Product slug is required")
-                .MaximumLength(500)
-                .MustBeValidSlug();
-
             RuleFor(x => x.CategoryId)
                 .NotEmpty().WithMessage("Category is required");
 
@@ -44,14 +39,6 @@
             RuleFor(x => x.PreOrderLeadTime)
                 .GreaterThan(0).WithMessage("Pre-order lead time is required when is pre-order")
                 .When(x => x.IsPreOrder);
-
-            RuleFor(x => x.MetaTitle)
-                .MaximumLength(255)
-                .When(x => x.MetaTitle is not null);
-
-            RuleFor(x => x.MetaDescription)
-                .MaximumLength(500)
-                .When(x => x.MetaDescription is not null);
 
             RuleFor(x => x.Images)
                 .NotNull()

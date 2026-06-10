@@ -62,11 +62,27 @@
                     return ResponseDTO.Failure(ErrorCodes.BrandErrors.NotFound, "Brand not found");
             }
 
+            // Slug
+            var slug = SlugGenerator.FromName(request.ProductName);
+            var attempt = 0;
+
+            while (await _productRepository.SlugExistsAsync(slug, null, cancellationToken))
+                slug = SlugGenerator.WithSuffix(request.ProductName, ++attempt);
+
+            // Meta
+            var metaTitle = request.ProductName.Length > 255
+                                    ? request.ProductName[..255]
+                                    : request.ProductName;
+            var metaDescription = request.Description is not null && request.Description.Length > 160
+                                    ? request.Description[..160]
+                                    : request.Description;
+            var metaKeywords = request.ProductName;
+
             var product = Product.Create(
                 shopId: shop.Id,
                 categoryId: request.CategoryId,
                 productName: request.ProductName,
-                productSlug: request.ProductSlug,
+                productSlug: slug,
                 weight: request.Weight,
                 description: request.Description,
                 brandId: request.BrandId,
@@ -80,9 +96,9 @@
                 length: request.Length,
                 width: request.Width,
                 height: request.Height,
-                metaTitle: request.MetaTitle,
-                metaDescription: request.MetaDescription,
-                metaKeywords: request.MetaKeywords);
+                metaTitle: metaTitle,
+                metaDescription: metaDescription,
+                metaKeywords: metaKeywords);
 
             if (request.Images.Any())
             {

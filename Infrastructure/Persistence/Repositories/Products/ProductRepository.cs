@@ -45,6 +45,19 @@
                 .Include(p => p.ProductVideos)
                 .FirstOrDefaultAsync(p => p.Id == id && p.DeletedAt == null, cancellationToken);
         }
+
+        public async Task<bool> SlugExistsAsync(
+            string slug,
+            Guid? excludeId = null,
+            CancellationToken cancellationToken = default)
+        {
+            return await RepositoryLogger.ExecuteAsync(_logger, new { slug, excludeId },
+                () => _context.Products
+                    .AnyAsync(b => b.ProductSlug == slug
+                                && p.DeletedAt == null
+                                && (excludeId == null || b.Id != excludeId),
+                              cancellationToken));
+        }
         #endregion
     }
 }

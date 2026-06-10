@@ -116,7 +116,30 @@
         #endregion
 
         #region Products
+        [Authorize(Roles = UserRoles.Seller)]
+        [HttpPost("me/products")]
+        public async Task<ActionResult<ResponseDTO>> CreateProduct(
+            [FromBody] CreateProductCommand command,
+            CancellationToken cancellationToken)
+        {
+            command = command with { UserId = CurrentUserId };
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
 
+        [Authorize(Roles = UserRoles.Seller)]
+        [HttpPut("me/products/{productId:guid}")]
+        public async Task<ActionResult<ResponseDTO>> UpdateProduct(
+            Guid productId,
+            [FromBody] UpdateProductCommand command,
+            CancellationToken cancellationToken)
+        {
+            command = command with
+            {
+                UserId = CurrentUserId,
+                ProductId = productId
+            };
+            return HandleResult(await _mediator.Send(command, cancellationToken));
+        }
         #endregion
     }
 }
